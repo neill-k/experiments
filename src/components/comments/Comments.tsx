@@ -140,10 +140,10 @@ export function Comments({ slug }: { slug: string }) {
     }
   }, [experimentId])
 
-  // Fallback polling every 10s (in case realtime fails)
+  // Fallback polling every 5s (in case realtime fails)
   useEffect(() => {
     if (!experimentId) return
-    const interval = setInterval(() => refresh(), 10000)
+    const interval = setInterval(() => refresh(), 5000)
     return () => clearInterval(interval)
   }, [experimentId])
 
