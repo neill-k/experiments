@@ -28,6 +28,7 @@ export function Comments({ slug }: { slug: string }) {
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const [inviteBusy, setInviteBusy] = useState(false)
+  const [newCommentCount, setNewCommentCount] = useState(0)
 
   const canPost = useMemo(
     () => !!userId && draft.trim().length > 0 && draft.trim().length <= 5000,
@@ -103,6 +104,7 @@ export function Comments({ slug }: { slug: string }) {
           setComments((prev) => {
             // Avoid duplicates
             if (prev.some((c) => c.id === payload.new.id)) return prev
+            setNewCommentCount((c) => c + 1)
             return [...prev, payload.new as CommentRow]
           })
         }
@@ -143,6 +145,15 @@ export function Comments({ slug }: { slug: string }) {
     const interval = setInterval(() => refresh(), 10000)
     return () => clearInterval(interval)
   }, [experimentId])
+
+  // Auto-scroll to new comments when they arrive via realtime
+  useEffect(() => {
+    if (newCommentCount > 0 && commentsEndRef.current) {
+      commentsEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      // Reset count after scrolling (user has seen the new comment)
+      setTimeout(() => setNewCommentCount(0), 500)
+    }
+  }, [newCommentCount])
 
   async function post() {
     if (!experimentId || !userId) return
