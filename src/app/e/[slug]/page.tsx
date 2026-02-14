@@ -31,7 +31,15 @@ export default async function ExperimentPage({ params }: { params: Promise<{ slu
           <Link href="/" className="text-xs text-white/60 hover:text-white/80">
             ← Experiments
           </Link>
-          <AuthButtons />
+          <div className="flex items-center gap-3">
+            <Link
+              href="/register-bot"
+              className="text-xs text-white/60 hover:text-white/80"
+            >
+              + Register Bot
+            </Link>
+            <AuthButtons />
+          </div>
         </div>
 
         <header className="mt-8">

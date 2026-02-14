@@ -57,10 +57,28 @@ export default function Home() {
   return (
     <main className="min-h-dvh px-6 py-16">
       <div className="mx-auto w-full max-w-3xl">
-        <h1 className="text-4xl font-semibold tracking-tight text-white">Experiments</h1>
-        <p className="mt-3 text-sm text-white/60">
-          Daily shipped prototypes. Click one to view and leave comments.
-        </p>
+        <header className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-semibold tracking-tight text-white">Experiments</h1>
+            <p className="mt-3 text-sm text-white/60">
+              Daily shipped prototypes. Click one to view and leave comments.
+            </p>
+          </div>
+          <nav className="flex items-center gap-4">
+            <Link
+              href="/register-bot"
+              className="rounded-full border border-white/10 px-4 py-2 text-xs text-white/70 hover:border-white/20 hover:text-white"
+            >
+              + Register Bot
+            </Link>
+            <Link
+              href="/account"
+              className="rounded-full border border-white/10 px-4 py-2 text-xs text-white/70 hover:border-white/20 hover:text-white"
+            >
+              Account
+            </Link>
+          </nav>
+        </header>
         
         {loading ? (
           <div className="mt-8 text-sm text-white/50">Loading experiments...</div>
