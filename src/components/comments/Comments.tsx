@@ -22,8 +22,6 @@ export function Comments({ slug }: { slug: string }) {
   const [userId, setUserId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
-  const [hasNewComments, setHasNewComments] = useState(false)
-  const lastCommentCountRef = useRef(0)
   const commentsEndRef = useRef<HTMLDivElement>(null)
 
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
@@ -59,9 +57,8 @@ export function Comments({ slug }: { slug: string }) {
     })()
   }, [slug])
 
-  async function refresh(isBackground = false) {
+  async function refresh() {
     if (!experimentId) return
-    if (isBackground) setRefreshing(true)
     
     const { data, error } = await getSupabase()
       .from('comments')
@@ -71,37 +68,68 @@ export function Comments({ slug }: { slug: string }) {
 
     if (error) {
       console.error(error)
-      setRefreshing(false)
       return
     }
     
-    const newComments = (data ?? []) as CommentRow[]
-    const newCount = newComments.length
-    
-    // Check if there are new comments (background refresh only)
-    if (isBackground && newCount > lastCommentCountRef.current) {
-      setHasNewComments(true)
-    }
-    
-    lastCommentCountRef.current = newCount
-    setComments(newComments)
-    setRefreshing(false)
-  }
-  
-  function scrollToNewComments() {
-    commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    setHasNewComments(false)
+    setComments((data ?? []) as CommentRow[])
   }
 
   useEffect(() => {
-    refresh(false)
+    refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experimentId])
 
-  // Poll for new comments every 10 seconds
+  // Subscribe to real-time comment updates
   useEffect(() => {
     if (!experimentId) return
-    const interval = setInterval(() => refresh(true), 10000)
+
+    const channel = getSupabase()
+      .channel(`comments:${experimentId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'comments',
+          filter: `experiment_id=eq.${experimentId}`,
+        },
+        (payload) => {
+          // Add new comment to the list
+          setComments((prev) => {
+            // Avoid duplicates
+            if (prev.some((c) => c.id === payload.new.id)) return prev
+            return [...prev, payload.new as CommentRow]
+          })
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'comments',
+          filter: `experiment_id=eq.${experimentId}`,
+        },
+        (payload) => {
+          // Update existing comment
+          setComments((prev) =>
+            prev.map((c) =>
+              c.id === payload.new.id ? { ...c, ...payload.new } : c
+            )
+          )
+        }
+      )
+      .subscribe()
+
+    return () => {
+      getSupabase().removeChannel(channel)
+    }
+  }, [experimentId])
+
+  // Fallback polling every 30s (in case realtime fails)
+  useEffect(() => {
+    if (!experimentId) return
+    const interval = setInterval(() => refresh(), 30000)
     return () => clearInterval(interval)
   }, [experimentId])
 
@@ -120,7 +148,7 @@ export function Comments({ slug }: { slug: string }) {
       })
       if (error) throw error
       setDraft('')
-      await refresh(false)
+      await refresh()
     } catch (e) {
       console.error(e)
       alert('Could not post comment. (Are you signed in?)')
@@ -222,14 +250,6 @@ export function Comments({ slug }: { slug: string }) {
           <div className="text-xs text-white/50">No comments yet.</div>
         ) : (
           <>
-            {hasNewComments && (
-              <button
-                onClick={scrollToNewComments}
-                className="mb-2 w-full rounded-lg bg-white/10 py-2 text-xs text-white/80 hover:bg-white/20"
-              >
-                ↓ New comments available
-              </button>
-            )}
             {comments.map((c) => (
               <div
                 key={c.id}
