@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
 
 export function AuthButtons() {
   const [email, setEmail] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null))
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+    getSupabase().auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null))
+    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
       setEmail(session?.user?.email ?? null)
     })
     return () => sub.subscription.unsubscribe()
@@ -19,7 +19,7 @@ export function AuthButtons() {
   async function signIn(provider: 'github' | 'google') {
     setLoading(true)
     try {
-      await supabase.auth.signInWithOAuth({ provider })
+      await getSupabase().auth.signInWithOAuth({ provider })
     } finally {
       setLoading(false)
     }

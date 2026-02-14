@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
+
+export const dynamic = 'force-dynamic'
 
 type CommentWithExperiment = {
   id: string
@@ -21,10 +23,10 @@ export default function CommentsHistoryPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    getSupabase().auth.getUser().then(({ data }) => {
       setUserId(data.user?.id ?? null)
     })
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
       setUserId(session?.user?.id ?? null)
     })
     return () => sub.subscription.unsubscribe()
@@ -36,7 +38,7 @@ export default function CommentsHistoryPage() {
       return
     }
     async function loadComments() {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('comments')
         .select(`
           id,

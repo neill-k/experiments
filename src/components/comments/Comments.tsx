@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import QRCode from 'qrcode'
-import { supabase } from '@/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
 
 type CommentRow = {
   id: string
@@ -21,6 +21,10 @@ export function Comments({ slug }: { slug: string }) {
   const [draft, setDraft] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [hasNewComments, setHasNewComments] = useState(false)
+  const lastCommentCountRef = useRef(0)
+  const commentsEndRef = useRef<HTMLDivElement>(null)
 
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
@@ -32,8 +36,8 @@ export function Comments({ slug }: { slug: string }) {
   )
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null))
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+    getSupabase().auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null))
+    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
       setUserId(session?.user?.id ?? null)
     })
     return () => sub.subscription.unsubscribe()
@@ -41,7 +45,7 @@ export function Comments({ slug }: { slug: string }) {
 
   useEffect(() => {
     ;(async () => {
-      const { data: exp, error: expErr } = await supabase
+      const { data: exp, error: expErr } = await getSupabase()
         .from('experiments')
         .upsert({ slug }, { onConflict: 'slug' })
         .select('id')
@@ -55,9 +59,11 @@ export function Comments({ slug }: { slug: string }) {
     })()
   }, [slug])
 
-  async function refresh() {
+  async function refresh(isBackground = false) {
     if (!experimentId) return
-    const { data, error } = await supabase
+    if (isBackground) setRefreshing(true)
+    
+    const { data, error } = await getSupabase()
       .from('comments')
       .select('id, body, created_at, user_id, agent_id, author_type, author_label, is_deleted')
       .eq('experiment_id', experimentId)
@@ -65,20 +71,37 @@ export function Comments({ slug }: { slug: string }) {
 
     if (error) {
       console.error(error)
+      setRefreshing(false)
       return
     }
-    setComments((data ?? []) as CommentRow[])
+    
+    const newComments = (data ?? []) as CommentRow[]
+    const newCount = newComments.length
+    
+    // Check if there are new comments (background refresh only)
+    if (isBackground && newCount > lastCommentCountRef.current) {
+      setHasNewComments(true)
+    }
+    
+    lastCommentCountRef.current = newCount
+    setComments(newComments)
+    setRefreshing(false)
+  }
+  
+  function scrollToNewComments() {
+    commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    setHasNewComments(false)
   }
 
   useEffect(() => {
-    refresh()
+    refresh(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experimentId])
 
   // Poll for new comments every 10 seconds
   useEffect(() => {
     if (!experimentId) return
-    const interval = setInterval(refresh, 10000)
+    const interval = setInterval(() => refresh(true), 10000)
     return () => clearInterval(interval)
   }, [experimentId])
 
@@ -88,7 +111,7 @@ export function Comments({ slug }: { slug: string }) {
     if (!body) return
     setBusy(true)
     try {
-      const { error } = await supabase.from('comments').insert({
+      const { error } = await getSupabase().from('comments').insert({
         experiment_id: experimentId,
         user_id: userId,
         author_type: 'human',
@@ -97,7 +120,7 @@ export function Comments({ slug }: { slug: string }) {
       })
       if (error) throw error
       setDraft('')
-      await refresh()
+      await refresh(false)
     } catch (e) {
       console.error(e)
       alert('Could not post comment. (Are you signed in?)')
@@ -109,7 +132,7 @@ export function Comments({ slug }: { slug: string }) {
   async function generateInvite() {
     setInviteBusy(true)
     try {
-      const { data: sessionData } = await supabase.auth.getSession()
+      const { data: sessionData } = await getSupabase().auth.getSession()
       const accessToken = sessionData.session?.access_token
       if (!accessToken) {
         alert('Sign in to generate an agent QR code.')
@@ -143,7 +166,15 @@ export function Comments({ slug }: { slug: string }) {
   return (
     <section className="mt-10 border-t border-white/10 pt-6">
       <div className="flex items-end justify-between gap-4">
-        <h2 className="text-sm font-medium tracking-wide text-white/80">Comments</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-medium tracking-wide text-white/80">Comments</h2>
+          {refreshing && (
+            <span className="flex h-2 w-2">
+              <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-white/40 opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-white/40"></span>
+            </span>
+          )}
+        </div>
         {!userId ? <div className="text-xs text-white/50">Sign in to comment.</div> : null}
       </div>
 
@@ -190,30 +221,41 @@ export function Comments({ slug }: { slug: string }) {
         {comments.length === 0 ? (
           <div className="text-xs text-white/50">No comments yet.</div>
         ) : (
-          comments.map((c) => (
-            <div
-              key={c.id}
-              className="rounded-xl border border-white/10 bg-white/[0.03] p-3"
-            >
-              <div className="flex items-center justify-between gap-3 text-[11px] text-white/40">
-                <div>
-                  {c.author_type === 'agent' ? (
-                    <span className="text-white/60">🦞 {c.author_label ?? 'Agent'}</span>
+          <>
+            {hasNewComments && (
+              <button
+                onClick={scrollToNewComments}
+                className="mb-2 w-full rounded-lg bg-white/10 py-2 text-xs text-white/80 hover:bg-white/20"
+              >
+                ↓ New comments available
+              </button>
+            )}
+            {comments.map((c) => (
+              <div
+                key={c.id}
+                className="rounded-xl border border-white/10 bg-white/[0.03] p-3"
+              >
+                <div className="flex items-center justify-between gap-3 text-[11px] text-white/40">
+                  <div>
+                    {c.author_type === 'agent' ? (
+                      <span className="text-white/60">🦞 {c.author_label ?? 'Agent'}</span>
+                    ) : (
+                      <span className="text-white/60">Human</span>
+                    )}
+                  </div>
+                  <div>{new Date(c.created_at).toLocaleString()}</div>
+                </div>
+                <div className="mt-1 whitespace-pre-wrap text-sm text-white/80">
+                  {c.is_deleted ? (
+                    <span className="italic text-white/40">(deleted)</span>
                   ) : (
-                    <span className="text-white/60">Human</span>
+                    c.body
                   )}
                 </div>
-                <div>{new Date(c.created_at).toLocaleString()}</div>
               </div>
-              <div className="mt-1 whitespace-pre-wrap text-sm text-white/80">
-                {c.is_deleted ? (
-                  <span className="italic text-white/40">(deleted)</span>
-                ) : (
-                  c.body
-                )}
-              </div>
-            </div>
-          ))
+            ))}
+            <div ref={commentsEndRef} />
+          </>
         )}
       </div>
 

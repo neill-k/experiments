@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase/client'
+import QRCode from 'qrcode'
+import { getSupabase } from '@/lib/supabase/client'
 
 type Agent = {
   id: string
@@ -19,12 +20,18 @@ export function AccountContent() {
   const [loading, setLoading] = useState(true)
   const [revoking, setRevoking] = useState<string | null>(null)
 
+  // Agent creation state
+  const [agentLabel, setAgentLabel] = useState('')
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null)
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
+  const [creating, setCreating] = useState(false)
+
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    getSupabase().auth.getUser().then(({ data }) => {
       setUserId(data.user?.id ?? null)
       setEmail(data.user?.email ?? null)
     })
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
       setUserId(session?.user?.id ?? null)
       setEmail(session?.user?.email ?? null)
     })
@@ -37,7 +44,7 @@ export function AccountContent() {
       return
     }
     async function loadAgents() {
-      const { data } = await supabase
+      const { data } = await getSupabase()
         .from('agents')
         .select('id, label, created_at, last_used_at, revoked_at')
         .eq('user_id', userId)
@@ -50,17 +57,60 @@ export function AccountContent() {
 
   async function revokeAgent(agentId: string) {
     setRevoking(agentId)
-    await supabase
+    await getSupabase()
       .from('agents')
       .update({ revoked_at: new Date().toISOString() })
       .eq('id', agentId)
-    const { data } = await supabase
+    const { data } = await getSupabase()
       .from('agents')
       .select('id, label, created_at, last_used_at, revoked_at')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
     setAgents((data ?? []) as Agent[])
     setRevoking(null)
+  }
+
+  async function createAgent() {
+    if (!userId) return
+    setCreating(true)
+    try {
+      const { data: sessionData } = await getSupabase().auth.getSession()
+      const accessToken = sessionData.session?.access_token
+      if (!accessToken) {
+        alert('Sign in to create an agent.')
+        return
+      }
+
+      const res = await fetch('/api/agent/invite', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ label: agentLabel || 'Agent' }),
+      })
+
+      const json = (await res.json()) as { setupUrl?: unknown; error?: unknown }
+      if (!res.ok) throw new Error(String(json?.error ?? 'Could not create agent'))
+
+      const setupUrl = String(json.setupUrl)
+      setInviteUrl(setupUrl)
+      const dataUrl = await QRCode.toDataURL(setupUrl, { margin: 1, width: 200 })
+      setQrDataUrl(dataUrl)
+      
+      // Refresh agents list
+      const { data } = await getSupabase()
+        .from('agents')
+        .select('id, label, created_at, last_used_at, revoked_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+      setAgents((data ?? []) as Agent[])
+    } catch (e) {
+      console.error(e)
+      alert('Could not create agent. Try again.')
+    } finally {
+      setCreating(false)
+    }
   }
 
   if (!userId) {
@@ -101,11 +151,56 @@ export function AccountContent() {
           Agents (bots) that can comment on experiments on your behalf.
         </p>
 
+        {/* Create Agent UI */}
+        <div className="mt-4 rounded-lg border border-white/10 bg-black/30 p-3">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="min-w-[160px] flex-1">
+              <label className="block text-[11px] text-white/50">Agent name (optional)</label>
+              <input
+                type="text"
+                value={agentLabel}
+                onChange={(e) => setAgentLabel(e.target.value)}
+                placeholder="My Bot"
+                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
+              />
+            </div>
+            <button
+              onClick={createAgent}
+              disabled={creating}
+              className="rounded-lg border border-white/15 px-4 py-2 text-xs text-white/80 hover:border-white/25 disabled:opacity-40"
+            >
+              {creating ? 'Creating...' : 'Create Agent'}
+            </button>
+          </div>
+          
+          {qrDataUrl && (
+            <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-white/10 pt-4">
+              <div className="h-[180px] w-[180px] overflow-hidden rounded-xl border border-white/10 bg-black/30">
+                <img src={qrDataUrl} alt="Agent setup QR" className="h-full w-full" />
+              </div>
+              <div className="min-w-[200px] flex-1 space-y-2">
+                <div className="text-xs text-white/60">Scan this QR with your agent/device to authenticate it.</div>
+                {inviteUrl && (
+                  <div className="break-all text-[10px] text-white/40">
+                    {inviteUrl}
+                  </div>
+                )}
+                <button
+                  onClick={() => { setQrDataUrl(null); setInviteUrl(null); setAgentLabel(''); }}
+                  className="text-xs text-white/50 hover:text-white/80"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         {loading ? (
           <div className="mt-4 text-xs text-white/50">Loading...</div>
         ) : agents.length === 0 ? (
           <div className="mt-4 text-xs text-white/50">
-            No agents yet. Generate a QR code on any experiment page to create one.
+            No agents yet. Create one above to get started.
           </div>
         ) : (
           <div className="mt-4 space-y-2">
@@ -147,7 +242,7 @@ export function AccountContent() {
         <h2 className="text-sm font-medium text-white/80">Danger Zone</h2>
         <div className="mt-3">
           <button
-            onClick={() => supabase.auth.signOut()}
+            onClick={() => getSupabase().auth.signOut()}
             className="rounded-lg border border-red-500/30 px-4 py-2 text-xs text-red-400 hover:bg-red-500/10"
           >
             Sign out
