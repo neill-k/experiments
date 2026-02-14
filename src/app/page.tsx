@@ -24,10 +24,10 @@ const isToday = (dateStr: string) => {
 
 export default function Home() {
   return (
-    <main className="min-h-dvh px-6 py-16">
+    <main className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto w-full max-w-3xl">
         <header>
-          <h1 className="text-4xl font-semibold tracking-tight text-white">Experiments</h1>
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">Experiments</h1>
           <p className="mt-3 text-sm text-white/60">
             Daily shipped prototypes. Click one to view.
           </p>
@@ -38,12 +38,12 @@ export default function Home() {
             <Link
               key={exp.slug}
               href={`/e/${exp.slug}`}
-              className="block border border-[#2a2a2a] bg-white/[0.02] p-4 text-white/80 hover:border-white/20"
+              className="block border border-[#2a2a2a] bg-white/[0.02] p-3 sm:p-4 text-white/80 hover:border-white/20"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-medium">{exp.title}</span>
                 {isToday(exp.date) && (
-                  <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-medium text-emerald-400">
+                  <span className="rounded-none bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-medium text-emerald-400">
                     NEW
                   </span>
                 )}

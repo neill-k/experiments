@@ -399,30 +399,46 @@ export default function PromptLibrary() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100">
+    <div className="min-h-screen bg-[#08080a] text-[#ebebeb] overflow-x-hidden">
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 rounded-lg"
+        className="md:hidden fixed top-3 left-3 z-50 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-[#2a2a2a] text-lg"
+        aria-label="Toggle sidebar"
       >
-        ☰
+        {sidebarOpen ? '✕' : '☰'}
       </button>
+      
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 z-30 bg-black/50"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
       
       <div className="flex h-screen">
         {/* Sidebar - hidden on mobile unless open */}
-        <div className={`md:w-64 md:relative fixed inset-y-0 left-0 z-40 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform bg-gray-900 border-r border-gray-800 flex flex-col`}>
-          <div className="p-4 border-b border-gray-800">
+        <div className={`
+          md:w-64 md:relative fixed inset-y-0 left-0 z-40 
+          transform transition-transform duration-200 ease-out
+          bg-[#08080a] border-r border-[#2a2a2a] flex flex-col
+          w-72
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+          md:translate-x-0
+        `}>
+          <div className="p-4 border-b border-[#2a2a2a]">
             <h1 className="text-lg font-semibold text-white">📚 Prompt Library</h1>
             <p className="text-xs text-gray-500 mt-1">Organize, version, test</p>
           </div>
 
-          <div className="p-2 border-b border-gray-800">
+          <div className="p-2 border-b border-[#2a2a2a]">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="🔍 Search prompts..."
-              className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-lg text-sm outline-none focus:border-blue-600 text-gray-200"
+              className="w-full px-3 py-2.5 bg-[#08080a] border border-[#2a2a2a] text-sm outline-none focus:border-blue-600 text-[#ebebeb] min-h-[44px]"
             />
           </div>
 
@@ -430,11 +446,14 @@ export default function PromptLibrary() {
             {filteredPrompts.map((prompt) => (
               <button
                 key={prompt.id}
-                onClick={() => setSelectedId(prompt.id)}
-                className={`w-full text-left px-3 py-2 rounded-lg mb-1 text-sm truncate transition-colors ${
+                onClick={() => {
+                  setSelectedId(prompt.id);
+                  setSidebarOpen(false);
+                }}
+                className={`w-full text-left px-3 py-3 mb-1 text-sm truncate transition-colors min-h-[44px] flex items-center ${
                   selectedId === prompt.id
                     ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:bg-gray-800'
+                    : 'text-gray-400 hover:bg-[#2a2a2a]'
                 }`}
               >
                 {prompt.name}
@@ -442,16 +461,16 @@ export default function PromptLibrary() {
             ))}
           </div>
 
-          <div className="p-3 border-t border-gray-800 space-y-2">
+          <div className="p-3 border-t border-[#2a2a2a] space-y-2">
             <button
               onClick={() => setShowNewPrompt(true)}
-              className="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
+              className="w-full px-3 py-3 bg-blue-600 hover:bg-blue-700 text-sm font-medium transition-colors min-h-[44px] flex items-center justify-center"
             >
               + New Prompt
             </button>
             <button
               onClick={importFromFile}
-              className="w-full px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm transition-colors"
+              className="w-full px-3 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-sm transition-colors min-h-[44px] flex items-center justify-center"
             >
               📤 Import .md
             </button>
@@ -459,13 +478,13 @@ export default function PromptLibrary() {
             <div className="relative">
               <button
                 onClick={() => setShowPresetDropdown(!showPresetDropdown)}
-                className="w-full px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm transition-colors flex justify-between items-center"
+                className="w-full px-3 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-sm transition-colors min-h-[44px] flex justify-between items-center"
               >
                 <span>📋 Templates</span>
                 <span>{showPresetDropdown ? '▲' : '▼'}</span>
               </button>
               {showPresetDropdown && (
-                <div className="absolute bottom-full left-0 right-0 mb-1 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-lg z-10 max-h-48 overflow-y-auto">
+                <div className="absolute bottom-full left-0 right-0 mb-1 bg-[#2a2a2a] border border-[#3a3a3a] shadow-lg z-10 max-h-48 overflow-y-auto">
                   {PRESETS.map((preset) => (
                     <button
                       key={preset.name}
@@ -473,7 +492,7 @@ export default function PromptLibrary() {
                         loadPreset(preset);
                         setShowPresetDropdown(false);
                       }}
-                      className="w-full px-3 py-2 text-left text-sm hover:bg-gray-700 transition-colors"
+                      className="w-full px-3 py-3 text-left text-sm hover:bg-[#3a3a3a] transition-colors min-h-[44px] flex items-center"
                     >
                       {preset.name}
                     </button>
@@ -485,47 +504,47 @@ export default function PromptLibrary() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden pt-12 md:pt-0">
+        <div className="flex-1 flex flex-col overflow-hidden pt-14 md:pt-0">
           {selectedPrompt ? (
             <>
               {/* Header */}
-              <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+              <div className="p-3 md:p-4 border-b border-[#2a2a2a] flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-0">
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="text-xl font-semibold bg-transparent border-none outline-none text-white w-64"
+                  className="text-lg md:text-xl font-semibold bg-transparent border-none outline-none text-white w-full md:w-64"
                 />
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-1.5 md:gap-2">
                   <button
                     onClick={() => setShowSettings(!showSettings)}
-                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
-                      showSettings ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
+                    className={`px-2 md:px-3 py-2 text-xs md:text-sm transition-colors min-h-[44px] min-w-[44px] flex items-center ${
+                      showSettings ? 'bg-blue-600 text-white' : 'bg-[#2a2a2a] hover:bg-[#3a3a3a]'
                     }`}
                   >
-                    ⚙️ Settings
+                    ⚙️
                   </button>
                   <button
                     onClick={sharePrompt}
-                    className="px-3 py-1.5 text-sm bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                    className="px-2 md:px-3 py-2 text-xs md:text-sm bg-[#2a2a2a] hover:bg-[#3a3a3a] transition-colors min-h-[44px] min-w-[44px] flex items-center"
                   >
-                    🔗 Share
+                    🔗
                   </button>
                   <button
                     onClick={() => setShowPreview(!showPreview)}
-                    className="px-3 py-1.5 text-sm bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                    className="px-2 md:px-3 py-2 text-xs md:text-sm bg-[#2a2a2a] hover:bg-[#3a3a3a] transition-colors min-h-[44px] min-w-[44px] flex items-center"
                   >
-                    {showPreview ? '📝 Edit' : '👁 Preview'}
+                    {showPreview ? '📝' : '👁'}
                   </button>
                   <button
                     onClick={savePrompt}
-                    className="px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+                    className="px-2 md:px-3 py-2 text-xs md:text-sm bg-green-600 hover:bg-green-700 transition-colors min-h-[44px] min-w-[44px] flex items-center"
                   >
-                    💾 Save
+                    💾
                   </button>
                   <button
                     onClick={() => deletePrompt(selectedPrompt.id)}
-                    className="px-3 py-1.5 text-sm bg-red-900/50 hover:bg-red-900 text-red-300 rounded-lg transition-colors"
+                    className="px-2 md:px-3 py-2 text-xs md:text-sm bg-red-900/50 hover:bg-red-900 text-red-300 transition-colors min-h-[44px] min-w-[44px] flex items-center"
                   >
                     🗑
                   </button>
@@ -534,25 +553,25 @@ export default function PromptLibrary() {
 
               {/* Settings Panel */}
               {showSettings && (
-                <div className="p-4 border-b border-gray-800 bg-gray-900/50">
+                <div className="p-3 md:p-4 border-b border-[#2a2a2a] bg-[#08080a]/80">
                   <h3 className="text-sm font-medium text-gray-400 mb-3">🔌 LLM API Settings</h3>
-                  <div className="flex gap-4 items-start">
-                    <div className="flex-1">
+                  <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-start">
+                    <div className="flex-1 w-full">
                       <label className="text-xs text-gray-500 block mb-1">API Key</label>
                       <input
                         type="password"
                         value={settings.apiKey}
                         onChange={(e) => setSettings({ ...settings, apiKey: e.target.value })}
                         placeholder="sk-... (OpenAI) or ant... (Anthropic)"
-                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-lg text-sm outline-none focus:border-blue-600"
+                        className="w-full px-3 py-2.5 bg-[#08080a] border border-[#2a2a2a] text-sm outline-none focus:border-blue-600 min-h-[44px]"
                       />
                     </div>
-                    <div className="w-48">
+                    <div className="w-full md:w-48">
                       <label className="text-xs text-gray-500 block mb-1">Model</label>
                       <select
                         value={settings.model}
                         onChange={(e) => setSettings({ ...settings, model: e.target.value })}
-                        className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-lg text-sm outline-none focus:border-blue-600"
+                        className="w-full px-3 py-2.5 bg-[#08080a] border border-[#2a2a2a] text-sm outline-none focus:border-blue-600 min-h-[44px]"
                       >
                         {MODELS.map((m) => (
                           <option key={m.id} value={m.id}>{m.name}</option>
@@ -566,36 +585,36 @@ export default function PromptLibrary() {
                 </div>
               )}
 
-              <div className="flex-1 flex overflow-hidden">
+              <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
                 {/* Editor / Preview */}
-                <div className="flex-1 p-4 overflow-auto">
+                <div className="flex-1 p-3 md:p-4 overflow-auto">
                   {showPreview ? (
                     <div className="space-y-4">
-                      <div className="bg-gray-900 rounded-lg p-4">
+                      <div className="bg-[#08080a] p-4 border border-[#2a2a2a]">
                         <h3 className="text-sm font-medium text-gray-400 mb-2">Rendered Output</h3>
-                        <pre className="whitespace-pre-wrap text-sm text-gray-200 font-mono">
+                        <pre className="whitespace-pre-wrap text-sm text-[#ebebeb] font-mono">
                           {previewContent}
                         </pre>
                       </div>
                       <button
                         onClick={() => copyToClipboard(previewContent)}
-                        className="px-3 py-1.5 text-sm bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                        className="px-3 py-3 text-sm bg-[#2a2a2a] hover:bg-[#3a3a3a] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                       >
-                        📋 Copy Rendered
+                        📋 Copy
                       </button>
                     </div>
                   ) : (
                     <textarea
                       value={editContent}
                       onChange={(e) => setEditContent(e.target.value)}
-                      className="w-full h-full bg-gray-900 rounded-lg p-4 text-sm font-mono text-gray-200 resize-none outline-none border border-gray-800"
+                      className="w-full h-full bg-[#08080a] p-4 text-sm font-mono text-[#ebebeb] resize-none outline-none border border-[#2a2a2a] min-h-[300px] md:min-h-0"
                       placeholder="Write your prompt here... Use {{variable}} for variables."
                     />
                   )}
                 </div>
 
-                {/* Variables Panel */}
-                <div className="w-72 border-l border-gray-800 p-4 overflow-y-auto">
+                {/* Variables Panel - full width on mobile, side on lg */}
+                <div className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-[#2a2a2a] p-3 md:p-4 overflow-y-auto">
                   <h3 className="text-sm font-medium text-gray-400 mb-3">🔧 Variables</h3>
                   {selectedPrompt.variables.length === 0 ? (
                     <p className="text-xs text-gray-500">No variables found. Use {'{{variable}}'} syntax.</p>
@@ -608,7 +627,7 @@ export default function PromptLibrary() {
                             type="text"
                             value={testValues[v] || ''}
                             onChange={(e) => setTestValues({ ...testValues, [v]: e.target.value })}
-                            className="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded-lg text-sm outline-none focus:border-blue-600"
+                            className="w-full px-3 py-2.5 bg-[#08080a] border border-[#2a2a2a] text-sm outline-none focus:border-blue-600 min-h-[44px]"
                             placeholder={`Enter ${v}...`}
                           />
                         </div>
@@ -616,7 +635,7 @@ export default function PromptLibrary() {
                     </div>
                   )}
 
-                  <div className="mt-6 pt-4 border-t border-gray-800">
+                  <div className="mt-6 pt-4 border-t border-[#2a2a2a]">
                     <h3 className="text-sm font-medium text-gray-400 mb-3">📜 Version History</h3>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
                       {selectedPrompt.versions
@@ -634,7 +653,7 @@ export default function PromptLibrary() {
                                 )
                               );
                             }}
-                            className="w-full text-xs bg-gray-900 hover:bg-gray-800 p-2 rounded flex justify-between items-center transition-colors"
+                            className="w-full text-xs bg-[#08080a] hover:bg-[#2a2a2a] p-3 flex justify-between items-center transition-colors min-h-[44px]"
                           >
                             <span className="text-gray-500">v{selectedPrompt.versions.length - i}</span>
                             <span className="text-gray-600">
@@ -648,13 +667,13 @@ export default function PromptLibrary() {
                   <div className="mt-4 flex gap-2">
                     <button
                       onClick={() => copyToClipboard(editContent)}
-                      className="flex-1 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm transition-colors"
+                      className="flex-1 px-3 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-sm transition-colors min-h-[44px] flex items-center justify-center"
                     >
-                      📋 Copy Source
+                      📋 Copy
                     </button>
                     <button
                       onClick={() => selectedPrompt && exportToMarkdown(selectedPrompt)}
-                      className="flex-1 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm transition-colors"
+                      className="flex-1 px-3 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-sm transition-colors min-h-[44px] flex items-center justify-center"
                     >
                       📥 Export
                     </button>
@@ -662,7 +681,7 @@ export default function PromptLibrary() {
 
                   {/* LLM Test Section */}
                   {llmResponse && (
-                    <div className="mt-4 p-3 bg-gray-900 rounded-lg">
+                    <div className="mt-4 p-3 bg-[#08080a] border border-[#2a2a2a]">
                       <h4 className="text-xs font-medium text-gray-400 mb-2">🤖 LLM Response</h4>
                       <pre className="text-xs text-gray-300 whitespace-pre-wrap max-h-40 overflow-y-auto">
                         {llmResponse}
@@ -673,7 +692,7 @@ export default function PromptLibrary() {
                     <button
                       onClick={testWithLLM}
                       disabled={!settings.apiKey || llmLoading}
-                      className="w-full px-3 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm transition-colors"
+                      className="w-full px-3 py-3 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm transition-colors min-h-[44px]"
                     >
                       {llmLoading ? '⏳ Calling API...' : '🤖 Test with LLM'}
                     </button>
