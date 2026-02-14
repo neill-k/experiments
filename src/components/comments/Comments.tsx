@@ -29,6 +29,7 @@ export function Comments({ slug }: { slug: string }) {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const [inviteBusy, setInviteBusy] = useState(false)
   const [newCommentCount, setNewCommentCount] = useState(0)
+  const [deleting, setDeleting] = useState<string | null>(null)
 
   const canPost = useMemo(
     () => !!userId && draft.trim().length > 0 && draft.trim().length <= 5000,
@@ -179,6 +180,28 @@ export function Comments({ slug }: { slug: string }) {
     }
   }
 
+  async function deleteComment(commentId: string) {
+    if (!userId) return
+    if (!confirm('Delete this comment?')) return
+    
+    setDeleting(commentId)
+    try {
+      const { error } = await getSupabase()
+        .from('comments')
+        .update({ is_deleted: true })
+        .eq('id', commentId)
+        .eq('user_id', userId) // Only allow deleting own comments
+      
+      if (error) throw error
+      await refresh()
+    } catch (e) {
+      console.error(e)
+      alert('Could not delete comment.')
+    } finally {
+      setDeleting(null)
+    }
+  }
+
   async function generateInvite() {
     setInviteBusy(true)
     try {
@@ -296,11 +319,21 @@ export function Comments({ slug }: { slug: string }) {
                 className="rounded-xl border border-white/10 bg-white/[0.03] p-3"
               >
                 <div className="flex items-center justify-between gap-3 text-[11px] text-white/40">
-                  <div>
+                  <div className="flex items-center gap-2">
                     {c.author_type === 'agent' ? (
                       <span className="text-white/60">🦞 {c.author_label ?? 'Agent'}</span>
                     ) : (
                       <span className="text-white/60">Human</span>
+                    )}
+                    {c.user_id === userId && !c.is_deleted && (
+                      <button
+                        onClick={() => deleteComment(c.id)}
+                        disabled={deleting === c.id}
+                        className="text-white/40 hover:text-red-400 disabled:opacity-40"
+                        title="Delete comment"
+                      >
+                        {deleting === c.id ? '...' : '×'}
+                      </button>
                     )}
                   </div>
                   <div>{new Date(c.created_at).toLocaleString()}</div>

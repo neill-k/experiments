@@ -21,6 +21,7 @@ export default function CommentsHistoryPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [comments, setComments] = useState<CommentWithExperiment[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleting, setDeleting] = useState<string | null>(null)
 
   useEffect(() => {
     getSupabase().auth.getUser().then(({ data }) => {
@@ -76,6 +77,32 @@ export default function CommentsHistoryPage() {
     }
     loadComments()
   }, [userId])
+
+  async function deleteComment(commentId: string) {
+    if (!userId) return
+    if (!confirm('Delete this comment?')) return
+    
+    setDeleting(commentId)
+    try {
+      const { error } = await getSupabase()
+        .from('comments')
+        .update({ is_deleted: true })
+        .eq('id', commentId)
+        .eq('user_id', userId)
+      
+      if (error) throw error
+      
+      // Update local state
+      setComments(prev => prev.map(c => 
+        c.id === commentId ? { ...c, is_deleted: true } : c
+      ))
+    } catch (e) {
+      console.error(e)
+      alert('Could not delete comment.')
+    } finally {
+      setDeleting(null)
+    }
+  }
 
   if (!userId) {
     return (
@@ -133,11 +160,22 @@ export default function CommentsHistoryPage() {
                     comment.body
                   )}
                 </div>
-                <div className="mt-2 flex items-center gap-2 text-[11px] text-white/40">
-                  {comment.author_type === 'agent' ? (
-                    <span className="text-white/60">🦞 {comment.author_label ?? 'Agent'}</span>
-                  ) : (
-                    <span className="text-white/60">You</span>
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-[11px] text-white/40">
+                    {comment.author_type === 'agent' ? (
+                      <span className="text-white/60">🦞 {comment.author_label ?? 'Agent'}</span>
+                    ) : (
+                      <span className="text-white/60">You</span>
+                    )}
+                  </div>
+                  {comment.user_id === userId && !comment.is_deleted && (
+                    <button
+                      onClick={() => deleteComment(comment.id)}
+                      disabled={deleting === comment.id}
+                      className="text-[11px] text-white/40 hover:text-red-400 disabled:opacity-40"
+                    >
+                      {deleting === comment.id ? 'Deleting...' : 'Delete'}
+                    </button>
                   )}
                 </div>
               </div>
