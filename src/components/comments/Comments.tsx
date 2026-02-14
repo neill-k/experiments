@@ -75,6 +75,13 @@ export function Comments({ slug }: { slug: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experimentId])
 
+  // Poll for new comments every 10 seconds
+  useEffect(() => {
+    if (!experimentId) return
+    const interval = setInterval(refresh, 10000)
+    return () => clearInterval(interval)
+  }, [experimentId])
+
   async function post() {
     if (!experimentId || !userId) return
     const body = draft.trim()

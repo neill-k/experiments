@@ -1,9 +1,29 @@
 import Link from 'next/link'
 import { AuthButtons } from '@/components/AuthButtons'
 import { Comments } from '@/components/comments/Comments'
+import { AgentSpecBuilder } from '@/components/AgentSpecBuilder'
 
 export default async function ExperimentPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+
+  // For the agent-spec-builder experiment, render it natively
+  if (slug === '2026-02-13-agent-spec-builder') {
+    return (
+      <main className="min-h-dvh px-4 py-6">
+        <div className="mx-auto w-full max-w-6xl">
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <Link href="/" className="text-xs text-white/60 hover:text-white/80">
+              ← Experiments
+            </Link>
+            <AuthButtons />
+          </div>
+          <AgentSpecBuilder />
+        </div>
+      </main>
+    )
+  }
+
+  // Placeholder for other experiments
   return (
     <main className="min-h-dvh px-6 py-10">
       <div className="mx-auto w-full max-w-3xl">

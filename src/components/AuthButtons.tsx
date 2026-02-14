@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase/client'
 
 export function AuthButtons() {
@@ -24,26 +25,15 @@ export function AuthButtons() {
     }
   }
 
-  async function signOut() {
-    setLoading(true)
-    try {
-      await supabase.auth.signOut()
-    } finally {
-      setLoading(false)
-    }
-  }
-
   if (email) {
     return (
-      <div className="flex items-center gap-3 text-xs text-white/70">
-        <span className="max-w-[40ch] truncate">Signed in: {email}</span>
-        <button
-          className="rounded-full border border-white/15 px-3 py-1 hover:border-white/25"
-          onClick={signOut}
-          disabled={loading}
+      <div className="flex items-center gap-3">
+        <Link
+          href="/account"
+          className="rounded-full border border-white/15 px-3 py-1 text-xs text-white/80 hover:border-white/25"
         >
-          Sign out
-        </button>
+          Account
+        </Link>
       </div>
     )
   }
