@@ -95,7 +95,7 @@ export function AgentSpecBuilder() {
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       {/* Inputs Section */}
-      <section className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <section className="border-none border border-[#2a2a2a] bg-white/[0.02] p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="text-base font-semibold text-white">Inputs</h2>
@@ -108,7 +108,7 @@ export function AgentSpecBuilder() {
             {presets.map((p) => (
               <button
                 key={p.id}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/80 hover:bg-white/10"
+                className="border-none border border-[#2a2a2a] bg-white/5 px-3 py-1 text-sm text-white/80 hover:bg-white/10"
                 onClick={() => setInput(p.data)}
                 type="button"
               >
@@ -116,7 +116,7 @@ export function AgentSpecBuilder() {
               </button>
             ))}
             <button
-              className="rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/80 hover:bg-white/10"
+              className="border-none border border-[#2a2a2a] bg-white/5 px-3 py-1 text-sm text-white/80 hover:bg-white/10"
               onClick={() => setInput(empty)}
               type="button"
             >
@@ -164,14 +164,14 @@ export function AgentSpecBuilder() {
             rows={5}
           />
 
-          <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+          <div className="border-none border border-[#2a2a2a] bg-white/5 p-3">
             <div className="flex items-center justify-between gap-3">
               <div className="text-sm font-medium text-white">
                 Tool Contracts (structured)
               </div>
               <button
                 type="button"
-                className="rounded-lg bg-white/10 px-2 py-1 text-xs font-medium text-white hover:bg-white/20"
+                className="border-none bg-white/10 px-2 py-1 text-xs font-medium text-white hover:bg-white/20"
                 onClick={() => {
                   const newContract: ToolContract = {
                     id: crypto.randomUUID(),
@@ -203,7 +203,7 @@ export function AgentSpecBuilder() {
                 {input.toolContracts.map((tc, idx) => (
                  <div
                     key={tc.id}
-                    className="rounded-lg border border-white/10 bg-white/5 p-3"
+                    className="border-none border border-[#2a2a2a] bg-white/5 p-3"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <input
@@ -214,7 +214,7 @@ export function AgentSpecBuilder() {
                           setInput({ ...input, toolContracts: updated });
                         }}
                         placeholder="Tool name (e.g., Slack: post message)"
-                        className="flex-1 rounded border border-white/10 bg-white/5 px-2 py-1 text-sm text-white placeholder-white/40"
+                        className="flex-1 rounded border border-[#2a2a2a] bg-white/5 px-2 py-1 text-sm text-white placeholder-white/40"
                       />
                       <button
                         type="button"
@@ -238,7 +238,7 @@ export function AgentSpecBuilder() {
                           setInput({ ...input, toolContracts: updated });
                         }}
                         placeholder="Purpose (what does this tool do?)"
-                        className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
+                        className="rounded border border-[#2a2a2a] bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
                       />
                       <input
                         value={tc.auth}
@@ -248,7 +248,7 @@ export function AgentSpecBuilder() {
                           setInput({ ...input, toolContracts: updated });
                         }}
                         placeholder="Auth (e.g., OAuth2, API key, user-approved)"
-                        className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
+                        className="rounded border border-[#2a2a2a] bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
                       />
                       <input
                         value={tc.rateLimit}
@@ -258,7 +258,7 @@ export function AgentSpecBuilder() {
                           setInput({ ...input, toolContracts: updated });
                         }}
                         placeholder="Rate limit (e.g., 100 req/min)"
-                        className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
+                        className="rounded border border-[#2a2a2a] bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
                       />
                       <div className="flex items-center gap-2">
                         <input
@@ -284,7 +284,7 @@ export function AgentSpecBuilder() {
                         }}
                         placeholder="Inputs (what data does it need?)"
                         rows={2}
-                        className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
+                        className="rounded border border-[#2a2a2a] bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
                       />
                       <textarea
                         value={tc.outputs}
@@ -295,7 +295,7 @@ export function AgentSpecBuilder() {
                         }}
                         placeholder="Outputs (what does it return?)"
                         rows={2}
-                        className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
+                        className="rounded border border-[#2a2a2a] bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
                       />
                     </div>
                     <div className="mt-2 grid gap-2 md:grid-cols-2">
@@ -308,7 +308,7 @@ export function AgentSpecBuilder() {
                         }}
                         placeholder="Failure modes (what can go wrong?)"
                         rows={2}
-                        className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
+                        className="rounded border border-[#2a2a2a] bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
                       />
                       <textarea
                         value={tc.piiHandling}
@@ -319,7 +319,7 @@ export function AgentSpecBuilder() {
                         }}
                         placeholder="PII handling (any personal data?)"
                         rows={2}
-                        className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
+                        className="rounded border border-[#2a2a2a] bg-white/5 px-2 py-1 text-xs text-white placeholder-white/40"
                       />
                     </div>
                   </div>
@@ -347,7 +347,7 @@ export function AgentSpecBuilder() {
             rows={4}
           />
 
-          <div className="mt-1 rounded-xl border border-white/10 bg-white/5 p-3">
+          <div className="mt-1 border-none border border-[#2a2a2a] bg-white/5 p-3">
             <div className="text-sm font-medium text-white">
               Cost / latency budget (optional)
             </div>
@@ -409,7 +409,7 @@ export function AgentSpecBuilder() {
       </section>
 
       {/* Generated Spec Section */}
-      <section className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <section className="border-none border border-[#2a2a2a] bg-white/[0.02] p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="text-base font-semibold text-white">Generated Spec</h2>
@@ -418,9 +418,9 @@ export function AgentSpecBuilder() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex rounded-lg border border-white/10 bg-white/5 p-1">
+            <div className="flex border-none border border-[#2a2a2a] bg-white/5 p-1">
               <button
-                className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`border-none px-3 py-1.5 text-xs font-medium transition-colors ${
                   previewMode === "raw"
                     ? "bg-white/20 shadow-sm text-white"
                     : "text-white/60 hover:text-white"
@@ -431,7 +431,7 @@ export function AgentSpecBuilder() {
                 Raw
               </button>
               <button
-                className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`border-none px-3 py-1.5 text-xs font-medium transition-colors ${
                   previewMode === "preview"
                     ? "bg-white/20 shadow-sm text-white"
                     : "text-white/60 hover:text-white"
@@ -443,14 +443,14 @@ export function AgentSpecBuilder() {
               </button>
             </div>
             <button
-              className="rounded-lg bg-white/10 px-3 py-2 text-sm font-medium text-white hover:bg-white/20"
+              className="border-none bg-white/10 px-3 py-2 text-sm font-medium text-white hover:bg-white/20"
               onClick={copy}
               type="button"
             >
               Copy
             </button>
             <button
-              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/10"
+              className="border-none border border-[#2a2a2a] bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/10"
               onClick={copyShareLink}
               type="button"
               title="Copy a shareable link that includes the current inputs"
@@ -458,7 +458,7 @@ export function AgentSpecBuilder() {
               Share
             </button>
             <button
-              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/10"
+              className="border-none border border-[#2a2a2a] bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/10"
               onClick={() =>
                 downloadText(
                   `${(input.appName || "agent-spec")
@@ -476,12 +476,12 @@ export function AgentSpecBuilder() {
         </div>
 
         {toast ? (
-          <div className="mt-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70">
+          <div className="mt-3 border-none border border-[#2a2a2a] bg-white/5 px-3 py-2 text-sm text-white/70">
             {toast}
           </div>
         ) : null}
 
-        <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3">
+        <div className="mt-4 border-none border border-[#2a2a2a] bg-white/5 p-3">
           <div className="flex items-center justify-between gap-3">
             <div className="text-sm font-medium text-white">Spec lint</div>
             <div className="text-xs text-white/60">
@@ -510,11 +510,11 @@ export function AgentSpecBuilder() {
         </div>
 
         {previewMode === "raw" ? (
-          <pre className="mt-4 max-h-[60vh] overflow-auto rounded-xl border border-white/10 bg-zinc-950 p-4 text-xs leading-5 text-zinc-100">
+          <pre className="mt-4 max-h-[60vh] overflow-auto border-none border border-[#2a2a2a] bg-zinc-950 p-4 text-xs leading-5 text-zinc-100">
             <code>{md}</code>
           </pre>
         ) : (
-          <div className="mt-4 max-h-[60vh] overflow-auto rounded-xl border border-white/10 bg-white p-4 prose prose-sm prose-zinc max-w-none">
+          <div className="mt-4 max-h-[60vh] overflow-auto border-none border border-[#2a2a2a] bg-white p-4 prose prose-sm prose-zinc max-w-none">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{md}</ReactMarkdown>
           </div>
         )}
@@ -542,7 +542,7 @@ function Field(props: {
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
         placeholder={props.placeholder}
-        className="h-10 rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white placeholder-white/40 outline-none ring-white/20 focus:ring-2"
+        className="h-10 border-none border border-[#2a2a2a] bg-white/5 px-3 text-sm text-white placeholder-white/40 outline-none ring-white/20 focus:ring-2"
       />
     </label>
   );
@@ -563,7 +563,7 @@ function TextArea(props: {
         onChange={(e) => props.onChange(e.target.value)}
         placeholder={props.placeholder}
         rows={props.rows ?? 4}
-        className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 outline-none ring-white/20 focus:ring-2"
+        className="border-none border border-[#2a2a2a] bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 outline-none ring-white/20 focus:ring-2"
       />
     </label>
   );

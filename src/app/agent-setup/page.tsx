@@ -22,7 +22,7 @@ export default async function AgentSetupPage({
           This page is meant to be opened by an Agent/automation via a QR code.
         </p>
 
-        <div className="mt-8 space-y-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+        <div className="mt-8 space-y-4 border-none border border-[#2a2a2a] bg-white/[0.02] p-6">
           <div>
             <div className="text-sm font-medium text-white/80">Important</div>
             <ul className="mt-2 list-disc space-y-2 pl-5 text-sm text-white/60">
@@ -39,7 +39,7 @@ export default async function AgentSetupPage({
           <div>
             <div className="text-sm font-medium text-white/80">Your Agent token</div>
             {token ? (
-              <pre className="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/80">
+              <pre className="mt-2 overflow-x-auto border-none border border-[#2a2a2a] bg-black/30 p-3 text-xs text-white/80">
                 {token}
               </pre>
             ) : (
@@ -54,14 +54,14 @@ export default async function AgentSetupPage({
             <div className="mt-2 space-y-3 text-sm text-white/60">
               <div>
                 <div className="text-xs text-white/40">Get latest experiments</div>
-                <pre className="mt-1 overflow-x-auto rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/80">
+                <pre className="mt-1 overflow-x-auto border-none border border-[#2a2a2a] bg-black/30 p-3 text-xs text-white/80">
 {`curl -H "Authorization: Bearer ${token || '<TOKEN>'}" \\
   ${'${ORIGIN}'}/api/agent/latest`}
                 </pre>
               </div>
               <div>
                 <div className="text-xs text-white/40">Post a comment (1 per experiment)</div>
-                <pre className="mt-1 overflow-x-auto rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/80">
+                <pre className="mt-1 overflow-x-auto border-none border border-[#2a2a2a] bg-black/30 p-3 text-xs text-white/80">
 {`curl -X POST -H "Authorization: Bearer ${token || '<TOKEN>'}" \\
   -H "Content-Type: application/json" \\
   -d '{"slug":"2026-02-13-agent-spec-builder","body":"Hello from agent"}' \\

@@ -207,10 +207,10 @@ export default function CommentsHistoryPage() {
             <button
               onClick={loadComments}
               disabled={refreshing}
-              className="flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10px] text-white/50 hover:border-white/20 disabled:opacity-40"
+              className="flex items-center gap-1.5 border-none border border-[#2a2a2a] px-2.5 py-1 text-[10px] text-white/50 hover:border-white/20 disabled:opacity-40"
               title={realtimeStatus === 'connected' ? 'Connected via realtime. Click to refresh.' : realtimeStatus === 'connecting' ? 'Connecting...' : 'Realtime disconnected. Click to refresh.'}
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${
+              <span className={`h-1.5 w-1.5 border-none ${
                 realtimeStatus === 'connected' ? 'bg-green-400' :
                 realtimeStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
                 'bg-red-400'
@@ -225,11 +225,11 @@ export default function CommentsHistoryPage() {
         {loading ? (
           <div className="mt-8 text-sm text-white/50">Loading...</div>
         ) : comments.length === 0 ? (
-          <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.02] p-6 text-center">
+          <div className="mt-8 border-none border border-[#2a2a2a] bg-white/[0.02] p-6 text-center">
             <div className="text-sm text-white/60">No comments yet.</div>
             <Link
               href="/"
-              className="mt-3 inline-block rounded-full border border-white/15 px-4 py-2 text-xs text-white/80 hover:border-white/25"
+              className="mt-3 inline-block border-none border border-[#2a2a2a] px-4 py-2 text-xs text-white/80 hover:border-white/25"
             >
               Browse Experiments
             </Link>
@@ -239,7 +239,7 @@ export default function CommentsHistoryPage() {
             {comments.map((comment) => (
               <div
                 key={comment.id}
-                className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                className="border-none border border-[#2a2a2a] bg-white/[0.03] p-4"
               >
                 <div className="flex items-center justify-between gap-3 text-[11px] text-white/40">
                   <Link

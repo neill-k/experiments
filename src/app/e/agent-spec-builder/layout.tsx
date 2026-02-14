@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Experiments",
-  description: "Daily shipped prototypes. Click one to view and leave comments.",
+  title: "Agent Spec Builder",
+  description: "Generate an implementable agentic system spec as Markdown.",
 };
 
 export default function RootLayout({

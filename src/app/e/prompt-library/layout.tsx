@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Experiments",
-  description: "Daily shipped prototypes. Click one to view and leave comments.",
+  title: "Prompt Library & Playground",
+  description: "Organize, version, and test prompts for LLM applications",
 };
 
 export default function RootLayout({

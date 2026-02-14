@@ -141,7 +141,7 @@ export function AccountContent() {
 
   return (
     <>
-      <section className="mt-6 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <section className="mt-6 border-none border border-[#2a2a2a] bg-white/[0.02] p-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-white/80">Profile</h2>
           <Link
@@ -152,7 +152,7 @@ export function AccountContent() {
           </Link>
         </div>
         <div className="mt-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white">
+          <div className="flex h-10 w-10 items-center justify-center border-none bg-white/10 text-white">
             {email?.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -162,14 +162,14 @@ export function AccountContent() {
         </div>
       </section>
 
-      <section className="mt-6 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <section className="mt-6 border-none border border-[#2a2a2a] bg-white/[0.02] p-4">
         <h2 className="text-sm font-medium text-white/80">Your Agents</h2>
         <p className="mt-1 text-xs text-white/50">
           Agents (bots) that can comment on experiments on your behalf.
         </p>
 
         {/* Create Agent UI */}
-        <div className="mt-4 rounded-lg border border-white/10 bg-black/30 p-3">
+        <div className="mt-4 border-none border border-[#2a2a2a] bg-black/30 p-3">
           <div className="flex flex-wrap items-end gap-3">
             <div className="min-w-[160px] flex-1">
               <label className="block text-[11px] text-white/50">Agent name (optional)</label>
@@ -178,21 +178,21 @@ export function AccountContent() {
                 value={agentLabel}
                 onChange={(e) => setAgentLabel(e.target.value)}
                 placeholder="My Bot"
-                className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
+                className="mt-1 w-full border-none border border-[#2a2a2a] bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
               />
             </div>
             <button
               onClick={createAgent}
               disabled={creating}
-              className="rounded-lg border border-white/15 px-4 py-2 text-xs text-white/80 hover:border-white/25 disabled:opacity-40"
+              className="border-none border border-[#2a2a2a] px-4 py-2 text-xs text-white/80 hover:border-white/25 disabled:opacity-40"
             >
               {creating ? 'Creating...' : 'Create Agent'}
             </button>
           </div>
           
           {qrDataUrl && (
-            <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-white/10 pt-4">
-              <div className="h-[180px] w-[180px] overflow-hidden rounded-xl border border-white/10 bg-black/30">
+            <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-[#2a2a2a] pt-4">
+              <div className="h-[180px] w-[180px] overflow-hidden border-none border border-[#2a2a2a] bg-black/30">
                 <img src={qrDataUrl} alt="Agent setup QR" className="h-full w-full" />
               </div>
               <div className="min-w-[200px] flex-1 space-y-2">
@@ -224,7 +224,7 @@ export function AccountContent() {
             {agents.map((agent) => (
               <div
                 key={agent.id}
-                className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-3"
+                className="flex items-center justify-between border-none border border-[#2a2a2a] bg-white/5 p-3"
               >
                 <div>
                   <div className="text-sm text-white">
@@ -244,7 +244,7 @@ export function AccountContent() {
                   <button
                     onClick={() => revokeAgent(agent.id)}
                     disabled={revoking === agent.id}
-                    className="rounded-lg border border-white/10 px-3 py-1 text-xs text-white/70 hover:border-white/20 disabled:opacity-40"
+                    className="border-none border border-[#2a2a2a] px-3 py-1 text-xs text-white/70 hover:border-white/20 disabled:opacity-40"
                   >
                     {revoking === agent.id ? 'Revoking...' : 'Revoke'}
                   </button>
@@ -255,12 +255,12 @@ export function AccountContent() {
         )}
       </section>
 
-      <section className="mt-6 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <section className="mt-6 border-none border border-[#2a2a2a] bg-white/[0.02] p-4">
         <h2 className="text-sm font-medium text-white/80">Danger Zone</h2>
         <div className="mt-3">
           <button
             onClick={() => getSupabase().auth.signOut()}
-            className="rounded-lg border border-red-500/30 px-4 py-2 text-xs text-red-400 hover:bg-red-500/10"
+            className="border-none border border-red-500/30 px-4 py-2 text-xs text-red-400 hover:bg-red-500/10"
           >
             Sign out
           </button>

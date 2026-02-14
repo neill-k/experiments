@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #050507;
-  --fg: rgba(255, 255, 255, 0.92);
+  --bg: #08080a;
+  --fg: #ebebeb;
+  --muted: #aaa;
+  --border: #2a2a2a;
 }
 
 html,
@@ -16,7 +18,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Full-screen sparse rainbow gradient + grain shimmer */
+/* Full-screen sparse rainbow gradient - animated */
 body::before {
   content: "";
   position: fixed;
@@ -28,8 +30,26 @@ body::before {
     radial-gradient(65rem 65rem at 70% 85%, rgba(120, 255, 180, 0.08), transparent 60%),
     radial-gradient(75rem 75rem at 20% 85%, rgba(255, 210, 120, 0.07), transparent 60%);
   filter: saturate(0.9) contrast(1.05);
+  animation: gradient-shift 30s ease-in-out infinite;
+  background-size: 200% 200%;
 }
 
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 25%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 75%;
+  }
+}
+
+/* Grain overlay */
 body::after {
   content: "";
   position: fixed;
@@ -52,6 +72,7 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body::before,
   body::after {
     animation: none;
   }

@@ -30,7 +30,7 @@ export function AuthButtons() {
       <div className="flex items-center gap-3">
         <Link
           href="/account"
-          className="rounded-full border border-white/15 px-3 py-1 text-xs text-white/80 hover:border-white/25"
+          className="border-none border border-[#2a2a2a] px-3 py-1 text-xs text-white/80 hover:border-white/25"
         >
           Account
         </Link>
@@ -41,14 +41,14 @@ export function AuthButtons() {
   return (
     <div className="flex items-center gap-2">
       <button
-        className="rounded-full border border-white/15 px-3 py-1 text-xs text-white/80 hover:border-white/25"
+        className="border-none border border-[#2a2a2a] px-3 py-1 text-xs text-white/80 hover:border-white/25"
         onClick={() => signIn('github')}
         disabled={loading}
       >
         Sign in with GitHub
       </button>
       <button
-        className="rounded-full border border-white/15 px-3 py-1 text-xs text-white/80 hover:border-white/25"
+        className="border-none border border-[#2a2a2a] px-3 py-1 text-xs text-white/80 hover:border-white/25"
         onClick={() => signIn('google')}
         disabled={loading}
       >

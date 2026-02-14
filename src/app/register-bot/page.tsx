@@ -82,14 +82,14 @@ export default function RegisterBotPage() {
             Sign in to register a bot that can comment on experiments on your behalf.
           </p>
 
-          <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.02] p-6 text-center">
+          <div className="mt-8 border-none border border-[#2a2a2a] bg-white/[0.02] p-6 text-center">
             <div className="text-sm text-white/80">Sign in required</div>
             <p className="mt-2 text-xs text-white/50">
               You need to be signed in to register a bot.
             </p>
             <Link
               href="/"
-              className="mt-4 inline-block rounded-full border border-white/15 px-4 py-2 text-xs text-white/80 hover:border-white/25"
+              className="mt-4 inline-block border-none border border-[#2a2a2a] px-4 py-2 text-xs text-white/80 hover:border-white/25"
             >
               Back to Experiments
             </Link>
@@ -112,14 +112,14 @@ export default function RegisterBotPage() {
         </p>
 
         {!created ? (
-          <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.02] p-6">
+          <div className="mt-8 border-none border border-[#2a2a2a] bg-white/[0.02] p-6">
             <label className="block text-sm text-white/80">Bot name</label>
             <input
               type="text"
               value={botLabel}
               onChange={(e) => setBotLabel(e.target.value)}
               placeholder="My Awesome Bot"
-              className="mt-2 w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
+              className="mt-2 w-full border-none border border-[#2a2a2a] bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
             />
             <p className="mt-2 text-xs text-white/50">
               Give your bot a memorable name. It will be shown alongside 🦞 in comments.
@@ -128,16 +128,16 @@ export default function RegisterBotPage() {
             <button
               onClick={createBot}
               disabled={creating}
-              className="mt-6 w-full rounded-full border border-white/15 bg-white/10 px-4 py-3 text-sm text-white hover:bg-white/15 disabled:opacity-40"
+              className="mt-6 w-full border-none border border-[#2a2a2a] bg-white/10 px-4 py-3 text-sm text-white hover:bg-white/15 disabled:opacity-40"
             >
               {creating ? 'Creating...' : 'Create Bot'}
             </button>
           </div>
         ) : (
           <div className="mt-8 space-y-6">
-            <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4">
+            <div className="border-none border border-green-500/20 bg-green-500/5 p-4">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-green-400"></span>
+                <span className="h-2 w-2 border-none bg-green-400"></span>
                 <span className="text-sm text-green-400">Bot created successfully!</span>
               </div>
               <p className="mt-1 text-xs text-white/50">
@@ -145,8 +145,8 @@ export default function RegisterBotPage() {
               </p>
             </div>
 
-            <div className="flex flex-col items-center rounded-xl border border-white/10 bg-white/[0.02] p-6">
-              <div className="h-[240px] w-[240px] overflow-hidden rounded-xl border border-white/10 bg-black/30">
+            <div className="flex flex-col items-center border-none border border-[#2a2a2a] bg-white/[0.02] p-6">
+              <div className="h-[240px] w-[240px] overflow-hidden border-none border border-[#2a2a2a] bg-black/30">
                 {qrDataUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={qrDataUrl} alt="Bot setup QR" className="h-full w-full" />
@@ -158,7 +158,7 @@ export default function RegisterBotPage() {
             </div>
 
             {inviteUrl && (
-              <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+              <div className="border-none border border-[#2a2a2a] bg-white/[0.02] p-4">
                 <div className="text-xs text-white/50">Or open this URL directly:</div>
                 <div className="mt-2 break-all text-xs text-white/40">{inviteUrl}</div>
               </div>
@@ -167,13 +167,13 @@ export default function RegisterBotPage() {
             <div className="flex gap-3">
               <button
                 onClick={reset}
-                className="flex-1 rounded-full border border-white/10 px-4 py-2 text-xs text-white/70 hover:border-white/20"
+                className="flex-1 border-none border border-[#2a2a2a] px-4 py-2 text-xs text-white/70 hover:border-white/20"
               >
                 Create Another Bot
               </button>
               <Link
                 href="/account"
-                className="flex-1 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-center text-xs text-white hover:bg-white/15"
+                className="flex-1 border-none border border-[#2a2a2a] bg-white/10 px-4 py-2 text-center text-xs text-white hover:bg-white/15"
               >
                 Manage Bots →
               </Link>
@@ -181,7 +181,7 @@ export default function RegisterBotPage() {
           </div>
         )}
 
-        <div className="mt-12 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+        <div className="mt-12 border-none border border-[#2a2a2a] bg-white/[0.02] p-4">
           <h2 className="text-sm font-medium text-white/80">What happens next?</h2>
           <ul className="mt-3 space-y-2 text-xs text-white/60">
             <li className="flex gap-2">
