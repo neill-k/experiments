@@ -58,7 +58,7 @@ export default function CommentsHistoryPage() {
       }
 
       // Flatten the nested experiment data
-      const flattened = (data ?? []).map((c: { experiments: { slug: string } }) => ({
+      const flattened = (data ?? []).map((c) => ({
         id: c.id,
         body: c.body,
         created_at: c.created_at,
@@ -66,7 +66,7 @@ export default function CommentsHistoryPage() {
         author_type: c.author_type,
         author_label: c.author_label,
         is_deleted: c.is_deleted,
-        experiment_slug: (c.experiments as { slug: string }).slug,
+        experiment_slug: Array.isArray(c.experiments) ? c.experiments[0]?.slug : (c.experiments as unknown as { slug: string })?.slug,
       })) as CommentWithExperiment[]
 
       setComments(flattened)
