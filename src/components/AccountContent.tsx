@@ -18,6 +18,7 @@ export function AccountContent() {
   const [email, setEmail] = useState<string | null>(null)
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const [revoking, setRevoking] = useState<string | null>(null)
 
   // Agent creation state
@@ -44,6 +45,7 @@ export function AccountContent() {
       return
     }
     async function loadAgents() {
+      setRefreshing(true)
       const { data } = await getSupabase()
         .from('agents')
         .select('id, label, created_at, last_used_at, revoked_at')
@@ -51,8 +53,23 @@ export function AccountContent() {
         .order('created_at', { ascending: false })
       setAgents((data ?? []) as Agent[])
       setLoading(false)
+      setRefreshing(false)
     }
     loadAgents()
+  }, [userId])
+
+  // Poll for agent updates every 10 seconds
+  useEffect(() => {
+    if (!userId) return
+    const interval = setInterval(async () => {
+      const { data } = await getSupabase()
+        .from('agents')
+        .select('id, label, created_at, last_used_at, revoked_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+      setAgents((data ?? []) as Agent[])
+    }, 10000)
+    return () => clearInterval(interval)
   }, [userId])
 
   async function revokeAgent(agentId: string) {

@@ -21,6 +21,7 @@ export default function CommentsHistoryPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [comments, setComments] = useState<CommentWithExperiment[]>([])
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
 
   useEffect(() => {
@@ -39,6 +40,9 @@ export default function CommentsHistoryPage() {
       return
     }
     async function loadComments() {
+      if (!userId) return
+
+      setRefreshing(true)
       const { data, error } = await getSupabase()
         .from('comments')
         .select(`
@@ -57,6 +61,7 @@ export default function CommentsHistoryPage() {
       if (error) {
         console.error(error)
         setLoading(false)
+        setRefreshing(false)
         return
       }
 
@@ -74,8 +79,16 @@ export default function CommentsHistoryPage() {
 
       setComments(flattened)
       setLoading(false)
+      setRefreshing(false)
     }
     loadComments()
+  }, [userId])
+
+  // Poll for updates every 10 seconds
+  useEffect(() => {
+    if (!userId) return
+    const interval = setInterval(() => loadComments(), 10000)
+    return () => clearInterval(interval)
   }, [userId])
 
   async function deleteComment(commentId: string) {
@@ -121,9 +134,18 @@ export default function CommentsHistoryPage() {
         </Link>
 
         <h1 className="mt-6 text-2xl font-semibold text-white">Comment History</h1>
-        <p className="mt-2 text-sm text-white/60">
-          All your comments across experiments.
-        </p>
+        <div className="mt-2 flex items-center justify-between">
+          <p className="text-sm text-white/60">
+            All your comments across experiments.
+          </p>
+          <button
+            onClick={() => loadComments()}
+            disabled={refreshing}
+            className="text-xs text-white/50 hover:text-white/80 disabled:opacity-40"
+          >
+            {refreshing ? 'Refreshing...' : 'Refresh'}
+          </button>
+        </div>
 
         {loading ? (
           <div className="mt-8 text-sm text-white/50">Loading...</div>
