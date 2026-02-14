@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { getSupabase } from '@/lib/supabase/client'
 
@@ -22,7 +22,9 @@ export default function CommentsHistoryPage() {
   const [comments, setComments] = useState<CommentWithExperiment[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const [realtimeStatus, setRealtimeStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting')
   const [deleting, setDeleting] = useState<string | null>(null)
+  const experimentsRef = useRef<Map<string, string>>(new Map())
 
   useEffect(() => {
     getSupabase().auth.getUser().then(({ data }) => {
@@ -34,61 +36,115 @@ export default function CommentsHistoryPage() {
     return () => sub.subscription.unsubscribe()
   }, [])
 
+  async function loadExperiments() {
+    const { data } = await getSupabase()
+      .from('experiments')
+      .select('id, slug')
+    
+    if (data) {
+      const expMap = new Map<string, string>()
+      data.forEach(e => expMap.set(e.id, e.slug))
+      experimentsRef.current = expMap
+    }
+  }
+
+  async function loadComments() {
+    if (!userId) return
+
+    setRefreshing(true)
+    
+    // Load experiments for slug lookup
+    await loadExperiments()
+
+    const { data, error } = await getSupabase()
+      .from('comments')
+      .select('id, body, created_at, user_id, author_type, author_label, is_deleted, experiment_id')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error(error)
+      setLoading(false)
+      setRefreshing(false)
+      return
+    }
+
+    // Flatten the data with experiment slug lookup
+    const flattened = (data ?? []).map((c) => ({
+      id: c.id,
+      body: c.body,
+      created_at: c.created_at,
+      user_id: c.user_id,
+      author_type: c.author_type,
+      author_label: c.author_label,
+      is_deleted: c.is_deleted,
+      experiment_slug: experimentsRef.current.get(c.experiment_id) ?? 'unknown',
+    })) as CommentWithExperiment[]
+
+    setComments(flattened)
+    setLoading(false)
+    setRefreshing(false)
+  }
+
   useEffect(() => {
     if (!userId) {
       setLoading(false)
       return
     }
-    async function loadComments() {
-      if (!userId) return
-
-      setRefreshing(true)
-      const { data, error } = await getSupabase()
-        .from('comments')
-        .select(`
-          id,
-          body,
-          created_at,
-          user_id,
-          author_type,
-          author_label,
-          is_deleted,
-          experiments!inner(slug)
-        `)
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.error(error)
-        setLoading(false)
-        setRefreshing(false)
-        return
-      }
-
-      // Flatten the nested experiment data
-      const flattened = (data ?? []).map((c) => ({
-        id: c.id,
-        body: c.body,
-        created_at: c.created_at,
-        user_id: c.user_id,
-        author_type: c.author_type,
-        author_label: c.author_label,
-        is_deleted: c.is_deleted,
-        experiment_slug: Array.isArray(c.experiments) ? c.experiments[0]?.slug : (c.experiments as unknown as { slug: string })?.slug,
-      })) as CommentWithExperiment[]
-
-      setComments(flattened)
-      setLoading(false)
-      setRefreshing(false)
-    }
     loadComments()
   }, [userId])
 
-  // Poll for updates every 10 seconds
+  // Fallback polling every 10 seconds (in case realtime fails)
   useEffect(() => {
     if (!userId) return
     const interval = setInterval(() => loadComments(), 10000)
     return () => clearInterval(interval)
+  }, [userId])
+
+  // Subscribe to real-time comment updates for user's comments
+  useEffect(() => {
+    if (!userId) return
+
+    setRealtimeStatus('connecting')
+    const channel = getSupabase()
+      .channel('user-comments')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'comments',
+          filter: `user_id=eq.${userId}`,
+        },
+        () => {
+          // New comment by user - refresh the list
+          loadComments()
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'comments',
+          filter: `user_id=eq.${userId}`,
+        },
+        () => {
+          // Comment updated - refresh the list
+          loadComments()
+        }
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          setRealtimeStatus('connected')
+        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          setRealtimeStatus('disconnected')
+        }
+      })
+
+    return () => {
+      getSupabase().removeChannel(channel)
+    }
   }, [userId])
 
   async function deleteComment(commentId: string) {
@@ -133,18 +189,37 @@ export default function CommentsHistoryPage() {
           ← Account
         </Link>
 
-        <h1 className="mt-6 text-2xl font-semibold text-white">Comment History</h1>
-        <div className="mt-2 flex items-center justify-between">
-          <p className="text-sm text-white/60">
-            All your comments across experiments.
-          </p>
-          <button
-            onClick={() => loadComments()}
-            disabled={refreshing}
-            className="text-xs text-white/50 hover:text-white/80 disabled:opacity-40"
-          >
-            {refreshing ? 'Refreshing...' : 'Refresh'}
-          </button>
+        <div className="mt-6 flex items-end justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold text-white">Comment History</h1>
+            <p className="mt-1 text-sm text-white/60">
+              All your comments across experiments.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={loadComments}
+              disabled={refreshing}
+              className="text-xs text-white/50 hover:text-white/80 disabled:opacity-40"
+            >
+              {refreshing ? 'Refreshing...' : 'Refresh'}
+            </button>
+            <button
+              onClick={loadComments}
+              disabled={refreshing}
+              className="flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10px] text-white/50 hover:border-white/20 disabled:opacity-40"
+              title={realtimeStatus === 'connected' ? 'Connected via realtime. Click to refresh.' : realtimeStatus === 'connecting' ? 'Connecting...' : 'Realtime disconnected. Click to refresh.'}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${
+                realtimeStatus === 'connected' ? 'bg-green-400' :
+                realtimeStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
+                'bg-red-400'
+              }`} />
+              {realtimeStatus === 'connected' ? 'Live' : 
+               realtimeStatus === 'connecting' ? 'Connecting' : 
+               'Polling'}
+            </button>
+          </div>
         </div>
 
         {loading ? (
