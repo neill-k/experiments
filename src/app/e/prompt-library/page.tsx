@@ -704,7 +704,7 @@ export default function PromptLibrary() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-500">
+            <div className="flex-1 flex items-center justify-center text-gray-500 p-4">
               <div className="text-center">
                 <p className="text-lg mb-2">No prompt selected</p>
                 <p className="text-sm">Create a new prompt or load a preset to get started</p>
@@ -716,15 +716,15 @@ export default function PromptLibrary() {
 
       {/* New Prompt Modal */}
       {showNewPrompt && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-gray-900 rounded-xl p-6 w-96 border border-gray-800">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#08080a] p-4 md:p-6 w-full max-w-sm border border-[#2a2a2a]">
             <h2 className="text-lg font-semibold mb-4">New Prompt</h2>
             <input
               type="text"
               value={newPromptName}
               onChange={(e) => setNewPromptName(e.target.value)}
               placeholder="Prompt name..."
-              className="w-full px-4 py-2 bg-gray-950 border border-gray-800 rounded-lg mb-4 outline-none focus:border-blue-600"
+              className="w-full px-4 py-3 bg-[#08080a] border border-[#2a2a2a] mb-4 outline-none focus:border-blue-600 min-h-[44px]"
               autoFocus
             />
             <div className="flex gap-2">
@@ -733,14 +733,14 @@ export default function PromptLibrary() {
                   setShowNewPrompt(false);
                   setNewPromptName('');
                 }}
-                className="flex-1 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                className="flex-1 px-4 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] transition-colors min-h-[44px] flex items-center justify-center"
               >
                 Cancel
               </button>
               <button
                 onClick={() => newPromptName && createPrompt(newPromptName)}
                 disabled={!newPromptName}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+                className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-h-[44px] flex items-center justify-center"
               >
                 Create
               </button>
