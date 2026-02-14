@@ -7,6 +7,7 @@ import { getSupabase } from '@/lib/supabase/client'
 type Experiment = {
   slug: string
   created_at: string
+  comment_count?: number
 }
 
 export default function Home() {
@@ -20,7 +21,27 @@ export default function Home() {
         .select('slug, created_at')
         .order('created_at', { ascending: false })
         .limit(20)
-      setExperiments(data ?? [])
+      
+      // Get comment counts for each experiment
+      if (data && data.length > 0) {
+        const { data: commentCounts } = await getSupabase()
+          .from('comments')
+          .select('experiment_id, experiments!inner(slug)')
+        
+        const countsBySlug: Record<string, number> = {}
+        commentCounts?.forEach((c: any) => {
+          const slug = c.experiments?.slug
+          if (slug) countsBySlug[slug] = (countsBySlug[slug] || 0) + 1
+        })
+        
+        const experimentsWithCounts = data.map(exp => ({
+          ...exp,
+          comment_count: countsBySlug[exp.slug] || 0
+        }))
+        setExperiments(experimentsWithCounts)
+      } else {
+        setExperiments(data ?? [])
+      }
       setLoading(false)
     }
     loadExperiments()
@@ -29,8 +50,8 @@ export default function Home() {
   const examples = experiments.length > 0 
     ? experiments 
     : [
-        { slug: '2026-02-13-agent-spec-builder', created_at: new Date().toISOString() },
-        { slug: 'demo-synthwave-typography', created_at: new Date().toISOString() }
+        { slug: '2026-02-13-agent-spec-builder', created_at: new Date().toISOString(), comment_count: 0 },
+        { slug: 'demo-synthwave-typography', created_at: new Date().toISOString(), comment_count: 0 }
       ]
   
   return (
@@ -51,7 +72,14 @@ export default function Home() {
                 href={`/e/${exp.slug}`}
                 className="block rounded-xl border border-white/10 bg-white/[0.02] p-4 text-white/80 hover:border-white/20"
               >
-                <div className="text-sm font-medium">{exp.slug}</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-medium">{exp.slug}</div>
+                  {(exp.comment_count ?? 0) > 0 && (
+                    <span className="flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white/70">
+                      💬 {exp.comment_count}
+                    </span>
+                  )}
+                </div>
                 <div className="mt-1 text-xs text-white/50">{new Date(exp.created_at).toLocaleDateString()} · Open →</div>
               </Link>
             ))}
