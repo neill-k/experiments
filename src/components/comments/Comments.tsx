@@ -22,6 +22,7 @@ export function Comments({ slug }: { slug: string }) {
   const [userId, setUserId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
+  const [realtimeStatus, setRealtimeStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting')
   const commentsEndRef = useRef<HTMLDivElement>(null)
 
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
@@ -60,6 +61,7 @@ export function Comments({ slug }: { slug: string }) {
   async function refresh() {
     if (!experimentId) return
     
+    setRefreshing(true)
     const { data, error } = await getSupabase()
       .from('comments')
       .select('id, body, created_at, user_id, agent_id, author_type, author_label, is_deleted')
@@ -68,10 +70,12 @@ export function Comments({ slug }: { slug: string }) {
 
     if (error) {
       console.error(error)
+      setRefreshing(false)
       return
     }
     
     setComments((data ?? []) as CommentRow[])
+    setRefreshing(false)
   }
 
   useEffect(() => {
@@ -83,6 +87,7 @@ export function Comments({ slug }: { slug: string }) {
   useEffect(() => {
     if (!experimentId) return
 
+    setRealtimeStatus('connecting')
     const channel = getSupabase()
       .channel(`comments:${experimentId}`)
       .on(
@@ -119,17 +124,23 @@ export function Comments({ slug }: { slug: string }) {
           )
         }
       )
-      .subscribe()
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          setRealtimeStatus('connected')
+        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          setRealtimeStatus('disconnected')
+        }
+      })
 
     return () => {
       getSupabase().removeChannel(channel)
     }
   }, [experimentId])
 
-  // Fallback polling every 30s (in case realtime fails)
+  // Fallback polling every 10s (in case realtime fails)
   useEffect(() => {
     if (!experimentId) return
-    const interval = setInterval(() => refresh(), 30000)
+    const interval = setInterval(() => refresh(), 10000)
     return () => clearInterval(interval)
   }, [experimentId])
 
@@ -196,14 +207,32 @@ export function Comments({ slug }: { slug: string }) {
       <div className="flex items-end justify-between gap-4">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-medium tracking-wide text-white/80">Comments</h2>
-          {refreshing && (
+          {refreshing ? (
             <span className="flex h-2 w-2">
               <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-white/40 opacity-75"></span>
               <span className="relative inline-flex h-2 w-2 rounded-full bg-white/40"></span>
             </span>
-          )}
+          ) : null}
         </div>
-        {!userId ? <div className="text-xs text-white/50">Sign in to comment.</div> : null}
+        <div className="flex items-center gap-3">
+          {/* Realtime status indicator */}
+          <button
+            onClick={refresh}
+            disabled={refreshing}
+            className="flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10px] text-white/50 hover:border-white/20 disabled:opacity-40"
+            title={realtimeStatus === 'connected' ? 'Connected via realtime. Click to refresh.' : realtimeStatus === 'connecting' ? 'Connecting...' : 'Realtime disconnected. Click to refresh.'}
+          >
+            <span className={`h-1.5 w-1.5 rounded-full ${
+              realtimeStatus === 'connected' ? 'bg-green-400' :
+              realtimeStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
+              'bg-red-400'
+            }`} />
+            {realtimeStatus === 'connected' ? 'Live' : 
+             realtimeStatus === 'connecting' ? 'Connecting' : 
+             'Polling'}
+          </button>
+          {!userId ? <div className="text-xs text-white/50">Sign in to comment.</div> : null}
+        </div>
       </div>
 
       {userId ? (
