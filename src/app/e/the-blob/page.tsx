@@ -294,19 +294,30 @@ export default function TheBlobPage(){
       const ord:Record<ET,number>={gravity:0,baby:1,shy:2,mimic:3,dreamer:4,player:5};
       const sorted=[...a].sort((a,b)=>(ord[a.t]||0)-(ord[b.t]||0));
 
+      // ── Additive blending for bioluminescent glow ──
+      ctx.globalCompositeOperation='lighter';
+
       for(const e of sorted){
+        // Reduce effective alpha for additive mode to prevent blowout
+        const glowAl=e.al*.65;
+
         // Trail — soft glowing trails that fade slowly
         for(let i=1;i<e.tr.length;i++){const t=i/e.tr.length;
-          const trAlpha=t*.2*e.al;
+          const trAlpha=t*.15*glowAl;
           const trGrad=ctx.createRadialGradient(e.tr[i].x,e.tr[i].y,0,e.tr[i].x,e.tr[i].y,e.r*t*.4);
-          trGrad.addColorStop(0,hsl(e.h,50,65,trAlpha));trGrad.addColorStop(1,hsl(e.h,50,65,0));
+          trGrad.addColorStop(0,hsl(e.h,50,55,trAlpha));trGrad.addColorStop(1,hsl(e.h,50,55,0));
           ctx.beginPath();ctx.fillStyle=trGrad;
           ctx.arc(e.tr[i].x,e.tr[i].y,e.r*t*.4,0,Math.PI*2);ctx.fill();}
 
+        // Bloom ring — large, soft outer glow for bioluminescent bloom
+        const bloom=ctx.createRadialGradient(e.x,e.y,e.r*.3,e.x,e.y,e.r*4);
+        bloom.addColorStop(0,hsl(e.h,55,50,glowAl*.1));bloom.addColorStop(.4,hsl(e.h,50,45,glowAl*.05));bloom.addColorStop(1,hsl(e.h,50,40,0));
+        ctx.beginPath();ctx.fillStyle=bloom;ctx.arc(e.x,e.y,e.r*4,0,Math.PI*2);ctx.fill();
+
         // Outer glow — soft bioluminescent aura
-        const gr=ctx.createRadialGradient(e.x,e.y,e.r*.5,e.x,e.y,e.r*3);
-        gr.addColorStop(0,hsl(e.h,60,60,e.al*.12));gr.addColorStop(.5,hsl(e.h,50,55,e.al*.05));gr.addColorStop(1,hsl(e.h,50,50,0));
-        ctx.beginPath();ctx.fillStyle=gr;ctx.arc(e.x,e.y,e.r*3,0,Math.PI*2);ctx.fill();
+        const gr=ctx.createRadialGradient(e.x,e.y,e.r*.5,e.x,e.y,e.r*2.5);
+        gr.addColorStop(0,hsl(e.h,60,55,glowAl*.15));gr.addColorStop(.5,hsl(e.h,50,50,glowAl*.07));gr.addColorStop(1,hsl(e.h,50,45,0));
+        ctx.beginPath();ctx.fillStyle=gr;ctx.arc(e.x,e.y,e.r*2.5,0,Math.PI*2);ctx.fill();
 
         ctx.save();
 
@@ -316,12 +327,12 @@ export default function TheBlobPage(){
           for(let i=0;i<ns.length;i++){const c=ns[i],nx=ns[(i+1)%ns.length];ctx.quadraticCurveTo(c.x,c.y,(c.x+nx.x)/2,(c.y+nx.y)/2);}
           ctx.closePath();
           const bg=ctx.createRadialGradient(e.x-e.r*.3,e.y-e.r*.3,0,e.x,e.y,e.r*1.2);
-          bg.addColorStop(0,hsl(e.h,45,70,e.al*.9));bg.addColorStop(.5,hsl(e.h,50,55,e.al*.8));bg.addColorStop(1,hsl(e.h,40,40,e.al*.6));
+          bg.addColorStop(0,hsl(e.h,45,60,glowAl*.8));bg.addColorStop(.5,hsl(e.h,50,48,glowAl*.7));bg.addColorStop(1,hsl(e.h,40,35,glowAl*.5));
           ctx.fillStyle=bg;ctx.fill();
           // Soft inner highlight
           ctx.beginPath();const hx=e.x-e.r*.2,hy=e.y-e.r*.25;
           const sg=ctx.createRadialGradient(hx,hy,0,hx,hy,e.r*.45);
-          sg.addColorStop(0,`rgba(255,255,255,${.18*e.al})`);sg.addColorStop(1,'rgba(255,255,255,0)');
+          sg.addColorStop(0,`rgba(255,255,255,${.14*glowAl})`);sg.addColorStop(1,'rgba(255,255,255,0)');
           ctx.fillStyle=sg;ctx.arc(hx,hy,e.r*.45,0,Math.PI*2);ctx.fill();}
 
         // Type decorations
@@ -331,7 +342,7 @@ export default function TheBlobPage(){
           if(dAlpha<.8){
             for(let ring=0;ring<2;ring++){
               const rr=e.r*(1.5+ring*.6)*(1-dAlpha);
-              ctx.beginPath();ctx.strokeStyle=hsl(e.h,40,65,.15*(1-dAlpha));ctx.lineWidth=2;
+              ctx.beginPath();ctx.strokeStyle=hsl(e.h,40,55,.12*(1-dAlpha));ctx.lineWidth=2;
               ctx.arc(e.x,e.y,rr,0,Math.PI*2);ctx.stroke();}
           }
           // Gentle floating sparkles
@@ -340,14 +351,14 @@ export default function TheBlobPage(){
             const sx=e.x+Math.cos(sa)*e.r*1.3;
             const sy=e.y+Math.sin(sa)*e.r*1.3;
             const sp=ctx.createRadialGradient(sx,sy,0,sx,sy,3);
-            sp.addColorStop(0,hsl(e.h,40,80,.3*e.al));sp.addColorStop(1,hsl(e.h,40,80,0));
+            sp.addColorStop(0,hsl(e.h,40,70,.2*glowAl));sp.addColorStop(1,hsl(e.h,40,70,0));
             ctx.beginPath();ctx.fillStyle=sp;ctx.arc(sx,sy,3,0,Math.PI*2);ctx.fill();}}
 
         if(e.t==='gravity'){
           const p=e.pu||0;
           for(let ring=0;ring<3;ring++){
             const rr=e.r*(1.3+ring*.35+Math.sin(p+ring)*.08);
-            ctx.beginPath();ctx.strokeStyle=hsl(e.h,35,55,.1-ring*.025);ctx.lineWidth=1.5;
+            ctx.beginPath();ctx.strokeStyle=hsl(e.h,35,50,.08-ring*.02);ctx.lineWidth=1.5;
             ctx.arc(e.x,e.y,rr,0,Math.PI*2);ctx.stroke();}}
 
         if(e.t==='shy'){
@@ -358,7 +369,7 @@ export default function TheBlobPage(){
             const sx=e.x+Math.cos(sa)*sd2;
             const sy=e.y+Math.sin(sa)*sd2;
             const sp=ctx.createRadialGradient(sx,sy,0,sx,sy,2);
-            sp.addColorStop(0,hsl(e.h,35,80,.2*e.al));sp.addColorStop(1,hsl(e.h,35,80,0));
+            sp.addColorStop(0,hsl(e.h,35,70,.15*glowAl));sp.addColorStop(1,hsl(e.h,35,70,0));
             ctx.beginPath();ctx.fillStyle=sp;ctx.arc(sx,sy,2,0,Math.PI*2);ctx.fill();}}
 
         if(e.t==='baby'){
@@ -366,11 +377,14 @@ export default function TheBlobPage(){
           const pulse=Math.sin(now*.003+e.sd*10)*.3+.7;
           const br=e.r*1.5*pulse;
           const bp=ctx.createRadialGradient(e.x,e.y,0,e.x,e.y,br);
-          bp.addColorStop(0,hsl(e.h,40,70,.08));bp.addColorStop(1,hsl(e.h,40,70,0));
+          bp.addColorStop(0,hsl(e.h,40,60,.06));bp.addColorStop(1,hsl(e.h,40,60,0));
           ctx.beginPath();ctx.fillStyle=bp;ctx.arc(e.x,e.y,br,0,Math.PI*2);ctx.fill();}
 
         ctx.restore();
       }
+
+      // ── Reset to normal blending for HUD ──
+      ctx.globalCompositeOperation='source-over';
 
       // HUD — subtle
       ctx.font='11px monospace';ctx.fillStyle='rgba(255,255,255,0.12)';

@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     template: "%s — Experiments",
   },
   description: "Daily shipped prototypes. Click one to explore.",
+  themeColor: "#08080a",
   openGraph: {
     type: "website",
     siteName: "Experiments",
@@ -47,10 +48,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ colorScheme: "dark" }}>
       <body
         className={`${instrumentSerif.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[var(--bg)] focus:text-[var(--fg)] focus:border focus:border-[var(--fg)] focus:text-sm focus:font-[family-name:var(--font-mono)]"
+        >
+          Skip to content
+        </a>
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a] bg-[#08080a]/80 backdrop-blur-md">
           <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
             <Link
@@ -62,9 +69,9 @@ export default function RootLayout({
             <AuthButtons />
           </div>
         </nav>
-        <div className="pt-14">
+        <main id="main-content" className="pt-14">
           {children}
-        </div>
+        </main>
       </body>
     </html>
   );

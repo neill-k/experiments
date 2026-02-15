@@ -1,4 +1,3 @@
-import JSZip from "jszip";
 import { generateSpecMarkdown, type SpecInput, EVAL_CATEGORIES } from "./spec";
 import { generatePromptPackMarkdown } from "./prompt-pack";
 
@@ -269,6 +268,7 @@ ${constraintsChecklist}
 
 /** Download a ZIP containing SPEC.md, EVAL_PLAN.md, and SECURITY_NOTES.md */
 export async function downloadExportPack(input: SpecInput): Promise<void> {
+  const { default: JSZip } = await import("jszip");
   const slug = slugify(input.appName);
   const zip = new JSZip();
 

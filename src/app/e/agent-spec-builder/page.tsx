@@ -11,8 +11,22 @@ import { evaluateQuality, qualityLabel, qualityColor, qualityTextColor } from "@
 import { downloadExportPack } from "@/app/e/agent-spec-builder/lib/export-pack";
 import { downloadPromptPack } from "@/app/e/agent-spec-builder/lib/prompt-pack";
 import { getStats, trackEvent, trackSession, formatStatsSummary, type LocalStats } from "@/app/e/agent-spec-builder/lib/local-stats";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import dynamic from "next/dynamic";
+
+const MarkdownPreview = dynamic(
+  () => import("@/app/e/agent-spec-builder/components/MarkdownPreview"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse space-y-2">
+        <div className="h-4 w-3/4 rounded bg-zinc-800" />
+        <div className="h-4 w-1/2 rounded bg-zinc-800" />
+        <div className="h-4 w-5/6 rounded bg-zinc-800" />
+        <div className="h-4 w-2/3 rounded bg-zinc-800" />
+      </div>
+    ),
+  }
+);
 
 const AUTOSAVE_KEY = "agent-spec-builder-autosave";
 const AUTOSAVE_DEBOUNCE_MS = 500;
@@ -911,7 +925,7 @@ export default function Home() {
             </pre>
           ) : (
             <div className="mt-4 max-h-[60vh] overflow-auto border border-[#2a2a2a] bg-[#08080a] p-4 prose prose-sm prose-invert max-w-none break-words">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{md}</ReactMarkdown>
+              <MarkdownPreview>{md}</MarkdownPreview>
             </div>
           )}
 
