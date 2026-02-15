@@ -3,8 +3,10 @@
 :root {
   --bg: #08080a;
   --fg: #ebebeb;
-  --muted: #aaa;
-  --border: #2a2a2a;
+  --muted: #888;
+  --border: #1a1a1a;
+  --border-hover: #333;
+  --accent: rgba(255, 255, 255, 0.06);
 }
 
 html,
@@ -16,6 +18,15 @@ body {
   background: var(--bg);
   color: var(--fg);
   overflow-x: hidden;
+  font-family: var(--font-body), "DM Sans", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), "Instrument Serif", serif;
+}
+
+code, pre, .mono {
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
 }
 
 /* Full-screen sparse rainbow gradient - animated */
@@ -56,7 +67,7 @@ body::after {
   inset: -30%;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.06;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
   mix-blend-mode: screen;
   animation: grain-drift 18s linear infinite;
@@ -71,9 +82,40 @@ body::after {
   }
 }
 
+/* Card hover glow */
+.experiment-card {
+  position: relative;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.experiment-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  opacity: 0;
+  background: linear-gradient(135deg, rgba(240, 90, 255, 0.15), rgba(90, 190, 255, 0.15));
+  transition: opacity 0.3s ease;
+}
+
+.experiment-card:hover::before {
+  opacity: 1;
+}
+
+.experiment-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   body::before,
   body::after {
     animation: none;
+  }
+  .experiment-card {
+    transition: none;
+  }
+  .experiment-card::before {
+    transition: none;
   }
 }

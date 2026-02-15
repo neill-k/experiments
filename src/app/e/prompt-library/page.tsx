@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Comments } from '@/components/comments/Comments';
+import Link from 'next/link';
 
 interface Prompt {
   id: string;
@@ -783,6 +785,11 @@ export default function PromptLibrary() {
           </div>
         </div>
       )}
+
+      {/* Comments */}
+      <div className="mx-auto max-w-3xl px-4 pb-12">
+        <Comments slug="prompt-library" />
+      </div>
     </div>
   );
 }

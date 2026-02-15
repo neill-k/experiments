@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { generateSpecMarkdown, type SpecInput, type ToolContract } from "@/app/e/agent-spec-builder/lib/spec";
 import { presets } from "@/app/e/agent-spec-builder/lib/presets";
+import { Comments } from '@/components/comments/Comments';
+import Link from 'next/link';
 import { decodeSpecState, encodeSpecState } from "@/app/e/agent-spec-builder/lib/share";
 import { lintSpec } from "@/app/e/agent-spec-builder/lib/lint";
 import ReactMarkdown from "react-markdown";
@@ -569,6 +571,11 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Comments */}
+      <div className="mx-auto max-w-3xl px-4 pb-12">
+        <Comments slug="agent-spec-builder" />
+      </div>
     </div>
   );
 }
