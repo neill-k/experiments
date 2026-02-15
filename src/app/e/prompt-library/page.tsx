@@ -10,6 +10,7 @@ interface Prompt {
   versions: { content: string; timestamp: number }[];
   createdAt: number;
   updatedAt: number;
+  isPinned: boolean;
 }
 
 interface Settings {
@@ -152,7 +153,7 @@ function substituteVariables(content: string, values: Record<string, string>): s
 }
 
 function serializePrompt(prompt: Omit<Prompt, 'id' | 'versions' | 'createdAt' | 'updatedAt'>): string {
-  const data = JSON.stringify({ name: prompt.name, content: prompt.content, variables: prompt.variables });
+  const data = JSON.stringify({ name: prompt.name, content: prompt.content, variables: prompt.variables, isPinned: prompt.isPinned });
   return btoa(encodeURIComponent(data));
 }
 
@@ -184,12 +185,18 @@ export default function PromptLibrary() {
 
   const selectedPrompt = prompts.find((p) => p.id === selectedId);
 
-  // Filter prompts by search query
-  const filteredPrompts = prompts.filter((p) => {
-    if (!searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    return p.name.toLowerCase().includes(query) || p.content.toLowerCase().includes(query);
-  });
+  // Filter prompts by search query and sort pinned first
+  const filteredPrompts = prompts
+    .filter((p) => {
+      if (!searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase();
+      return p.name.toLowerCase().includes(query) || p.content.toLowerCase().includes(query);
+    })
+    .sort((a, b) => {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return b.updatedAt - a.updatedAt;
+    });
 
   const createPrompt = (name: string, content: string = DEFAULT_PROMPT) => {
     const variables = extractVariables(content);
@@ -201,6 +208,7 @@ export default function PromptLibrary() {
       versions: [{ content, timestamp: Date.now() }],
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      isPinned: false,
     };
     setPrompts([...prompts, newPrompt]);
     setSelectedId(newPrompt.id);
@@ -229,8 +237,13 @@ export default function PromptLibrary() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setPrompts(parsed);
-        if (parsed.length > 0) setSelectedId(parsed[0].id);
+        // Handle backwards compatibility - add isPinned to old prompts
+        const withPinned = parsed.map((p: Prompt) => ({
+          ...p,
+          isPinned: p.isPinned || false,
+        }));
+        setPrompts(withPinned);
+        if (withPinned.length > 0) setSelectedId(withPinned[0].id);
       } catch {
         // ignore
       }
@@ -281,6 +294,7 @@ export default function PromptLibrary() {
       variables,
       versions: [...selectedPrompt.versions, { content: editContent, timestamp: Date.now() }],
       updatedAt: Date.now(),
+      isPinned: selectedPrompt.isPinned,
     };
     setPrompts(prompts.map((p) => (p.id === selectedId ? updated : p)));
   };
@@ -293,6 +307,13 @@ export default function PromptLibrary() {
     } else if (filtered.length === 0) {
       setSelectedId(null);
     }
+  };
+
+  const togglePin = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPrompts(prompts.map((p) => 
+      p.id === id ? { ...p, isPinned: !p.isPinned } : p
+    ));
   };
 
   const loadPreset = (preset: typeof PRESETS[0]) => {
@@ -321,6 +342,7 @@ export default function PromptLibrary() {
       name: selectedPrompt.name,
       content: selectedPrompt.content,
       variables: selectedPrompt.variables,
+      isPinned: selectedPrompt.isPinned,
     });
     const shareUrl = `${window.location.origin}${window.location.pathname}?s=${encoded}`;
     navigator.clipboard.writeText(shareUrl);
@@ -444,20 +466,33 @@ export default function PromptLibrary() {
 
           <div className="flex-1 overflow-y-auto p-2">
             {filteredPrompts.map((prompt) => (
-              <button
+              <div
                 key={prompt.id}
-                onClick={() => {
-                  setSelectedId(prompt.id);
-                  setSidebarOpen(false);
-                }}
-                className={`w-full text-left px-3 py-3 mb-1 text-sm truncate transition-colors min-h-[44px] flex items-center ${
-                  selectedId === prompt.id
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:bg-[#2a2a2a]'
-                }`}
+                className="w-full group"
               >
-                {prompt.name}
-              </button>
+                <button
+                  onClick={() => {
+                    setSelectedId(prompt.id);
+                    setSidebarOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-3 mb-1 text-sm truncate transition-colors min-h-[44px] flex items-center justify-between ${
+                    selectedId === prompt.id
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-400 hover:bg-[#2a2a2a]'
+                  }`}
+                >
+                  <span className="truncate">{prompt.name}</span>
+                  <button
+                    onClick={(e) => togglePin(prompt.id, e)}
+                    className={`ml-2 text-sm px-1 transition-colors ${
+                      prompt.isPinned ? 'text-yellow-400' : 'text-gray-600 opacity-0 group-hover:opacity-100 hover:text-yellow-300'
+                    }`}
+                    title={prompt.isPinned ? 'Unpin' : 'Pin to top'}
+                  >
+                    {prompt.isPinned ? '★' : '☆'}
+                  </button>
+                </button>
+              </div>
             ))}
           </div>
 
