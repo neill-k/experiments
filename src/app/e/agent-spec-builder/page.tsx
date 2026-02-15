@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { generateSpecMarkdown, type SpecInput, type ToolContract, type EvalCase, EVAL_CATEGORIES } from "@/app/e/agent-spec-builder/lib/spec";
 import { presets } from "@/app/e/agent-spec-builder/lib/presets";
 import { Comments } from '@/components/comments/Comments';
@@ -13,6 +13,9 @@ import { downloadPromptPack } from "@/app/e/agent-spec-builder/lib/prompt-pack";
 import { getStats, trackEvent, trackSession, formatStatsSummary, type LocalStats } from "@/app/e/agent-spec-builder/lib/local-stats";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
+const AUTOSAVE_KEY = "agent-spec-builder-autosave";
+const AUTOSAVE_DEBOUNCE_MS = 500;
 
 const empty: SpecInput = {
   appName: "Agent Spec",
@@ -49,6 +52,10 @@ export default function Home() {
   const [input, setInput] = useState<SpecInput>(empty);
   const [toast, setToast] = useState<string>("");
   const [stats, setStats] = useState<LocalStats | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSavedRef = useRef<string>("");
+  const isInitialLoadRef = useRef(true);
 
   // Track session on mount
   useEffect(() => {
@@ -66,15 +73,74 @@ export default function Home() {
       const decoded = decodeSpecState(shared);
       if (decoded) {
         setInput(decoded);
+        lastSavedRef.current = JSON.stringify(decoded);
+        isInitialLoadRef.current = false;
         return;
       }
     }
 
     const exampleId = params.get("example");
-    if (!exampleId) return;
-    const preset = presets.find((p) => p.id === exampleId);
-    if (preset) setInput(preset.data);
+    if (exampleId) {
+      const preset = presets.find((p) => p.id === exampleId);
+      if (preset) {
+        setInput(preset.data);
+        lastSavedRef.current = JSON.stringify(preset.data);
+        isInitialLoadRef.current = false;
+        return;
+      }
+    }
+
+    // Restore from localStorage autosave if no URL params
+    try {
+      const saved = localStorage.getItem(AUTOSAVE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as SpecInput;
+        setInput(parsed);
+        lastSavedRef.current = saved;
+        setSaveStatus("saved");
+      }
+    } catch {
+      // ignore corrupt data
+    }
+    isInitialLoadRef.current = false;
   }, []);
+
+  // Debounced auto-save to localStorage
+  useEffect(() => {
+    if (isInitialLoadRef.current) return;
+
+    const serialized = JSON.stringify(input);
+    if (serialized === lastSavedRef.current) return;
+
+    setSaveStatus("saving");
+
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(AUTOSAVE_KEY, serialized);
+        lastSavedRef.current = serialized;
+        setSaveStatus("saved");
+      } catch {
+        // localStorage full or unavailable
+      }
+    }, AUTOSAVE_DEBOUNCE_MS);
+
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [input]);
+
+  // beforeunload warning if there are unsaved changes
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      const serialized = JSON.stringify(input);
+      if (serialized !== lastSavedRef.current) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [input]);
 
   const md = useMemo(() => generateSpecMarkdown(input), [input]);
   const findings = useMemo(() => lintSpec(input), [input]);
@@ -124,8 +190,13 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-3">
+            {saveStatus !== "idle" && (
+              <span className="text-[11px] text-zinc-600 tabular-nums transition-opacity duration-300">
+                {saveStatus === "saving" ? "Saving…" : "Saved"}
+              </span>
+            )}
             <a
-              href="/examples"
+              href="/e/agent-spec-builder/examples"
               className="text-sm text-zinc-500 hover:text-[#ebebeb]"
             >
               Examples

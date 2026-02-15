@@ -4,19 +4,21 @@ import { presets } from "@/app/e/agent-spec-builder/lib/presets";
 
 export default function ExamplesPage() {
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <header className="border-b border-zinc-200 bg-white">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
+      <header className="border-b border-[var(--border)]">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
           <div>
-            <h1 className="text-lg font-semibold tracking-tight">Example gallery</h1>
-            <p className="text-sm text-zinc-600">
+            <h1 className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight">
+              Example gallery
+            </h1>
+            <p className="font-[family-name:var(--font-body)] text-sm text-[var(--muted)]">
               Click an example to load a full spec into the builder.
             </p>
           </div>
 
           <Link
-            href="/"
-            className="rounded-none-lg border border-zinc-200 bg-white px-3 py-2 text-sm hover:bg-zinc-50"
+            href="/e/agent-spec-builder"
+            className="border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--muted)] hover:border-[var(--border-hover)] hover:text-[var(--fg)]"
           >
             Back to builder
           </Link>
@@ -28,30 +30,34 @@ export default function ExamplesPage() {
           {presets.map((p) => (
             <Link
               key={p.id}
-              href={`/?example=${encodeURIComponent(p.id)}`}
-              className="group rounded-none-xl border border-zinc-200 bg-white p-4 hover:border-zinc-300"
+              href={`/e/agent-spec-builder?example=${encodeURIComponent(p.id)}`}
+              className="group border border-[var(--border)] bg-[var(--bg)] p-4 hover:border-[var(--border-hover)]"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-sm font-semibold">{p.label}</div>
-                  <div className="mt-1 text-sm text-zinc-600">
+                  <div className="font-[family-name:var(--font-body)] text-sm font-semibold">
+                    {p.label}
+                  </div>
+                  <div className="font-[family-name:var(--font-body)] mt-1 text-sm text-[var(--muted)]">
                     {p.description}
                   </div>
                 </div>
-                <div className="text-xs text-zinc-500 group-hover:text-zinc-700">
+                <div className="text-xs text-[var(--muted)] group-hover:text-[var(--fg)]">
                   Load →
                 </div>
               </div>
 
-              <div className="mt-3 rounded-none-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-700">
-                <div className="font-medium text-zinc-800">Objective</div>
+              <div className="mt-3 border border-[var(--border)] bg-[var(--accent)] px-3 py-2 text-xs text-zinc-400">
+                <div className="font-[family-name:var(--font-body)] font-medium text-zinc-300">
+                  Objective
+                </div>
                 <div className="mt-1 line-clamp-3">{p.data.objective}</div>
               </div>
             </Link>
           ))}
         </div>
 
-        <div className="mt-6 text-xs text-zinc-600">
+        <div className="mt-6 text-xs text-[var(--muted)]">
           Note: examples are pre-filled locally in your browser. Nothing is sent
           to a server.
         </div>

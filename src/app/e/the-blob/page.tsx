@@ -5,6 +5,8 @@ import { useEffect, useRef, useCallback } from 'react';
 const MAX_ENT = 20, SPAWN_MS = 12000, BABY_P = 0.03, TRAIL_N = 50, NCNT = 14;
 const SK = 0.05, SD = 0.88, CE = 0.03, STILL_MS = 3000, STILL_TH = 2;
 const PARTICLE_COUNT = 60;
+const REDUCED_PARTICLE_COUNT = 20;
+const REDUCED_MOTION_SPEED = 0.4; // multiplier for animation speeds
 
 interface V { x: number; y: number }
 interface N { x: number; y: number; vx: number; vy: number; a: number; r: number }
@@ -64,6 +66,8 @@ export default function TheBlobPage(){
   const pt=useRef(0);
   const dm=useRef({w:0,h:0});
   const particles=useRef<Particle[]>([]);
+  const reducedMotion=useRef(false);
+  const dpr=useRef(1);
 
   const spawnF=useCallback((w:number,h:number,now:number)=>{
     const a=es.current;
@@ -88,14 +92,38 @@ export default function TheBlobPage(){
 
   useEffect(()=>{
     const c=cv.current;if(!c)return;const ctx=c.getContext('2d')!;
-    let w=innerWidth,h=innerHeight;c.width=w;c.height=h;dm.current={w,h};
+
+    // Detect prefers-reduced-motion
+    const motionMQ=window.matchMedia('(prefers-reduced-motion: reduce)');
+    reducedMotion.current=motionMQ.matches;
+    const onMotionChange=(e:MediaQueryListEvent)=>{
+      reducedMotion.current=e.matches;
+      // Adjust particle count on change
+      const targetCount=e.matches?REDUCED_PARTICLE_COUNT:PARTICLE_COUNT;
+      if(particles.current.length>targetCount)particles.current.length=targetCount;
+      else while(particles.current.length<targetCount)particles.current.push(mkParticle(w,h));
+    };
+    motionMQ.addEventListener('change',onMotionChange);
+
+    // DPR-aware canvas sizing
+    dpr.current=Math.min(window.devicePixelRatio||1,3); // cap at 3x for perf
+    let w=innerWidth,h=innerHeight;
+    c.width=w*dpr.current;c.height=h*dpr.current;
+    ctx.scale(dpr.current,dpr.current);
+    dm.current={w,h};
     es.current=[mkE('player',w/2,h/2,35,PALETTE.cyan,performance.now())];
     ms.current={x:w/2,y:h/2};lm.current={x:w/2,y:h/2};
     ls.current=performance.now();pt.current=performance.now();
-    // Init ambient particles
-    particles.current=Array.from({length:PARTICLE_COUNT},()=>mkParticle(w,h));
+    // Init ambient particles (reduced count if needed)
+    const initParticleCount=reducedMotion.current?REDUCED_PARTICLE_COUNT:PARTICLE_COUNT;
+    particles.current=Array.from({length:initParticleCount},()=>mkParticle(w,h));
 
-    const onR=()=>{w=innerWidth;h=innerHeight;c.width=w;c.height=h;};
+    const onR=()=>{
+      w=innerWidth;h=innerHeight;
+      dpr.current=Math.min(window.devicePixelRatio||1,3);
+      c.width=w*dpr.current;c.height=h*dpr.current;
+      ctx.setTransform(dpr.current,0,0,dpr.current,0,0);
+    };
     const onM=(e:MouseEvent)=>{ms.current={x:e.clientX,y:e.clientY};mi.current=true;};
     const onT=(e:TouchEvent)=>{if(e.touches[0]){ms.current={x:e.touches[0].clientX,y:e.touches[0].clientY};mi.current=true;}};
     const onC=(ev:Event)=>{
@@ -116,7 +144,10 @@ export default function TheBlobPage(){
     let raf=0;
     function tick(now:number){
       raf=requestAnimationFrame(tick);
-      const dt=Math.min((now-pt.current)/1000,0.05);pt.current=now;
+      const rawDt=Math.min((now-pt.current)/1000,0.05);
+      const rm=reducedMotion.current;
+      const dt=rm?rawDt*REDUCED_MOTION_SPEED:rawDt;
+      pt.current=now;
       const a=es.current,m=ms.current,md=d2(m,lm.current);
 
       if(now-ls.current>SPAWN_MS){spawnF(w,h,now);ls.current=now;}
@@ -348,16 +379,17 @@ export default function TheBlobPage(){
     }
     raf=requestAnimationFrame(tick);
     return()=>{cancelAnimationFrame(raf);removeEventListener('resize',onR);removeEventListener('mousemove',onM);removeEventListener('touchmove',onT);
-      c.removeEventListener('click',onC);c.removeEventListener('touchstart',onTS);};
+      c.removeEventListener('click',onC);c.removeEventListener('touchstart',onTS);
+      motionMQ.removeEventListener('change',onMotionChange);};
   },[spawnF,spawnB]);
 
   return(
-    <div style={{position:'fixed',inset:0,background:'#060a12',overflow:'hidden'}}>
+    <div style={{position:'fixed',inset:0,background:'#060a12',overflow:'hidden',userSelect:'none',WebkitUserSelect:'none'}}>
       <style>{`
         .blob-touch{display:none}
         @media(hover:none)and(pointer:coarse){.blob-mouse{display:none}.blob-touch{display:inline}}
       `}</style>
-      <canvas ref={cv} style={{display:'block',width:'100%',height:'100%',cursor:'none'}}/>
+      <canvas ref={cv} style={{display:'block',width:'100%',height:'100%',cursor:'none',touchAction:'manipulation'}}/>
       <div style={{position:'absolute',top:72,left:16,fontFamily:'monospace',fontSize:11,color:'rgba(255,255,255,0.18)',pointerEvents:'none',lineHeight:1.6}}>
         <div style={{color:'rgba(120,200,220,0.4)',fontSize:14,letterSpacing:3,marginBottom:4}}>THE BLOB</div>
         <div className="blob-instructions"><span className="blob-mouse">move cursor · click to split</span><span className="blob-touch">drag to move · tap to split</span></div>
