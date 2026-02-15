@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { AuthButtons } from "@/components/AuthButtons";
+import { NavBar } from "@/components/NavBar";
 import Link from "next/link";
 import "./globals.css";
 
@@ -58,18 +59,8 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a] bg-[#08080a]/80 backdrop-blur-md">
-          <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
-            <Link
-              href="/"
-              className="font-[family-name:var(--font-display)] text-lg text-white/90 hover:text-white transition-colors"
-            >
-              Experiments
-            </Link>
-            <AuthButtons />
-          </div>
-        </nav>
-        <main id="main-content" className="pt-14">
+        <NavBar />
+        <main id="main-content" className="pt-20">
           {children}
         </main>
       </body>
