@@ -10,6 +10,7 @@ import { lintSpec } from "@/app/e/agent-spec-builder/lib/lint";
 import { evaluateQuality, qualityLabel, qualityColor, qualityTextColor } from "@/app/e/agent-spec-builder/lib/quality";
 import { downloadExportPack } from "@/app/e/agent-spec-builder/lib/export-pack";
 import { downloadPromptPack } from "@/app/e/agent-spec-builder/lib/prompt-pack";
+import { getStats, trackEvent, trackSession, formatStatsSummary, type LocalStats } from "@/app/e/agent-spec-builder/lib/local-stats";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -47,6 +48,13 @@ function downloadText(filename: string, text: string) {
 export default function Home() {
   const [input, setInput] = useState<SpecInput>(empty);
   const [toast, setToast] = useState<string>("");
+  const [stats, setStats] = useState<LocalStats | null>(null);
+
+  // Track session on mount
+  useEffect(() => {
+    const s = trackSession();
+    setStats(s);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -76,6 +84,7 @@ export default function Home() {
   async function copy() {
     try {
       await navigator.clipboard.writeText(md);
+      setStats(trackEvent("copies"));
       setToast("Copied to clipboard.");
     } catch {
       setToast("Copy failed (browser blocked clipboard). Use manual copy.");
@@ -91,6 +100,7 @@ export default function Home() {
       params.set("s", encodeSpecState(input));
       const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
       await navigator.clipboard.writeText(url);
+      setStats(trackEvent("shares"));
       setToast("Share link copied.");
     } catch {
       setToast("Couldn\'t create share link (too long or browser blocked clipboard).");
@@ -148,7 +158,10 @@ export default function Home() {
                 <button
                   key={p.id}
                   className="border border-[#2a2a2a] bg-[#08080a] px-3 py-1 text-sm text-zinc-400 hover:bg-[#2a2a2a] hover:text-[#ebebeb]"
-                  onClick={() => setInput(p.data)}
+                  onClick={() => {
+                    setInput(p.data);
+                    setStats(trackEvent("presetLoads"));
+                  }}
                   type="button"
                 >
                   {p.label}
@@ -736,15 +749,16 @@ export default function Home() {
               </button>
               <button
                 className="border border-[#2a2a2a] bg-[#08080a] px-3 py-2 text-sm font-medium text-zinc-400 hover:bg-[#2a2a2a] hover:text-[#ebebeb]"
-                onClick={() =>
+                onClick={() => {
                   downloadText(
                     `${(input.appName || "agent-spec")
                       .toLowerCase()
                       .replace(/[^a-z0-9]+/g, "-")
                       .replace(/(^-|-$)/g, "")}.md`,
                     md
-                  )
-                }
+                  );
+                  setStats(trackEvent("downloads"));
+                }}
                 type="button"
               >
                 Download .md
@@ -754,6 +768,7 @@ export default function Home() {
                 onClick={async () => {
                   try {
                     await downloadExportPack(input);
+                    setStats(trackEvent("exports"));
                     setToast("Export pack downloaded.");
                   } catch {
                     setToast("Failed to generate export pack.");
@@ -770,6 +785,7 @@ export default function Home() {
                 onClick={() => {
                   try {
                     downloadPromptPack(input);
+                    setStats(trackEvent("promptPacks"));
                     setToast("Prompt pack downloaded.");
                   } catch {
                     setToast("Failed to generate prompt pack.");
@@ -842,9 +858,15 @@ export default function Home() {
             Built with Next.js + TypeScript + Tailwind. Client-only. No tracking.
           </div>
           <div>
-            Tip: Add a small set of "golden" eval cases early; it prevents agent
+            Tip: Add a small set of &ldquo;golden&rdquo; eval cases early; it prevents agent
             projects from drifting.
           </div>
+          {stats && formatStatsSummary(stats) && (
+            <div className="mt-1 flex items-center gap-1.5 text-zinc-700">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-zinc-700" />
+              <span>Your local usage: {formatStatsSummary(stats)}</span>
+            </div>
+          )}
         </div>
       </footer>
 
