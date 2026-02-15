@@ -1,0 +1,29 @@
+/* Gravity Sandpark - Custom Styles */
+:root {
+  --cyan: #00ffff;
+  --pink: #ff00ff;
+  --green: #00ff00;
+}
+
+* {
+  border-radius: 0 !important;
+}
+
+canvas {
+  display: block;
+  cursor: crosshair;
+}
+
+/* Override any default rounded corners on inputs/buttons */
+input[type="range"] {
+  border-radius: 0;
+}
+
+button {
+  border-radius: 0 !important;
+}
+
+/* Hide default p5 loading */
+canvas + canvas {
+  display: none;
+}

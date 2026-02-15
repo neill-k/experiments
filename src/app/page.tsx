@@ -4,6 +4,12 @@ import Link from 'next/link'
 
 const experiments = [
   {
+    slug: 'gravity-sandpark',
+    date: '2026-02-15',
+    title: 'Gravity Sandpark',
+    description: 'Chaos physics sandbox — drop balls, boxes, confetti. Add wind, explosions, and trails.'
+  },
+  {
     slug: 'prompt-library',
     date: '2026-02-14',
     title: 'Prompt Library',
