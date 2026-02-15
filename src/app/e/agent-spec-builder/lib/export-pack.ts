@@ -1,5 +1,6 @@
 import JSZip from "jszip";
 import { generateSpecMarkdown, type SpecInput, EVAL_CATEGORIES } from "./spec";
+import { generatePromptPackMarkdown } from "./prompt-pack";
 
 function slugify(name: string): string {
   return (name || "agent-spec")
@@ -277,6 +278,7 @@ export async function downloadExportPack(input: SpecInput): Promise<void> {
   folder.file("SPEC.md", generateSpecMarkdown(input));
   folder.file("EVAL_PLAN.md", generateEvalPlan(input));
   folder.file("SECURITY_NOTES.md", generateSecurityNotes(input));
+  folder.file("PROMPTS.md", generatePromptPackMarkdown(input));
 
   // Add a small README for the pack
   folder.file(
@@ -288,7 +290,8 @@ export async function downloadExportPack(input: SpecInput): Promise<void> {
       `|------|-------------|\n` +
       `| SPEC.md | Full agent specification |\n` +
       `| EVAL_PLAN.md | Evaluation plan with test case templates |\n` +
-      `| SECURITY_NOTES.md | Security review checklist and threat model |\n\n` +
+      `| SECURITY_NOTES.md | Security review checklist and threat model |\n` +
+      `| PROMPTS.md | Test prompts tailored to the spec for validation |\n\n` +
       `## Usage\n\n` +
       `1. Review and fill in the (TBD) sections\n` +
       `2. Share with your team for feedback\n` +

@@ -9,6 +9,7 @@ import { decodeSpecState, encodeSpecState } from "@/app/e/agent-spec-builder/lib
 import { lintSpec } from "@/app/e/agent-spec-builder/lib/lint";
 import { evaluateQuality, qualityLabel, qualityColor, qualityTextColor } from "@/app/e/agent-spec-builder/lib/quality";
 import { downloadExportPack } from "@/app/e/agent-spec-builder/lib/export-pack";
+import { downloadPromptPack } from "@/app/e/agent-spec-builder/lib/prompt-pack";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -763,6 +764,22 @@ export default function Home() {
                 title="Download a ZIP with SPEC.md, EVAL_PLAN.md, and SECURITY_NOTES.md"
               >
                 Export Pack (.zip)
+              </button>
+              <button
+                className="border border-amber-700/50 bg-amber-950/30 px-3 py-2 text-sm font-medium text-amber-400 hover:bg-amber-900/40 hover:text-amber-300"
+                onClick={() => {
+                  try {
+                    downloadPromptPack(input);
+                    setToast("Prompt pack downloaded.");
+                  } catch {
+                    setToast("Failed to generate prompt pack.");
+                  }
+                  window.setTimeout(() => setToast(""), 2500);
+                }}
+                type="button"
+                title="Download 5-10 realistic test prompts tailored to this spec"
+              >
+                Prompt Pack
               </button>
             </div>
           </div>
