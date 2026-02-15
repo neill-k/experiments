@@ -21,8 +21,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Experiments",
-  description: "Daily shipped prototypes. Click one to view and leave comments.",
+  metadataBase: new URL("https://experiments.neillkillgore.com"),
+  title: {
+    default: "Experiments — Neill Killgore",
+    template: "%s — Experiments",
+  },
+  description: "Daily shipped prototypes. Click one to explore.",
+  openGraph: {
+    type: "website",
+    siteName: "Experiments",
+    title: "Experiments — Neill Killgore",
+    description: "Daily shipped prototypes — interactive tools, creative canvases, and AI utilities.",
+    url: "https://experiments.neillkillgore.com",
+  },
+  twitter: {
+    card: "summary",
+    title: "Experiments — Neill Killgore",
+    description: "Daily shipped prototypes — interactive tools, creative canvases, and AI utilities.",
+  },
 };
 
 export default function RootLayout({

@@ -45,17 +45,40 @@ export function Comments({ slug }: { slug: string }) {
 
   useEffect(() => {
     ;(async () => {
-      const { data: exp, error: expErr } = await getSupabase()
+      // Try select first; insert only if missing (avoids needing UPDATE on experiments)
+      const { data: existing } = await getSupabase()
         .from('experiments')
-        .upsert({ slug }, { onConflict: 'slug' })
+        .select('id')
+        .eq('slug', slug)
+        .maybeSingle()
+
+      if (existing) {
+        setExperimentId(existing.id)
+        return
+      }
+
+      // Experiment row doesn't exist yet — create it
+      const { data: inserted, error: insErr } = await getSupabase()
+        .from('experiments')
+        .insert({ slug })
         .select('id')
         .single()
 
-      if (expErr) {
-        console.error(expErr)
+      if (insErr) {
+        // Race condition: another client may have inserted. Try select again.
+        const { data: retry } = await getSupabase()
+          .from('experiments')
+          .select('id')
+          .eq('slug', slug)
+          .maybeSingle()
+        if (retry) {
+          setExperimentId(retry.id)
+        } else {
+          console.error('Could not resolve experiment row:', insErr)
+        }
         return
       }
-      setExperimentId(exp.id)
+      setExperimentId(inserted.id)
     })()
   }, [slug])
 

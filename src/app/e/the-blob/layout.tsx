@@ -1,9 +1,21 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "The Blob — Experiments",
+  title: "The Blob",
   description:
-    "A mysterious bioluminescent ecosystem of cursor-following entities that split, merge, hunt, flee, and glitch.",
+    "A bioluminescent ecosystem of cursor-following entities that split, merge, hunt, flee, and glitch.",
+  openGraph: {
+    title: "The Blob — Experiments",
+    description:
+      "A bioluminescent ecosystem of cursor-following entities that split, merge, hunt, flee, and glitch.",
+    url: "https://experiments.neillkillgore.com/e/the-blob",
+  },
+  twitter: {
+    card: "summary",
+    title: "The Blob — Experiments",
+    description:
+      "A bioluminescent ecosystem of cursor-following entities that split, merge, hunt, flee, and glitch.",
+  },
 };
 
 export default function BlobLayout({
