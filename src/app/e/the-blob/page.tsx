@@ -82,7 +82,8 @@ export default function TheBlobPage(){
     addEventListener('resize',onR);addEventListener('mousemove',onM);
     addEventListener('touchmove',onT,{passive:true});
     c.addEventListener('click',onC);
-    c.addEventListener('touchstart',(e)=>{onT(e);onC(e);},{passive:false});
+    const onTS=(e:TouchEvent)=>{onT(e);onC(e);};
+    c.addEventListener('touchstart',onTS,{passive:false});
 
     let raf=0;
     function tick(now:number){
@@ -228,20 +229,24 @@ export default function TheBlobPage(){
       for(let y=0;y<h;y+=3)ctx.fillRect(0,y,w,1);
       // HUD
       ctx.font='11px monospace';ctx.fillStyle='rgba(255,255,255,0.2)';
-      ctx.fillText(`entities: ${a.length}`,12,h-12);
-      ctx.fillText('click/tap to split',w-130,h-12);
+      ctx.fillText(`entities: ${a.length}`,12,h-32);
+      ctx.fillText('click/tap to split',w-130,h-32);
     }
     raf=requestAnimationFrame(tick);
     return()=>{cancelAnimationFrame(raf);removeEventListener('resize',onR);removeEventListener('mousemove',onM);removeEventListener('touchmove',onT);
-      c.removeEventListener('click',onC);};
+      c.removeEventListener('click',onC);c.removeEventListener('touchstart',onTS);};
   },[spawnF,spawnB]);
 
   return(
     <div style={{position:'fixed',inset:0,background:'#0a0a0a',overflow:'hidden'}}>
+      <style>{`
+        .blob-touch{display:none}
+        @media(hover:none)and(pointer:coarse){.blob-mouse{display:none}.blob-touch{display:inline}}
+      `}</style>
       <canvas ref={cv} style={{display:'block',width:'100%',height:'100%',cursor:'none'}}/>
-      <div style={{position:'absolute',top:16,left:16,fontFamily:'monospace',fontSize:11,color:'rgba(255,255,255,0.25)',pointerEvents:'none',lineHeight:1.6}}>
+      <div style={{position:'absolute',top:72,left:16,fontFamily:'monospace',fontSize:11,color:'rgba(255,255,255,0.25)',pointerEvents:'none',lineHeight:1.6}}>
         <div style={{color:'rgba(0,255,255,0.5)',fontSize:14,letterSpacing:2,marginBottom:4}}>THE BLOB</div>
-        <div>move cursor · click to split</div>
+        <div className="blob-instructions"><span className="blob-mouse">move cursor · click to split</span><span className="blob-touch">drag to move · tap to split</span></div>
         <div style={{marginTop:8,fontSize:10,color:'rgba(255,255,255,0.15)'}}>
           <span style={{color:'#ff3300'}}>■</span> predator&ensp;
           <span style={{color:'#00ffff',opacity:.6}}>■</span> mimic&ensp;
