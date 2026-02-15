@@ -17,10 +17,10 @@ export function AuthButtons() {
     return () => sub.subscription.unsubscribe()
   }, [])
 
-  async function signIn(provider: 'github' | 'google') {
+  async function signIn() {
     setLoading(true)
     try {
-      await getSupabase().auth.signInWithOAuth({ provider })
+      await getSupabase().auth.signInWithOAuth({ provider: 'github' })
     } finally {
       setLoading(false)
     }
@@ -66,21 +66,12 @@ export function AuthButtons() {
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <button
-        className="border border-[var(--border)] px-3 py-1.5 text-xs font-[family-name:var(--font-mono)] text-white/60 hover:border-[var(--border-hover)] hover:text-white/90 transition-colors disabled:opacity-40"
-        onClick={() => signIn('github')}
-        disabled={loading}
-      >
-        GitHub
-      </button>
-      <button
-        className="border border-[var(--border)] px-3 py-1.5 text-xs font-[family-name:var(--font-mono)] text-white/60 hover:border-[var(--border-hover)] hover:text-white/90 transition-colors disabled:opacity-40"
-        onClick={() => signIn('google')}
-        disabled={loading}
-      >
-        Google
-      </button>
-    </div>
+    <button
+      className="border border-[var(--border)] bg-white/[0.04] px-4 py-1.5 text-xs font-[family-name:var(--font-mono)] text-white/80 hover:border-[var(--border-hover)] hover:bg-white/[0.08] hover:text-white transition-colors disabled:opacity-40"
+      onClick={signIn}
+      disabled={loading}
+    >
+      Sign in with GitHub
+    </button>
   )
 }

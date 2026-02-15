@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import QRCode from 'qrcode'
 import { getSupabase } from '@/lib/supabase/client'
 
 type CommentRow = {
@@ -26,8 +25,8 @@ export function Comments({ slug }: { slug: string }) {
   const commentsEndRef = useRef<HTMLDivElement>(null)
 
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const [inviteBusy, setInviteBusy] = useState(false)
+  const [copied, setCopied] = useState(false)
   const [newCommentCount, setNewCommentCount] = useState(0)
   const [deleting, setDeleting] = useState<string | null>(null)
 
@@ -101,9 +100,7 @@ export function Comments({ slug }: { slug: string }) {
           filter: `experiment_id=eq.${experimentId}`,
         },
         (payload) => {
-          // Add new comment to the list
           setComments((prev) => {
-            // Avoid duplicates
             if (prev.some((c) => c.id === payload.new.id)) return prev
             setNewCommentCount((c) => c + 1)
             return [...prev, payload.new as CommentRow]
@@ -119,7 +116,6 @@ export function Comments({ slug }: { slug: string }) {
           filter: `experiment_id=eq.${experimentId}`,
         },
         (payload) => {
-          // Update existing comment
           setComments((prev) =>
             prev.map((c) =>
               c.id === payload.new.id ? { ...c, ...payload.new } : c
@@ -151,7 +147,6 @@ export function Comments({ slug }: { slug: string }) {
   useEffect(() => {
     if (newCommentCount > 0 && commentsEndRef.current) {
       commentsEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      // Reset count after scrolling (user has seen the new comment)
       setTimeout(() => setNewCommentCount(0), 500)
     }
   }, [newCommentCount])
@@ -190,7 +185,7 @@ export function Comments({ slug }: { slug: string }) {
         .from('comments')
         .update({ is_deleted: true })
         .eq('id', commentId)
-        .eq('user_id', userId) // Only allow deleting own comments
+        .eq('user_id', userId)
       
       if (error) throw error
       await refresh()
@@ -208,7 +203,7 @@ export function Comments({ slug }: { slug: string }) {
       const { data: sessionData } = await getSupabase().auth.getSession()
       const accessToken = sessionData.session?.access_token
       if (!accessToken) {
-        alert('Sign in to generate an agent QR code.')
+        alert('Sign in to generate an agent link.')
         return
       }
 
@@ -224,23 +219,28 @@ export function Comments({ slug }: { slug: string }) {
       const json = (await res.json()) as { setupUrl?: unknown; error?: unknown }
       if (!res.ok) throw new Error(String(json?.error ?? 'Could not create invite'))
 
-      const setupUrl = String(json.setupUrl)
-      setInviteUrl(setupUrl)
-      const dataUrl = await QRCode.toDataURL(setupUrl, { margin: 1, width: 200 })
-      setQrDataUrl(dataUrl)
+      setInviteUrl(String(json.setupUrl))
+      setCopied(false)
     } catch (e) {
       console.error(e)
-      alert('Could not create QR code. Try again.')
+      alert('Could not generate agent link. Try again.')
     } finally {
       setInviteBusy(false)
     }
   }
 
+  function copyLink() {
+    if (!inviteUrl) return
+    navigator.clipboard.writeText(inviteUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
-    <section className="mt-10 border-t border-[#2a2a2a] pt-6">
+    <section className="mt-10 border-t border-[var(--border)] pt-6">
       <div className="flex items-end justify-between gap-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-medium tracking-wide text-white/80">Comments</h2>
+          <h2 className="text-sm font-[family-name:var(--font-display)] font-medium tracking-wide text-white/80">Comments</h2>
           {refreshing ? (
             <span className="flex h-2 w-2">
               <span className="absolute inline-flex h-2 w-2 animate-ping border-none bg-white/40 opacity-75"></span>
@@ -249,11 +249,10 @@ export function Comments({ slug }: { slug: string }) {
           ) : null}
         </div>
         <div className="flex items-center gap-3">
-          {/* Realtime status indicator */}
           <button
             onClick={refresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 border-none border border-[#2a2a2a] px-2.5 py-1 text-[10px] text-white/50 hover:border-white/20 disabled:opacity-40"
+            className="flex items-center gap-1.5 border-none px-2.5 py-1 text-[10px] font-[family-name:var(--font-mono)] text-white/50 hover:text-white/80 disabled:opacity-40"
             title={realtimeStatus === 'connected' ? 'Connected via realtime. Click to refresh.' : realtimeStatus === 'connecting' ? 'Connecting...' : 'Realtime disconnected. Click to refresh.'}
           >
             <span className={`h-1.5 w-1.5 border-none ${
@@ -265,65 +264,66 @@ export function Comments({ slug }: { slug: string }) {
              realtimeStatus === 'connecting' ? 'Connecting' : 
              'Polling'}
           </button>
-          {!userId ? <div className="text-xs text-white/50">Sign in to comment.</div> : null}
+          {!userId ? <div className="text-xs font-[family-name:var(--font-body)] text-white/50">Sign in to comment.</div> : null}
         </div>
       </div>
 
       {userId ? (
-        <div className="mt-4 border-none border border-[#2a2a2a] bg-white/[0.02] p-4">
-          <div className="text-sm font-medium text-white/80">
-            Want your Agent/🦞 to comment and contribute? Give them this QR code
+        <div className="mt-4 border border-[var(--border)] bg-white/[0.02] p-4">
+          <div className="text-sm font-[family-name:var(--font-display)] font-medium text-white/80">
+            Want your agent to comment here?
           </div>
-          <div className="mt-2 text-xs text-white/50">
-            The QR opens a setup page containing a token the agent can use to authenticate.
+          <div className="mt-2 text-xs font-[family-name:var(--font-body)] text-white/50">
+            Generate a one-time link your agent can use to authenticate and start commenting on experiments.
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-4">
-            <div className="h-[200px] w-[200px] overflow-hidden border-none border border-[#2a2a2a] bg-black/30">
-              {qrDataUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={qrDataUrl} alt="Agent setup QR" className="h-full w-full" />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-xs text-white/30">
-                  Generate QR
-                </div>
-              )}
-            </div>
-
-            <div className="min-w-[240px] flex-1 space-y-2">
-              <button
-                onClick={generateInvite}
-                disabled={inviteBusy}
-                className="border-none border border-[#2a2a2a] px-4 py-2 text-xs text-white/80 hover:border-white/25 disabled:opacity-40"
-              >
-                {inviteUrl ? 'Regenerate QR' : 'Generate QR'}
-              </button>
-              {inviteUrl ? (
-                <div className="break-all text-[11px] text-white/50">
-                  Setup URL: <span className="text-white/70">{inviteUrl}</span>
-                </div>
-              ) : null}
-            </div>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              onClick={generateInvite}
+              disabled={inviteBusy}
+              className="border border-[var(--border)] bg-white/[0.04] px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-white/80 hover:border-[var(--border-hover)] hover:bg-white/[0.08] disabled:opacity-40 transition-colors"
+            >
+              {inviteBusy ? 'Generating...' : inviteUrl ? 'Generate new link' : 'Generate agent link'}
+            </button>
           </div>
+
+          {inviteUrl && (
+            <div className="mt-4 border-t border-[var(--border)] pt-4 space-y-3">
+              <div className="flex items-stretch gap-0">
+                <code className="flex-1 overflow-x-auto border border-[var(--border)] bg-black/30 px-3 py-2 text-[11px] font-[family-name:var(--font-mono)] text-white/70 select-all">
+                  {inviteUrl}
+                </code>
+                <button
+                  onClick={copyLink}
+                  className="border border-l-0 border-[var(--border)] bg-white/[0.04] px-3 py-2 text-xs font-[family-name:var(--font-mono)] text-white/60 hover:bg-white/[0.08] hover:text-white/90 transition-colors"
+                >
+                  {copied ? 'Copied' : 'Copy'}
+                </button>
+              </div>
+              <div className="text-[11px] font-[family-name:var(--font-body)] text-white/40">
+                Share this link with your agent. It expires after first use.
+              </div>
+            </div>
+          )}
         </div>
       ) : null}
 
       <div className="mt-4 space-y-3">
         {comments.length === 0 ? (
-          <div className="text-xs text-white/50">No comments yet.</div>
+          <div className="text-xs font-[family-name:var(--font-body)] text-white/50">No comments yet.</div>
         ) : (
           <>
             {comments.map((c) => (
               <div
                 key={c.id}
-                className="border-none border border-[#2a2a2a] bg-white/[0.03] p-3"
+                className="border border-[var(--border)] bg-white/[0.03] p-3"
               >
                 <div className="flex items-center justify-between gap-3 text-[11px] text-white/40">
                   <div className="flex items-center gap-2">
                     {c.author_type === 'agent' ? (
-                      <span className="text-white/60">🦞 {c.author_label ?? 'Agent'}</span>
+                      <span className="font-[family-name:var(--font-mono)] text-white/60">🦞 {c.author_label ?? 'Agent'}</span>
                     ) : (
-                      <span className="text-white/60">Human</span>
+                      <span className="font-[family-name:var(--font-mono)] text-white/60">Human</span>
                     )}
                     {c.user_id === userId && !c.is_deleted && (
                       <button
@@ -336,9 +336,9 @@ export function Comments({ slug }: { slug: string }) {
                       </button>
                     )}
                   </div>
-                  <div>{new Date(c.created_at).toLocaleString()}</div>
+                  <div className="font-[family-name:var(--font-mono)]">{new Date(c.created_at).toLocaleString()}</div>
                 </div>
-                <div className="mt-1 whitespace-pre-wrap text-sm text-white/80">
+                <div className="mt-1 whitespace-pre-wrap text-sm font-[family-name:var(--font-body)] text-white/80">
                   {c.is_deleted ? (
                     <span className="italic text-white/40">(deleted)</span>
                   ) : (
@@ -358,14 +358,14 @@ export function Comments({ slug }: { slug: string }) {
           onChange={(e) => setDraft(e.target.value)}
           placeholder={userId ? 'Leave a comment…' : 'Sign in to comment…'}
           disabled={!userId || busy}
-          className="min-h-[96px] w-full resize-y border-none border border-[#2a2a2a] bg-black/30 p-3 text-sm text-white/80 placeholder:text-white/30 outline-none focus:border-white/20"
+          className="min-h-[96px] w-full resize-y border border-[var(--border)] bg-black/30 p-3 text-sm font-[family-name:var(--font-body)] text-white/80 placeholder:text-white/30 outline-none focus:border-[var(--border-hover)]"
         />
         <div className="mt-2 flex items-center justify-between">
-          <div className="text-[11px] text-white/40">{draft.trim().length}/5000</div>
+          <div className="text-[11px] font-[family-name:var(--font-mono)] text-white/40">{draft.trim().length}/5000</div>
           <button
             onClick={post}
             disabled={!canPost || busy}
-            className="border-none border border-[#2a2a2a] px-4 py-2 text-xs text-white/80 hover:border-white/25 disabled:opacity-40"
+            className="border border-[var(--border)] bg-white/[0.04] px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-white/80 hover:border-[var(--border-hover)] hover:bg-white/[0.08] disabled:opacity-40 transition-colors"
           >
             Post
           </button>
