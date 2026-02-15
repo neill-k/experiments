@@ -165,6 +165,7 @@ export default function Home() {
               value={input.appName}
               onChange={(v) => setInput({ ...input, appName: v })}
               placeholder="e.g., Support Triage Agent Spec"
+              hint="Use a descriptive name your team will recognize — this becomes the doc title."
             />
             <TextArea
               label="Objective"
@@ -172,6 +173,7 @@ export default function Home() {
               onChange={(v) => setInput({ ...input, objective: v })}
               placeholder="What outcome does this agent deliver?"
               rows={3}
+              hint='Good: "Reduce avg support response time from 4h to <15min for Tier 1 tickets." Avoid vague goals like "improve customer experience."'
             />
             <TextArea
               label="Problem / Context"
@@ -179,12 +181,14 @@ export default function Home() {
               onChange={(v) => setInput({ ...input, context: v })}
               placeholder="What triggers the agent? What environment does it run in?"
               rows={4}
+              hint="Describe the trigger event, current pain point, and where this runs (Slack bot, API endpoint, cron job, etc.)."
             />
             <Field
               label="Primary users"
               value={input.primaryUsers}
               onChange={(v) => setInput({ ...input, primaryUsers: v })}
               placeholder="Who uses/depends on it?"
+              hint="Be specific: roles, team sizes, or downstream systems (e.g., L1 support reps, 12-person team)."
             />
             <TextArea
               label="Tools (one per line)"
@@ -196,6 +200,7 @@ export default function Home() {
                 "Docs search",
               ].join("\n")}
               rows={5}
+              hint="Include permission level for each tool — e.g., read-only, requires human approval, fully autonomous."
             />
 
             <div className="border border-[#2a2a2a] bg-[#0a0a0c] p-3">
@@ -369,6 +374,7 @@ export default function Home() {
                 "\n"
               )}
               rows={4}
+              hint="List every data source the agent reads from. Note access patterns (real-time vs. batch, read vs. write)."
             />
             <TextArea
               label="Constraints (one per line)"
@@ -379,6 +385,7 @@ export default function Home() {
                 "PII must not be logged",
               ].join("\n")}
               rows={4}
+              hint="Think: compliance, security, rate limits, cost caps, and human-in-the-loop requirements."
             />
 
             <div className="mt-1 border border-[#2a2a2a] bg-[#0a0a0c] p-3">
@@ -391,24 +398,28 @@ export default function Home() {
                   value={input.p95Latency}
                   onChange={(v) => setInput({ ...input, p95Latency: v })}
                   placeholder="e.g., <= 10s"
+                  hint="95th percentile — the worst acceptable wait for most users."
                 />
                 <Field
                   label="Max cost/day"
                   value={input.maxCostPerDay}
                   onChange={(v) => setInput({ ...input, maxCostPerDay: v })}
                   placeholder="e.g., <= $50/day"
+                  hint="Include LLM tokens, API calls, and infrastructure."
                 />
                 <Field
                   label="Max retries"
                   value={input.maxRetries}
                   onChange={(v) => setInput({ ...input, maxRetries: v })}
                   placeholder="e.g., 2"
+                  hint="How many times the agent retries before giving up or escalating."
                 />
                 <Field
                   label="Degrade to"
                   value={input.degradeTo}
                   onChange={(v) => setInput({ ...input, degradeTo: v })}
                   placeholder="e.g., human handoff / safer mode"
+                  hint="What happens when the agent fails — silent fallback, alert, or queue for human?"
                 />
               </div>
             </div>
@@ -419,6 +430,7 @@ export default function Home() {
               onChange={(v) => setInput({ ...input, successMetrics: v })}
               placeholder={["Time saved / week", "Accuracy", "CSAT"].join("\n")}
               rows={4}
+              hint='Make metrics measurable: "Reduce manual triage from 200 tickets/day to <20" beats "improve efficiency."'
             />
             <TextArea
               label="Non-goals (one per line)"
@@ -428,6 +440,7 @@ export default function Home() {
                 "\n"
               )}
               rows={3}
+              hint="Explicitly scoping out features prevents scope creep and sets expectations with stakeholders."
             />
             <TextArea
               label="Risks / Open questions (one per line)"
@@ -438,6 +451,7 @@ export default function Home() {
                 "Over-escalation",
               ].join("\n")}
               rows={4}
+              hint="Flag unknowns early: model accuracy gaps, missing data, regulatory gray areas, or untested edge cases."
             />
           </div>
         </section>
@@ -584,11 +598,15 @@ function Field(props: {
   label: string;
   value: string;
   placeholder?: string;
+  hint?: string;
   onChange: (v: string) => void;
 }) {
   return (
     <label className="grid gap-1">
       <div className="text-sm font-medium text-zinc-400">{props.label}</div>
+      {props.hint && (
+        <div className="text-[11px] text-zinc-600 leading-snug">{props.hint}</div>
+      )}
       <input
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
@@ -603,12 +621,16 @@ function TextArea(props: {
   label: string;
   value: string;
   placeholder?: string;
+  hint?: string;
   rows?: number;
   onChange: (v: string) => void;
 }) {
   return (
     <label className="grid gap-1">
       <div className="text-sm font-medium text-zinc-400">{props.label}</div>
+      {props.hint && (
+        <div className="text-[11px] text-zinc-600 leading-snug">{props.hint}</div>
+      )}
       <textarea
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
