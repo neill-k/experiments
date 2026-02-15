@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 
 const experiments = [
@@ -43,6 +43,13 @@ const isRecent = (dateStr: string) => {
 
 export default function Home() {
   const [activeTag, setActiveTag] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    // Small delay so the stagger animation is visible on load
+    const t = setTimeout(() => setMounted(true), 50)
+    return () => clearTimeout(t)
+  }, [])
 
   const filtered = useMemo(
     () =>
@@ -60,7 +67,7 @@ export default function Home() {
             Experiments
           </h1>
           <p className="mt-3 text-sm font-[family-name:var(--font-body)] text-white/50">
-            Daily shipped prototypes — click to explore.
+            {experiments.length} prototypes shipped — click to explore.
           </p>
           <div className="mt-4 h-px w-16 bg-white/20" />
         </header>
@@ -93,11 +100,16 @@ export default function Home() {
         </div>
 
         <div className="mt-6 space-y-3">
-          {filtered.map((exp) => (
+          {filtered.map((exp, i) => (
             <Link
               key={exp.slug}
               href={`/e/${exp.slug}`}
               className="experiment-card block border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5 text-white/80 hover:text-white"
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(12px)',
+                transition: `opacity 0.4s ease ${i * 80}ms, transform 0.4s ease ${i * 80}ms`,
+              }}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
