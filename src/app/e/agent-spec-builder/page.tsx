@@ -7,6 +7,7 @@ import { Comments } from '@/components/comments/Comments';
 import Link from 'next/link';
 import { decodeSpecState, encodeSpecState } from "@/app/e/agent-spec-builder/lib/share";
 import { lintSpec } from "@/app/e/agent-spec-builder/lib/lint";
+import { downloadExportPack } from "@/app/e/agent-spec-builder/lib/export-pack";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -518,6 +519,22 @@ export default function Home() {
                 type="button"
               >
                 Download .md
+              </button>
+              <button
+                className="border border-emerald-700/50 bg-emerald-950/30 px-3 py-2 text-sm font-medium text-emerald-400 hover:bg-emerald-900/40 hover:text-emerald-300"
+                onClick={async () => {
+                  try {
+                    await downloadExportPack(input);
+                    setToast("Export pack downloaded.");
+                  } catch {
+                    setToast("Failed to generate export pack.");
+                  }
+                  window.setTimeout(() => setToast(""), 2500);
+                }}
+                type="button"
+                title="Download a ZIP with SPEC.md, EVAL_PLAN.md, and SECURITY_NOTES.md"
+              >
+                Export Pack (.zip)
               </button>
             </div>
           </div>
