@@ -7,6 +7,7 @@ import { Comments } from '@/components/comments/Comments';
 import Link from 'next/link';
 import { decodeSpecState, encodeSpecState } from "@/app/e/agent-spec-builder/lib/share";
 import { lintSpec } from "@/app/e/agent-spec-builder/lib/lint";
+import { evaluateQuality, qualityLabel, qualityColor, qualityTextColor } from "@/app/e/agent-spec-builder/lib/quality";
 import { downloadExportPack } from "@/app/e/agent-spec-builder/lib/export-pack";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -67,6 +68,7 @@ export default function Home() {
 
   const md = useMemo(() => generateSpecMarkdown(input), [input]);
   const findings = useMemo(() => lintSpec(input), [input]);
+  const quality = useMemo(() => evaluateQuality(input), [input]);
   const [previewMode, setPreviewMode] = useState<"raw" | "preview">("raw");
 
   async function copy() {
@@ -158,6 +160,51 @@ export default function Home() {
                 Clear
               </button>
             </div>
+          </div>
+
+          {/* Spec Quality Meter */}
+          <div className="mt-4 border border-[#2a2a2a] bg-[#0a0a0c] p-3">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-medium text-zinc-300">
+                Spec completeness
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`text-sm font-semibold tabular-nums ${qualityTextColor(quality.score)}`}>
+                  {quality.score}%
+                </span>
+                <span className="text-xs text-zinc-500">
+                  {qualityLabel(quality.score)}
+                </span>
+              </div>
+            </div>
+            <div className="mt-2 h-2 w-full overflow-hidden bg-[#1a1a1a] rounded-full">
+              <div
+                className={`h-full transition-all duration-500 ease-out rounded-full ${qualityColor(quality.score)}`}
+                style={{ width: `${quality.score}%` }}
+              />
+            </div>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {quality.categories.map((cat) => (
+                <span
+                  key={cat.key}
+                  className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium tracking-wide border ${
+                    cat.filled
+                      ? "border-emerald-800/40 bg-emerald-950/20 text-emerald-500"
+                      : "border-[#2a2a2a] bg-[#08080a] text-zinc-600"
+                  }`}
+                  title={cat.suggestion || `${cat.label}: complete`}
+                >
+                  <span className={`inline-block h-1.5 w-1.5 rounded-full ${cat.filled ? "bg-emerald-500" : "bg-zinc-700"}`} />
+                  {cat.label}
+                </span>
+              ))}
+            </div>
+            {quality.categories.some((c) => c.suggestion) && (
+              <div className="mt-2 text-[11px] text-zinc-600 leading-snug">
+                <span className="text-zinc-500">Next up:</span>{" "}
+                {quality.categories.find((c) => c.suggestion && !c.filled)?.suggestion}
+              </div>
+            )}
           </div>
 
           <div className="mt-4 grid gap-3">
