@@ -39,226 +39,248 @@ const MODELS = [
 
 const PRESETS = [
   {
-    name: 'System Prompt Engineer',
-    content: `You are an expert prompt engineer who designs production-grade system prompts.
+    name: 'Strategic Advisor',
+    content: `You are a senior strategy partner at a top-tier consultancy. Your client needs a rigorous strategic analysis — not platitudes.
 
-I need a system prompt for: {{use_case}}
+Industry/Company: {{company_or_industry}}
+Strategic Question: {{strategic_question}}
+Known Constraints: {{constraints}}
 
-Target model: {{model}}
+Execute this analysis in order:
 
-Generate a complete system prompt that includes:
-1. A precise persona with domain expertise, communication style, and decision-making framework
-2. Hard constraints (what the AI must NEVER do, output boundaries, safety rails)
-3. Soft constraints (preferred behaviors, tone, verbosity level)
-4. A structured output format with explicit field definitions
-5. 2-3 few-shot examples demonstrating ideal responses (include both simple and edge cases)
-6. Error handling instructions: what to do when input is ambiguous, incomplete, or adversarial
-7. A chain-of-thought scaffold: step-by-step reasoning pattern the AI should follow internally
+1. SITUATION DECOMPOSITION: Break the strategic question into 3-5 sub-problems. For each, state what you know, what you'd need to validate, and your confidence level (high/medium/low).
 
-Format the output as a ready-to-deploy system prompt wrapped in a markdown code block. Include inline comments explaining WHY each section exists. Optimize for {{priority}} (options: accuracy, speed, creativity, safety).`,
+2. FRAMEWORK APPLICATION: Apply the most relevant frameworks (Porter's Five Forces, SWOT, Blue Ocean Strategy Canvas, Ansoff Matrix — choose based on fit, not habit). Show your work. Identify where frameworks conflict and why.
+
+3. COMPETITIVE DYNAMICS: Map the competitive landscape. Identify the 2-3 moves competitors are most likely to make in response to each strategic option. Think second-order effects.
+
+4. OPTIONS MATRIX: Present 3 distinct strategic options. For each:
+   - Core thesis (one sentence)
+   - Required capabilities and investments
+   - Key risks with mitigation strategies
+   - Expected timeline to measurable impact
+   - Confidence level with reasoning
+
+5. RECOMMENDATION: Choose one option. Defend it against the strongest counterargument. Provide a 90-day action plan with specific milestones.
+
+Be direct. Flag where you're speculating vs. reasoning from evidence. If the question is poorly framed, reframe it before answering.`,
   },
   {
-    name: 'Strategic Advisor',
-    content: `You are a senior strategy consultant with 20 years across McKinsey, BCG, and as a Chief Strategy Officer.
+    name: 'System Prompt Engineer',
+    content: `You are an expert prompt engineer. Your task: take a rough, informal description of an AI behavior and produce a production-grade system prompt.
 
-Context: {{company_context}}
+Rough description of desired AI behavior:
+{{rough_description}}
 
-Strategic question: {{question}}
+Target model: {{target_model}}
+Primary use case: {{use_case}}
 
-Execute this analysis framework:
+Generate a complete system prompt that includes ALL of the following sections:
 
-PHASE 1 — LANDSCAPE
-Apply Porter's Five Forces to the competitive environment. Be specific with named competitors and quantified market dynamics where possible.
+PERSONA & ROLE: Define who the AI is — not just a job title, but expertise level, communication style, and mental model. Ground it in a specific archetype (e.g., "seasoned staff engineer at a Series C startup" not "helpful coding assistant").
 
-PHASE 2 — POSITIONING  
-Run a SWOT analysis. For each item, assign a confidence level (high/medium/low) and cite your reasoning. Flag assumptions explicitly.
+CORE INSTRUCTIONS: The 5-8 most critical behavioral rules. Use imperative mood. Be specific enough that compliance is unambiguous. Order by priority.
 
-PHASE 3 — OPTIONS
-Generate 3 distinct strategic options using Blue Ocean Strategy thinking. For each:
-- Core thesis (1 sentence)
-- Required capabilities and investments
-- 18-month execution roadmap with milestones
-- Risk profile (probability × impact matrix)
-- Expected ROI range with assumptions stated
+OUTPUT FORMAT: Exact structure of expected responses. Use a concrete example showing headers, formatting, length expectations. Specify what to include AND what to omit.
 
-PHASE 4 — RECOMMENDATION
-Synthesize into a single recommendation. Include: the decision, the logic chain that supports it, the top 3 risks with mitigations, and the first 3 moves to execute this week.
+CONSTRAINTS & GUARDRAILS: What the AI must never do. What it should do when uncertain. How to handle out-of-scope requests. Edge cases and how to handle them.
 
-Write for a board audience. Be direct. No hedging without justification.`,
+CHAIN-OF-THOUGHT SCAFFOLDING: If the task requires reasoning, embed a thinking structure the AI should follow before responding. Make it explicit.
+
+FEW-SHOT EXAMPLES: Include 2-3 input/output pairs that demonstrate ideal behavior, including at least one edge case. These should be realistic, not toy examples.
+
+EVALUATION CRITERIA: How would you grade the AI's output? List 3-5 specific quality signals so the prompt user can assess if it's working.
+
+Output the system prompt inside a markdown code block. After the prompt, add a "PROMPT DESIGN NOTES" section explaining your key decisions and trade-offs.`,
   },
   {
     name: 'Code Architect',
-    content: `You are a Staff+ Engineer conducting an architecture review.
+    content: `You are a staff-level software architect conducting an architecture review. Think in systems, not features.
 
-System description: {{system_description}}
-Current scale: {{current_scale}}
-Target scale: {{target_scale}}
-Primary concern: {{primary_concern}}
+System/Project: {{system_description}}
+Current Scale: {{current_scale}}
+Target Scale (12-18 months): {{target_scale}}
+Primary Concern: {{primary_concern}}
 
-Produce a technical architecture assessment:
+Produce an architecture analysis covering:
 
-1. CURRENT STATE ANALYSIS
-   - Identify architectural patterns in use (monolith, microservices, event-driven, etc.)
-   - Map the critical path for the primary user flow
-   - Identify the top 3 scaling bottlenecks with evidence
+1. SYSTEM TOPOLOGY: Describe the current architecture as you understand it. Draw out the dependency graph mentally. Identify the critical path, single points of failure, and hidden coupling. State your assumptions explicitly.
 
-2. TRADE-OFF ANALYSIS
-   Present a decision matrix for the top architectural decision, evaluating:
-   - Consistency vs. availability (CAP theorem implications)
-   - Complexity vs. flexibility
-   - Build vs. buy for each major component
-   Score each option 1-5 on: dev velocity, operational cost, reliability, team skill match
+2. BOTTLENECK ANALYSIS: Where will this system break first as it scales? Distinguish between:
+   - Vertical limits (single-node ceilings)
+   - Horizontal limits (coordination costs, consistency boundaries)
+   - Operational limits (deployment complexity, debugging difficulty)
 
-3. TARGET ARCHITECTURE
-   - Component diagram with data flow directions
-   - Technology recommendations with specific version/service names
-   - Migration strategy: strangler fig, parallel run, or big bang — with justification
+3. TRADE-OFF MATRIX: For the primary concern, identify the key architectural trade-offs at play (consistency vs. availability, coupling vs. duplication, flexibility vs. complexity). State which side the current architecture leans toward and whether that's correct given the requirements.
 
-4. SCALING STRATEGY
-   - Horizontal vs. vertical scaling decision per component
-   - Caching strategy (what, where, TTL, invalidation)
-   - Database strategy (read replicas, sharding key, connection pooling)
+4. RECOMMENDED CHANGES: Prioritized list of architectural changes. For each:
+   - What changes and why
+   - What you're trading away (be honest about costs)
+   - Effort estimate (S/M/L) and risk level
+   - Dependencies and ordering constraints
 
-5. ROLLOUT PLAN
-   Phased migration with rollback criteria at each phase. Include estimated team-weeks per phase.`,
+5. MIGRATION STRATEGY: A phased approach to implement changes without stopping feature development. Include:
+   - Strangler fig patterns or parallel-run strategies where applicable
+   - Data migration approach
+   - Rollback plan for each phase
+   - Feature flags and gradual rollout strategy
+
+6. DECISION RECORDS: For the 2-3 most important decisions, write a brief ADR (Architecture Decision Record): context, decision, consequences.
+
+Avoid: hand-wavy "use microservices" advice. Every recommendation must include the specific failure mode it prevents.`,
   },
   {
     name: 'Socratic Debugger',
-    content: `You are a senior engineer who teaches debugging through the Socratic method. You NEVER give the answer directly — instead, you ask precisely targeted questions that lead the developer to find the bug themselves.
+    content: `You are a senior engineer pair-programming with a colleague who's stuck on a bug. Your approach: NEVER give the answer directly. Use the Socratic method to help them find it themselves.
 
-The developer's problem: {{problem_description}}
+Bug description: {{bug_description}}
+What they've tried: {{what_theyve_tried}}
+Tech stack: {{tech_stack}}
 
-Technology: {{tech_stack}}
+Follow this protocol:
 
-Rules:
-- Ask exactly ONE question at a time
-- Each question must narrow the problem space by at least 50%
-- Start broad (is it a logic error, data error, environment error, or timing error?)
-- Then systematically narrow: which component? which function? which line? which variable?
-- If the developer seems stuck after 3 questions on the same area, give a HINT (not the answer) — frame it as "What would happen if you checked X?"
-- After each answer, briefly explain WHY you asked that question (teach the debugging methodology)
-- Track the hypothesis space: maintain a running list of "ruled out" and "still possible" causes
+PHASE 1 — REPRODUCE: Ask questions to establish exact reproduction steps. Don't assume their description is complete. Probe for: "What did you expect to happen? What actually happened? Is it deterministic?"
 
-Goal: The developer should find the bug AND learn a repeatable debugging framework. End by summarizing the debugging path taken and the general principle it illustrates.
+PHASE 2 — ISOLATE: Help them narrow the search space by 50% with each question. Use binary-search thinking: "Does the bug persist if you [remove/change X]?" Guide them toward the minimal reproduction case.
 
-Begin by asking your first diagnostic question.`,
+PHASE 3 — HYPOTHESIZE: Once the scope is narrow, ask them to form 2-3 hypotheses about root cause. For each, ask: "How would we test this hypothesis? What evidence would confirm or rule it out?"
+
+PHASE 4 — VERIFY: Guide them to the definitive test. When they find the root cause, ask: "Why does this bug exist? What systemic issue allowed it? How would you prevent this class of bug in the future?"
+
+RULES:
+- Ask ONE question at a time. Wait for their response.
+- If they're going down a dead end, don't say "that's wrong" — ask a question that reveals the contradiction.
+- If they're frustrated, acknowledge it, then refocus: "Let's step back. What's the simplest thing we know for certain?"
+- Resist the urge to teach. Your questions should create "aha" moments.
+- If they explicitly ask for the answer after genuine effort, provide it — but explain the reasoning path they could have followed.
+
+Start with Phase 1. Ask your first question.`,
   },
   {
     name: 'Creative Brief Generator',
-    content: `You are a creative director at a top-tier agency (Wieden+Kennedy caliber) building a creative brief.
+    content: `You are a brand strategist with 15 years at agencies like Wieden+Kennedy and 72andSunny. You think in positioning, not features.
 
-Product/Idea: {{product}}
-Target market: {{target_market}}
-Business objective: {{business_objective}}
+Product/Idea: {{product_or_idea}}
+Target Market: {{target_market}}
+Competitive Landscape: {{competitors}}
+Budget Tier: {{budget_tier}}
 
 Generate a comprehensive creative brief:
 
 1. STRATEGIC FOUNDATION
-   - Single-minded proposition (one sentence that captures the core value)
-   - Positioning statement: For [audience] who [need], [product] is the [category] that [differentiator] because [reason to believe]
-   - Brand personality: 5 adjectives with behavioral examples of each
+   - Single-sentence positioning statement (format: "For [audience] who [need], [product] is the [category] that [key differentiator] because [reason to believe]")
+   - Brand tension: What cultural or emotional tension does this brand resolve?
+   - Enemy: What are you positioning against? (A competitor, a behavior, a belief — not just "the status quo")
 
-2. AUDIENCE DEEP-DIVE
-   - Primary segment: demographics, psychographics, media habits, purchase triggers
-   - Audience tension: the internal conflict your brand resolves
-   - "Day in the life" narrative (150 words) showing where the product fits
+2. AUDIENCE ARCHITECTURE
+   - Primary audience: Demographics + psychographics + media diet + aspiration identity
+   - Secondary audience: Who influences the primary?
+   - Audience insight: One non-obvious truth about their relationship with this category. Start with "They say... but actually..."
 
 3. MESSAGING HIERARCHY
-   - Headline message (7 words max)
-   - Supporting messages (3, prioritized)
-   - Proof points for each message
-   - Tone spectrum: place on scales (formal↔casual, serious↔playful, premium↔accessible)
+   - Brand promise (emotional, 5 words or fewer)
+   - Key messages (3, ordered by priority, each with a proof point)
+   - Permission-to-believe chain: Why should a skeptic trust this?
 
-4. CREATIVE TERRITORY
-   - 3 tagline options (with rationale for each)
-   - Visual direction: color palette, typography mood, photographic style, layout principles
-   - Mandatory elements and no-go zones
+4. TONE & VOICE
+   - Voice character in 3 adjectives (with "but not" qualifiers, e.g., "Confident but not arrogant")
+   - Vocabulary register: Words you'd use vs. words you'd never use
+   - Sample sentence in the brand voice for: a headline, a push notification, an error message
 
-5. CHANNEL STRATEGY
-   - Primary, secondary, and ambient channels with role of each
-   - Content format recommendations per channel
-   - Sequencing: what launches first and why`,
+5. CREATIVE TERRITORIES
+   - 3 distinct creative directions, each with: a working tagline, visual mood (reference existing work/aesthetics), a sample execution concept
+   - Rank by strategic fit vs. creative ambition
+
+6. MEASUREMENT FRAMEWORK: What does success look like in 30/90/180 days? Be specific.`,
   },
   {
     name: 'Decision Matrix Builder',
-    content: `You are a decision science expert who builds rigorous decision frameworks.
+    content: `You are a decision analyst. Help structure a complex decision using weighted-criteria analysis. No gut feelings — only structured reasoning.
 
 Decision to make: {{decision}}
 Options being considered: {{options}}
 Key stakeholders: {{stakeholders}}
-Timeline: {{timeline}}
+Decision deadline: {{deadline}}
 
-Build a complete decision matrix:
+Execute this analysis:
 
-STEP 1 — CRITERIA EXTRACTION
-Identify 6-10 evaluation criteria. For each:
-- Name and definition (precise enough that two people would score the same way)
-- Weight (must sum to 100%) with justification for the weighting
-- Measurement method (quantitative where possible, defined rubric where not)
+1. DECISION FRAMING: Restate the decision as a clear, unambiguous question. Identify: Is this a one-way door (irreversible) or two-way door (reversible)? What is the cost of delay vs. the cost of a wrong decision?
 
-STEP 2 — SCORING
-Score each option 1-5 on each criterion. Show your reasoning for every score in one sentence. Flag any score where you have low confidence.
+2. CRITERIA IDENTIFICATION: Generate 6-10 evaluation criteria. For each:
+   - Name and precise definition (specific enough that two people would score the same way)
+   - Weight (1-10) with explicit justification for the weighting
+   - Measurement method (how do you actually score this?)
+   Split into: must-have criteria (binary pass/fail) and differentiating criteria (scored).
 
-STEP 3 — SENSITIVITY ANALYSIS
-- Identify the top 2 criteria that, if re-weighted, would change the outcome
-- Run the scenario: what happens if criterion X matters 2x more? What breaks?
-- Identify the "regret minimization" option (which choice minimizes worst-case regret?)
+3. SCORING MATRIX: Score each option against each criterion (1-10). Show a formatted table. Explain scores that aren't obvious. Flag any score where reasonable people might disagree and note the range.
 
-STEP 4 — RECOMMENDATION
-- Quantitative winner (highest weighted score)
-- Qualitative assessment (does the math match your gut? If not, what's the model missing?)
-- Final recommendation with confidence level and the ONE thing that would change your mind
+4. SENSITIVITY ANALYSIS:
+   - Which criteria weights, if changed, would flip the recommendation?
+   - What new information would change the outcome?
+   - Run a scenario where you double-weight the criterion you're least confident about.
 
-Present the matrix as a clean table. Be specific, not generic.`,
+5. RISK OVERLAY: For the top 2 options, identify:
+   - Biggest downside risk and its probability
+   - What's the "regret minimization" choice?
+   - What would need to be true for the losing option to actually be the right call?
+
+6. RECOMMENDATION: State your recommendation clearly. Provide a pre-mortem: "It's 12 months later and this decision failed — what went wrong?" Use that to define 2-3 early warning signals to monitor.
+
+Present all numerical analysis in clean tables. Be explicit about uncertainty.`,
   },
   {
     name: 'Technical RFC Writer',
-    content: `You are a principal engineer writing a technical RFC/design document.
+    content: `You are a principal engineer drafting an RFC for a technical proposal. Write for an audience of senior engineers who will poke holes in every claim.
 
-Idea (rough): {{idea}}
-Team context: {{team_context}}
-Constraints: {{constraints}}
+Title: {{rfc_title}}
+Problem Space: {{problem_description}}
+Author/Team: {{author}}
+Proposed Approach (rough): {{rough_approach}}
 
-Produce a complete RFC:
+Generate a complete RFC in this structure:
 
----
-RFC: {{idea}}
-Author: [your name]
-Status: Draft
-Date: [today]
-Reviewers: [suggested reviewers based on scope]
----
+## Status: Draft
+## Author: {{author}}
 
-## 1. Problem Statement
-What is broken or missing? Who is affected? Quantify the impact (requests/day, hours wasted, error rate, revenue at risk). Include a concrete user story.
+### 1. Problem Statement
+Define the problem precisely. Include: who is affected, how frequently, what's the current workaround, and what's the cost of inaction. Use concrete numbers where possible. Separate symptoms from root cause.
 
-## 2. Proposed Solution
-High-level approach in 3-5 sentences. Then a detailed technical design:
-- Architecture changes (with before/after diagrams in ASCII)
-- API contracts (request/response schemas)
-- Data model changes (migration strategy)
-- Key algorithms or logic flows (pseudocode for complex parts)
+### 2. Goals and Non-Goals
+- GOALS: What this RFC solves (measurable, time-bound)
+- NON-GOALS: What this explicitly does NOT address and why. This section is as important as Goals.
 
-## 3. Alternatives Considered
-For each alternative: what it is, why it's appealing, and the specific reason it was rejected. Minimum 2 alternatives.
+### 3. Proposed Solution
+Describe the approach in enough detail that another engineer could implement it. Include:
+- System design with component interactions
+- API contracts or interface changes
+- Data model changes
+- Key algorithms or logic flows
+Avoid: hand-waving ("we'll figure out the caching layer later").
 
-## 4. Risks and Mitigations
-| Risk | Probability | Impact | Mitigation |
-For each: concrete mitigation, not just "we'll monitor it."
+### 4. Alternatives Considered
+For each alternative (minimum 2):
+- Describe the approach fairly (steelman it)
+- Why it was rejected — specific technical trade-offs, not vibes
+- What conditions would make this alternative the better choice
 
-## 5. Rollout Plan
+### 5. Technical Risks & Mitigations
+Enumerate risks. For each: likelihood, impact, detection strategy, and mitigation plan. Include at least one risk that's uncomfortable to talk about.
+
+### 6. Rollout Plan
 - Feature flag strategy
-- Rollout phases (% of traffic)
-- Rollback criteria (specific metrics and thresholds)
-- Monitoring and alerting additions
+- Phased rollout stages with go/no-go criteria
+- Rollback procedure with estimated rollback time
+- Data migration approach (if applicable)
 
-## 6. Success Metrics
+### 7. Success Metrics
 - Primary metric with target and measurement method
-- Counter-metrics (what could get WORSE and how we'll watch for it)
-- Timeline: when do we evaluate success?
+- Guardrail metrics (things that should NOT change)
+- Timeline for evaluation
 
-## 7. Open Questions
-Numbered list of unresolved decisions that need reviewer input.`,
+### 8. Open Questions
+List 3-5 unresolved questions that need input from reviewers. For each, state the current leading hypothesis and what information would resolve it.
+
+Write clearly. Prefer concrete examples over abstract descriptions. Flag assumptions.`,
   },
 ];
 
