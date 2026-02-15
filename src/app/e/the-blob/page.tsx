@@ -403,7 +403,7 @@ export default function TheBlobPage(){
     return()=>{cancelAnimationFrame(raf);removeEventListener('resize',onR);removeEventListener('mousemove',onM);removeEventListener('touchmove',onT);
       c.removeEventListener('click',onC);c.removeEventListener('touchstart',onTS);
       motionMQ.removeEventListener('change',onMotionChange);};
-  },[spawnF,spawnB]);
+  },[spawnF,spawnB,startOnInteraction]);
 
   return(
     <div style={{position:'fixed',inset:0,background:'#060a12',overflow:'hidden',userSelect:'none',WebkitUserSelect:'none'}}>
@@ -422,6 +422,23 @@ export default function TheBlobPage(){
           <span style={{color:'hsl(155,40%,55%)',opacity:.4}}>■</span> gravity
         </div>
       </div>
+      <button
+        onClick={(e)=>{e.stopPropagation();toggleAudio();}}
+        aria-label={audioPlaying?'Mute ambient audio':'Unmute ambient audio'}
+        style={{
+          position:'absolute',bottom:16,right:16,
+          background:'rgba(255,255,255,0.06)',
+          border:'1px solid rgba(255,255,255,0.08)',
+          borderRadius:8,padding:'6px 10px',
+          color:'rgba(255,255,255,0.25)',
+          fontSize:16,cursor:'pointer',
+          backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',
+          transition:'color 0.4s, background 0.4s',
+          lineHeight:1,zIndex:10,
+        }}
+        onMouseEnter={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.5)';e.currentTarget.style.background='rgba(255,255,255,0.1)';}}
+        onMouseLeave={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.25)';e.currentTarget.style.background='rgba(255,255,255,0.06)';}}
+      >{audioPlaying?'🔊':'🔇'}</button>
     </div>
   );
 }

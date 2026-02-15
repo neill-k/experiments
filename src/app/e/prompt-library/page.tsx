@@ -88,15 +88,78 @@ export default function PromptLibrary() {
     saveNow();
   }, [saveNow]);
 
-  const handleDelete = useCallback(() => {
+  // Step 1: clicking "delete" shows inline confirmation
+  const handleDeleteClick = useCallback(() => {
+    setConfirmingDelete(true);
+  }, []);
+
+  // Step 2: cancel confirmation
+  const handleDeleteCancel = useCallback(() => {
+    setConfirmingDelete(false);
+  }, []);
+
+  // Clean up undo timer on unmount
+  useEffect(() => {
+    return () => {
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    };
+  }, []);
+
+  // Step 3: confirm delete — remove prompt, show undo toast, auto-select next
+  const handleDeleteConfirm = useCallback(() => {
     if (!selectedPrompt) return;
-    deletePrompt(selectedPrompt.id);
-    // Select next available prompt
+
+    // Clear any existing undo toast (finalize previous delete)
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = null;
+    }
+
+    const deleted = deletePrompt(selectedPrompt.id);
+    setConfirmingDelete(false);
+
+    // Select next available prompt or clear selection
     const remaining = prompts.filter((p) => p.id !== selectedPrompt.id);
     if (remaining.length > 0) {
-      selectPrompt(remaining[0].id);
+      // Try to select the next prompt in the list (by position)
+      const currentIndex = prompts.findIndex((p) => p.id === selectedPrompt.id);
+      const nextIndex = Math.min(currentIndex, remaining.length - 1);
+      selectPrompt(remaining[nextIndex].id);
+    } else {
+      clearSelection();
     }
-  }, [selectedPrompt, deletePrompt, prompts, selectPrompt]);
+
+    // Show undo toast
+    if (deleted) {
+      const timerId = setTimeout(() => {
+        setUndoToast(null);
+        undoTimerRef.current = null;
+      }, 5000);
+      undoTimerRef.current = timerId;
+      setUndoToast({ prompt: deleted, timer: timerId as unknown as number });
+    }
+  }, [selectedPrompt, deletePrompt, prompts, selectPrompt, clearSelection]);
+
+  // Step 4: undo — restore the deleted prompt and select it
+  const handleUndo = useCallback(() => {
+    if (!undoToast) return;
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = null;
+    }
+    restorePrompt(undoToast.prompt);
+    selectPrompt(undoToast.prompt.id);
+    setUndoToast(null);
+  }, [undoToast, restorePrompt, selectPrompt]);
+
+  // Dismiss undo toast
+  const handleDismissUndo = useCallback(() => {
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = null;
+    }
+    setUndoToast(null);
+  }, []);
 
   const handleShare = useCallback(() => {
     if (!selectedPrompt) return;
@@ -132,6 +195,7 @@ export default function PromptLibrary() {
     (id: string) => {
       selectPrompt(id);
       setSidebarOpen(false);
+      setConfirmingDelete(false);
     },
     [selectPrompt]
   );
@@ -210,7 +274,23 @@ export default function PromptLibrary() {
                     onClick={() => setShowPreview(!showPreview)}
                   />
                   <HeaderButton label="save" onClick={handleSave} />
-                  <HeaderButton label="delete" danger onClick={handleDelete} />
+                  {confirmingDelete ? (
+                    <>
+                      <span
+                        className="px-3 py-2 text-xs tracking-tight flex items-center min-h-[44px]"
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          color: '#c33',
+                        }}
+                      >
+                        delete?
+                      </span>
+                      <HeaderButton label="cancel" onClick={handleDeleteCancel} />
+                      <HeaderButton label="confirm" danger onClick={handleDeleteConfirm} />
+                    </>
+                  ) : (
+                    <HeaderButton label="delete" danger onClick={handleDeleteClick} />
+                  )}
                 </div>
               </div>
 
@@ -304,6 +384,60 @@ export default function PromptLibrary() {
           onClose={() => setShowNewPrompt(false)}
           onCreate={handleCreatePrompt}
         />
+      )}
+
+      {/* Undo Toast */}
+      {undoToast && (
+        <div
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 border"
+          style={{
+            backgroundColor: 'var(--bg)',
+            borderColor: 'var(--border-hover)',
+            fontFamily: 'var(--font-mono)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
+          }}
+        >
+          <span className="text-xs" style={{ color: 'var(--fg)' }}>
+            Prompt deleted
+          </span>
+          <button
+            onClick={handleUndo}
+            className="px-3 py-1.5 border text-xs transition-colors"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              borderColor: 'var(--border)',
+              color: 'var(--fg)',
+              backgroundColor: 'transparent',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--fg)';
+              e.currentTarget.style.backgroundColor = 'rgba(235,235,235,0.07)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border)';
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
+          >
+            undo
+          </button>
+          <button
+            onClick={handleDismissUndo}
+            className="text-xs transition-colors px-1"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--muted)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--fg)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--muted)';
+            }}
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
+        </div>
       )}
 
       {/* Comments */}
