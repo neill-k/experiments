@@ -15,7 +15,7 @@ export function NewPromptModal({ onClose, onCreate }: NewPromptModalProps) {
       <div
         className="p-5 md:p-6 w-full max-w-sm border"
         style={{
-          backgroundColor: '#0c0c0e',
+          backgroundColor: 'var(--bg)',
           borderColor: 'var(--border)',
         }}
       >

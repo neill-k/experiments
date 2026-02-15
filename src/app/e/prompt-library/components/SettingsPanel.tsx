@@ -24,7 +24,7 @@ export function SettingsPanel({ settings, onChange }: SettingsPanelProps) {
         <div className="flex-1 w-full">
           <label
             className="text-[11px] block mb-1"
-            style={{ fontFamily: 'var(--font-mono)', color: '#444' }}
+            style={{ fontFamily: 'var(--font-mono)', color: 'var(--border-hover)' }}
           >
             api_key
           </label>
@@ -50,7 +50,7 @@ export function SettingsPanel({ settings, onChange }: SettingsPanelProps) {
         <div className="w-full md:w-52">
           <label
             className="text-[11px] block mb-1"
-            style={{ fontFamily: 'var(--font-mono)', color: '#444' }}
+            style={{ fontFamily: 'var(--font-mono)', color: 'var(--border-hover)' }}
           >
             model
           </label>

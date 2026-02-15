@@ -29,7 +29,7 @@ export function VersionHistory({ versions, onRestore }: VersionHistoryProps) {
             className="w-full text-xs p-3 flex justify-between items-center transition-colors min-h-[44px]"
             style={{ fontFamily: 'var(--font-mono)' }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(235,235,235,0.04)';
+              e.currentTarget.style.backgroundColor = 'var(--accent)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = '';

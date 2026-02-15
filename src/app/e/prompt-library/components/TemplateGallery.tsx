@@ -33,7 +33,7 @@ export function TemplateGallery({ onLoadPreset }: TemplateGalleryProps) {
         <div
           className="absolute bottom-full left-0 right-0 mb-1 border shadow-2xl z-10 max-h-48 overflow-y-auto"
           style={{
-            backgroundColor: '#0c0c0e',
+            backgroundColor: 'var(--bg)',
             borderColor: 'var(--border)',
           }}
         >
@@ -51,7 +51,7 @@ export function TemplateGallery({ onLoadPreset }: TemplateGalleryProps) {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = 'var(--fg)';
-                e.currentTarget.style.backgroundColor = 'rgba(235,235,235,0.04)';
+                e.currentTarget.style.backgroundColor = 'var(--accent)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.color = 'var(--muted)';

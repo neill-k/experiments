@@ -19,12 +19,12 @@ export function PromptPreview({ content, onCopy }: PromptPreviewProps) {
           <button
             onClick={onCopy}
             className="text-[11px] transition-colors"
-            style={{ fontFamily: 'var(--font-mono)', color: '#444' }}
+            style={{ fontFamily: 'var(--font-mono)', color: 'var(--border-hover)' }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = 'var(--fg)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#444';
+              e.currentTarget.style.color = 'var(--border-hover)';
             }}
           >
             copy
@@ -32,7 +32,7 @@ export function PromptPreview({ content, onCopy }: PromptPreviewProps) {
         </div>
         <pre
           className="whitespace-pre-wrap text-sm leading-relaxed"
-          style={{ fontFamily: 'var(--font-mono)', color: '#ccc' }}
+          style={{ fontFamily: 'var(--font-mono)', color: 'var(--fg)' }}
         >
           {content}
         </pre>

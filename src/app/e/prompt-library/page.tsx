@@ -411,7 +411,7 @@ export default function PromptLibrary() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = 'var(--fg)';
-              e.currentTarget.style.backgroundColor = 'rgba(235,235,235,0.07)';
+              e.currentTarget.style.backgroundColor = 'var(--accent)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = 'var(--border)';
@@ -503,7 +503,7 @@ function HeaderButton({
   onClick: () => void;
 }) {
   const baseColor = danger ? 'var(--border-hover)' : active ? 'var(--fg)' : 'var(--muted)';
-  const baseBg = active ? 'rgba(235,235,235,0.05)' : 'transparent';
+  const baseBg = active ? 'var(--accent)' : 'transparent';
 
   return (
     <button
@@ -523,7 +523,7 @@ function HeaderButton({
         if (!active) {
           e.currentTarget.style.backgroundColor = danger
             ? 'transparent'
-            : 'rgba(235,235,235,0.07)';
+            : 'var(--accent)';
         }
       }}
       onMouseLeave={(e) => {

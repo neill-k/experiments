@@ -80,21 +80,17 @@ export function PromptList({
                   onSelect(prompt.id);
                   onCloseSidebar();
                 }}
-                className={`w-full text-left px-3 py-2.5 mb-px text-sm truncate transition-colors min-h-[44px] flex items-center justify-between border-l-2 ${
-                  selectedId === prompt.id
-                    ? 'bg-[var(--fg)]/[0.07] border-l-[var(--fg)]'
-                    : 'border-l-transparent hover:bg-[var(--fg)]/[0.03]'
-                }`}
+                className="w-full text-left px-3 py-2.5 mb-px text-sm truncate transition-colors min-h-[44px] flex items-center justify-between border-l-2"
                 style={{
                   fontFamily: 'var(--font-body)',
                   color: selectedId === prompt.id ? 'var(--fg)' : 'var(--muted)',
-                  backgroundColor: selectedId === prompt.id ? 'rgba(235,235,235,0.07)' : undefined,
+                  backgroundColor: selectedId === prompt.id ? 'var(--accent)' : undefined,
                   borderLeftColor: selectedId === prompt.id ? 'var(--fg)' : 'transparent',
                 }}
                 onMouseEnter={(e) => {
                   if (selectedId !== prompt.id) {
                     e.currentTarget.style.color = 'var(--fg)';
-                    e.currentTarget.style.backgroundColor = 'rgba(235,235,235,0.03)';
+                    e.currentTarget.style.backgroundColor = 'var(--accent)';
                   }
                 }}
                 onMouseLeave={(e) => {
