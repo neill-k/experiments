@@ -1,21 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { getSupabase } from '@/lib/supabase/client'
+import { useAuth } from '@/hooks/useAuth'
 
 export function AuthButtons() {
-  const [email, setEmail] = useState<string | null>(null)
+  const { email } = useAuth()
   const [loading, setLoading] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
-
-  useEffect(() => {
-    getSupabase().auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null))
-    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
-      setEmail(session?.user?.email ?? null)
-    })
-    return () => sub.subscription.unsubscribe()
-  }, [])
 
   async function signIn() {
     setLoading(true)

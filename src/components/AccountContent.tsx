@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getSupabase } from '@/lib/supabase/client'
+import { useAuth } from '@/hooks/useAuth'
 
 type Agent = {
   id: string
@@ -13,8 +14,7 @@ type Agent = {
 }
 
 export function AccountContent() {
-  const [userId, setUserId] = useState<string | null>(null)
-  const [email, setEmail] = useState<string | null>(null)
+  const { userId, email, loading: authLoading } = useAuth()
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -27,18 +27,7 @@ export function AccountContent() {
   const [creating, setCreating] = useState(false)
 
   useEffect(() => {
-    getSupabase().auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id ?? null)
-      setEmail(data.user?.email ?? null)
-    })
-    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
-      setUserId(session?.user?.id ?? null)
-      setEmail(session?.user?.email ?? null)
-    })
-    return () => sub.subscription.unsubscribe()
-  }, [])
-
-  useEffect(() => {
+    if (authLoading) return
     if (!userId) {
       setLoading(false)
       return
@@ -55,7 +44,7 @@ export function AccountContent() {
       setRefreshing(false)
     }
     loadAgents()
-  }, [userId])
+  }, [userId, authLoading])
 
   // Poll for agent updates every 10 seconds
   useEffect(() => {

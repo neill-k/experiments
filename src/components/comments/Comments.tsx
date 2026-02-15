@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { getSupabase } from '@/lib/supabase/client'
+import { useAuth } from '@/hooks/useAuth'
 
 type CommentRow = {
   id: string
@@ -15,10 +16,10 @@ type CommentRow = {
 }
 
 export function Comments({ slug }: { slug: string }) {
+  const { userId } = useAuth()
   const [experimentId, setExperimentId] = useState<string | null>(null)
   const [comments, setComments] = useState<CommentRow[]>([])
   const [draft, setDraft] = useState('')
-  const [userId, setUserId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
   const [realtimeStatus, setRealtimeStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting')
@@ -34,14 +35,6 @@ export function Comments({ slug }: { slug: string }) {
     () => !!userId && draft.trim().length > 0 && draft.trim().length <= 5000,
     [userId, draft]
   )
-
-  useEffect(() => {
-    getSupabase().auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null))
-    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
-      setUserId(session?.user?.id ?? null)
-    })
-    return () => sub.subscription.unsubscribe()
-  }, [])
 
   useEffect(() => {
     ;(async () => {

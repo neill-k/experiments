@@ -1,29 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { getSupabase } from '@/lib/supabase/client'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function RegisterBotPage() {
-  const [userId, setUserId] = useState<string | null>(null)
-  const [email, setEmail] = useState<string | null>(null)
+  const { userId } = useAuth()
   const [botLabel, setBotLabel] = useState('')
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [creating, setCreating] = useState(false)
   const [created, setCreated] = useState(false)
-
-  useEffect(() => {
-    getSupabase().auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id ?? null)
-      setEmail(data.user?.email ?? null)
-    })
-    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
-      setUserId(session?.user?.id ?? null)
-      setEmail(session?.user?.email ?? null)
-    })
-    return () => sub.subscription.unsubscribe()
-  }, [])
 
   async function createBot() {
     if (!userId) return

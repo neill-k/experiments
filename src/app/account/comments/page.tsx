@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { getSupabase } from '@/lib/supabase/client'
+import { useAuth } from '@/hooks/useAuth'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,23 +19,13 @@ type CommentWithExperiment = {
 }
 
 export default function CommentsHistoryPage() {
-  const [userId, setUserId] = useState<string | null>(null)
+  const { userId } = useAuth()
   const [comments, setComments] = useState<CommentWithExperiment[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [realtimeStatus, setRealtimeStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting')
   const [deleting, setDeleting] = useState<string | null>(null)
   const experimentsRef = useRef<Map<string, string>>(new Map())
-
-  useEffect(() => {
-    getSupabase().auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id ?? null)
-    })
-    const { data: sub } = getSupabase().auth.onAuthStateChange((_evt, session) => {
-      setUserId(session?.user?.id ?? null)
-    })
-    return () => sub.subscription.unsubscribe()
-  }, [])
 
   async function loadExperiments() {
     const { data } = await getSupabase()
