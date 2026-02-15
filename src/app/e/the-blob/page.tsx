@@ -4,7 +4,7 @@ import { useAmbientAudio } from './useAmbientAudio';
 
 // ── Constants & Types ──
 const MAX_ENT = 20, SPAWN_MS = 12000, BABY_P = 0.03, TRAIL_N = 50, NCNT = 14;
-const SK = 0.05, SD = 0.88, CE = 0.03, STILL_MS = 3000, STILL_TH = 2;
+const SK = 0.02, SD = 0.92, CE = 0.008, STILL_MS = 3000, STILL_TH = 2;
 const PARTICLE_COUNT = 60;
 const REDUCED_PARTICLE_COUNT = 20;
 const REDUCED_MOTION_SPEED = 0.4; // multiplier for animation speeds
@@ -174,22 +174,22 @@ export default function TheBlobPage(){
         switch(e.t){
           case'player':{
             if(mi.current){e.vx+=(m.x-e.x)*CE;e.vy+=(m.y-e.y)*CE;}
-            e.vx*=.92;e.vy*=.92;
+            e.vx*=.96;e.vy*=.96;
             // Gentle hue drift
             e.h=PALETTE.cyan+Math.sin(now*.0003+e.sd*10)*15;break;}
           case'mimic':{
             // Dance partner — follows with graceful delay
             if(!e.mb)e.mb=[];e.mb.push({x:m.x,y:m.y});const dl=180;
-            if(e.mb.length>dl){const t=e.mb[e.mb.length-dl];e.vx+=(t.x-e.x)*.02;e.vy+=(t.y-e.y)*.02;}
+            if(e.mb.length>dl){const t=e.mb[e.mb.length-dl];e.vx+=(t.x-e.x)*.008;e.vy+=(t.y-e.y)*.008;}
             if(e.mb.length>dl+60)e.mb=e.mb.slice(-(dl+60));
-            e.vx*=.94;e.vy*=.94;
+            e.vx*=.97;e.vy*=.97;
             const pp=a.find(x=>x.t==='player');
             if(pp)e.h=pp.h+20+Math.sin(now*.0005)*10;
             e.al=.5+Math.sin(now*.001)*.15;break;}
           case'shy':{
             // Ethereal — gently drifts away but is beautiful
             const dx=e.x-m.x,dy=e.y-m.y,dd=Math.hypot(dx,dy)||1;
-            if(dd<250){e.vx+=(dx/dd)*.12;e.vy+=(dy/dd)*.12;}
+            if(dd<250){e.vx+=(dx/dd)*.04;e.vy+=(dy/dd)*.04;}
             // Gentle attraction to other entities (not player)
             for(const f of a){if(f.t==='player'||f.t==='shy'||f.id===e.id)continue;
               const fx=f.x-e.x,fy=f.y-e.y,fd=Math.hypot(fx,fy)||1;
@@ -263,24 +263,24 @@ export default function TheBlobPage(){
           const mi2=A.t==='mimic'?A:B,pl=A.t==='player'?A:B;
           // Orbit gently instead of collision
           const ag=Math.atan2(mi2.y-pl.y,mi2.x-pl.x);
-          mi2.vx+=Math.cos(ag+Math.PI/2)*.3;mi2.vy+=Math.sin(ag+Math.PI/2)*.3;}
+          mi2.vx+=Math.cos(ag+Math.PI/2)*.1;mi2.vy+=Math.sin(ag+Math.PI/2)*.1;}
 
         // Shy — gently fades and drifts away
         if(A.t==='shy'||B.t==='shy'){const sh=A.t==='shy'?A:B,ot=A.t==='shy'?B:A;
           const ag=Math.atan2(sh.y-ot.y,sh.x-ot.x);
-          sh.vx+=Math.cos(ag)*.5;sh.vy+=Math.sin(ag)*.5;sh.al=Math.max(.1,sh.al-.05);}
+          sh.vx+=Math.cos(ag)*.15;sh.vy+=Math.sin(ag)*.15;sh.al=Math.max(.1,sh.al-.02);}
 
         // Gravity well — gentle redirect
         if(A.t==='gravity'||B.t==='gravity'){const g=A.t==='gravity'?A:B,o=A.t==='gravity'?B:A;
           if(o.t!=='gravity'){const ag=Math.atan2(o.y-g.y,o.x-g.x);
-            o.vx+=Math.cos(ag)*1.5;o.vy+=Math.sin(ag)*1.5;}}
+            o.vx+=Math.cos(ag)*.4;o.vy+=Math.sin(ag)*.4;}}
 
         // Gentle baby budding
         if(A.t!=='baby'&&B.t!=='baby'&&dd<cr*.8&&Math.random()<BABY_P*.02)spawnB(A,B,now);
 
         // Soft separation
         if(dd>0&&dd<cr*.8){const ol=cr*.8-dd,nx=(B.x-A.x)/dd,ny=(B.y-A.y)/dd;
-          A.vx-=nx*ol*.04;A.vy-=ny*ol*.04;B.vx+=nx*ol*.04;B.vy+=ny*ol*.04;}
+          A.vx-=nx*ol*.015;A.vy-=ny*ol*.015;B.vx+=nx*ol*.015;B.vy+=ny*ol*.015;}
       }}
       lm.current={x:m.x,y:m.y};
 

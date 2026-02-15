@@ -35,7 +35,7 @@ export function useAmbientAudio(reducedMotion: boolean): AmbientAudioState {
     // ── Lowpass filter: keep everything warm and soft ──
     const filter = ctx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.value = 220;  // cut highs aggressively
+    filter.frequency.value = 350;  // warm but not too muffled
     filter.Q.value = 0.7;
     filterRef.current = filter;
 
@@ -51,9 +51,9 @@ export function useAmbientAudio(reducedMotion: boolean): AmbientAudioState {
     // ── 3 layered oscillators at slightly detuned low frequencies ──
     // Base frequencies: deep ocean hum territory (50–80 Hz)
     const freqs = [
-      { freq: 55, detune: 0, gain: 0.045 },     // A1 — deep fundamental
-      { freq: 58.5, detune: -5, gain: 0.035 },   // slightly sharp — beating
-      { freq: 73.4, detune: 3, gain: 0.025 },    // D2-ish — gentle fifth above
+      { freq: 55, detune: 0, gain: 0.09 },      // A1 — deep fundamental
+      { freq: 58.5, detune: -5, gain: 0.07 },    // slightly sharp — beating
+      { freq: 73.4, detune: 3, gain: 0.05 },     // D2-ish — gentle fifth above
     ];
 
     const oscNodes: OscillatorNode[] = [];
@@ -82,7 +82,7 @@ export function useAmbientAudio(reducedMotion: boolean): AmbientAudioState {
 
     const lfoGain = ctx.createGain();
     // Modulation depth: oscillate master gain by ±0.015
-    lfoGain.gain.value = 0.015;
+    lfoGain.gain.value = 0.04;
     lfoGainRef.current = lfoGain;
 
     lfo.connect(lfoGain);
@@ -109,10 +109,10 @@ export function useAmbientAudio(reducedMotion: boolean): AmbientAudioState {
     }
     lfoRef.current?.start(now);
 
-    // Fade in gently over 3 seconds to base level ~0.05
+    // Fade in gently over 3 seconds to base level ~0.15
     if (masterGainRef.current) {
       masterGainRef.current.gain.setValueAtTime(0, now);
-      masterGainRef.current.gain.linearRampToValueAtTime(0.05, now + 3);
+      masterGainRef.current.gain.linearRampToValueAtTime(0.15, now + 3);
     }
 
     setIsPlaying(true);
@@ -142,7 +142,7 @@ export function useAmbientAudio(reducedMotion: boolean): AmbientAudioState {
       // Fade in over 2 seconds
       masterGain.gain.cancelScheduledValues(now);
       masterGain.gain.setValueAtTime(0, now);
-      masterGain.gain.linearRampToValueAtTime(0.05, now + 2);
+      masterGain.gain.linearRampToValueAtTime(0.15, now + 2);
       setIsPlaying(true);
     }
   }, [isPlaying, startAudio]);
