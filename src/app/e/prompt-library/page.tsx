@@ -280,7 +280,7 @@ export default function PromptLibrary() {
                         className="px-3 py-2 text-xs tracking-tight flex items-center min-h-[44px]"
                         style={{
                           fontFamily: 'var(--font-mono)',
-                          color: '#c33',
+                          color: 'var(--danger)',
                         }}
                       >
                         delete?
@@ -502,7 +502,7 @@ function HeaderButton({
   danger?: boolean;
   onClick: () => void;
 }) {
-  const baseColor = danger ? '#444' : active ? 'var(--fg)' : 'var(--muted)';
+  const baseColor = danger ? 'var(--border-hover)' : active ? 'var(--fg)' : 'var(--muted)';
   const baseBg = active ? 'rgba(235,235,235,0.05)' : 'transparent';
 
   return (
@@ -517,9 +517,9 @@ function HeaderButton({
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = danger
-          ? 'rgba(204,51,51,0.3)'
+          ? 'color-mix(in srgb, var(--danger) 30%, transparent)'
           : 'var(--border-hover)';
-        e.currentTarget.style.color = danger ? '#c33' : 'var(--fg)';
+        e.currentTarget.style.color = danger ? 'var(--danger)' : 'var(--fg)';
         if (!active) {
           e.currentTarget.style.backgroundColor = danger
             ? 'transparent'

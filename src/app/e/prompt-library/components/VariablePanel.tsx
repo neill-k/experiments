@@ -18,7 +18,7 @@ export function VariablePanel({ variables, values, onChange }: VariablePanelProp
       {variables.length === 0 ? (
         <p
           className="text-xs"
-          style={{ fontFamily: 'var(--font-mono)', color: '#444' }}
+          style={{ fontFamily: 'var(--font-mono)', color: 'var(--border-hover)' }}
         >
           No variables. Use {'{{variable}}'} syntax.
         </p>
@@ -28,7 +28,7 @@ export function VariablePanel({ variables, values, onChange }: VariablePanelProp
             <div key={v}>
               <label
                 className="text-[11px] block mb-1"
-                style={{ fontFamily: 'var(--font-mono)', color: '#444' }}
+                style={{ fontFamily: 'var(--font-mono)', color: 'var(--border-hover)' }}
               >
                 {v}
               </label>

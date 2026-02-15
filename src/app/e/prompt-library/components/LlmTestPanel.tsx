@@ -23,7 +23,7 @@ export function LlmTestPanel({ hasApiKey, loading, response, onTest }: LlmTestPa
           </h4>
           <pre
             className="text-xs whitespace-pre-wrap max-h-40 overflow-y-auto leading-relaxed"
-            style={{ fontFamily: 'var(--font-mono)', color: '#999' }}
+            style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
           >
             {response}
           </pre>
