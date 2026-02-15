@@ -83,90 +83,6 @@ body::after {
   }
 }
 
-/* ── Floating frosted glass navbar ── */
-.nav-glass {
-  background: rgba(20, 20, 25, 0.75);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-}
-
-.nav-border-glow {
-  position: absolute;
-  inset: -1px;
-  z-index: -1;
-  background: linear-gradient(
-    135deg,
-    rgba(240, 90, 255, 0.2),
-    rgba(90, 190, 255, 0.15),
-    rgba(120, 255, 180, 0.1),
-    rgba(255, 210, 120, 0.15),
-    rgba(240, 90, 255, 0.2)
-  );
-  background-size: 300% 300%;
-  animation: nav-glow-shift 8s ease-in-out infinite;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.nav-glass:hover .nav-border-glow {
-  opacity: 1;
-}
-
-@keyframes nav-glow-shift {
-  0%, 100% { background-position: 0% 50%; }
-  25% { background-position: 100% 0%; }
-  50% { background-position: 100% 100%; }
-  75% { background-position: 0% 100%; }
-}
-
-.nav-logo-mark {
-  font-size: 14px;
-  opacity: 0.7;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.group:hover .nav-logo-mark {
-  opacity: 1;
-  transform: rotate(-8deg) scale(1.1);
-}
-
-.nav-link {
-  position: relative;
-  padding: 4px 10px;
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  transition: color 0.2s ease, background 0.2s ease;
-}
-
-.nav-link:hover {
-  color: rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.nav-link-active {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.nav-link-active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 10px;
-  right: 10px;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
-}
-
 /* Card hover glow */
 .experiment-card {
   position: relative;
@@ -208,8 +124,5 @@ body::after {
   }
   .experiment-card::before {
     transition: none;
-  }
-  .nav-border-glow {
-    animation: none;
   }
 }

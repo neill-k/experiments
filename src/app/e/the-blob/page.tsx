@@ -408,7 +408,7 @@ export default function TheBlobPage(){
   },[spawnF,spawnB,startOnInteraction]);
 
   return(
-    <div style={{position:'fixed',inset:0,background:'#060a12',overflow:'hidden',userSelect:'none',WebkitUserSelect:'none',zIndex:1}}>
+    <div style={{position:'fixed',inset:0,background:'#060a12',overflow:'hidden',userSelect:'none',WebkitUserSelect:'none'}}>
       <style>{`
         .blob-touch{display:none}
         @media(hover:none)and(pointer:coarse){.blob-mouse{display:none}.blob-touch{display:inline}}

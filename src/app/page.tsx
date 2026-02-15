@@ -55,9 +55,13 @@ export default async function Home({
     <main className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto w-full max-w-3xl">
         <header>
-          <p className="text-sm font-[family-name:var(--font-body)] text-white/50">
+          <h1 className="text-4xl sm:text-5xl tracking-tight text-white">
+            Experiments
+          </h1>
+          <p className="mt-3 text-sm font-[family-name:var(--font-body)] text-white/50">
             {experiments.length} prototypes shipped — click to explore.
           </p>
+          <div className="mt-4 h-px w-16 bg-white/20" />
         </header>
 
         {/* Tag filter bar — client component for interactivity */}
