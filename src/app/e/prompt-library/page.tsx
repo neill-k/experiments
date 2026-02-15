@@ -427,101 +427,97 @@ export default function PromptLibrary() {
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="md:hidden fixed top-3 left-3 z-50 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-[#2a2a2a] text-lg"
+        className="md:hidden fixed top-16 left-3 z-50 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center border border-[#1a1a1a] bg-[#08080a] text-sm font-[family-name:var(--font-mono)] hover:border-[#333] transition-colors"
         aria-label="Toggle sidebar"
       >
-        {sidebarOpen ? '✕' : '☰'}
+        {sidebarOpen ? '\u00d7' : '\u2261'}
       </button>
-      
+
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div 
-          className="md:hidden fixed inset-0 z-30 bg-black/50"
+        <div
+          className="md:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      
-      <div className="flex h-screen">
-        {/* Sidebar - hidden on mobile unless open */}
+
+      <div className="flex h-screen pt-14">
+        {/* Sidebar */}
         <div className={`
-          md:w-64 md:relative fixed inset-y-0 left-0 z-40 
+          md:w-64 md:relative fixed inset-y-0 left-0 z-40
           transform transition-transform duration-200 ease-out
-          bg-[#08080a] border-r border-[#2a2a2a] flex flex-col
-          w-72
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+          bg-[#08080a] border-r border-[#1a1a1a] flex flex-col
+          w-72 pt-14
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0
         `}>
-          <div className="p-4 border-b border-[#2a2a2a]">
-            <h1 className="text-lg font-semibold text-white">📚 Prompt Library</h1>
-            <p className="text-xs text-gray-500 mt-1">Organize, version, test</p>
+          <div className="px-4 py-5 border-b border-[#1a1a1a]">
+            <h1 className="text-base font-[family-name:var(--font-display)] text-[#ebebeb] tracking-tight">Prompt Library</h1>
+            <p className="text-[11px] text-[#555] mt-1 font-[family-name:var(--font-body)] tracking-wide uppercase">Organize &middot; Version &middot; Test</p>
           </div>
 
-          <div className="p-2 border-b border-[#2a2a2a]">
+          <div className="px-3 py-2 border-b border-[#1a1a1a]">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="🔍 Search prompts..."
-              className="w-full px-3 py-2.5 bg-[#08080a] border border-[#2a2a2a] text-sm outline-none focus:border-blue-600 text-[#ebebeb] min-h-[44px]"
+              placeholder="Search&#x2026;"
+              className="w-full px-3 py-2.5 bg-transparent border border-[#1a1a1a] text-xs font-[family-name:var(--font-body)] outline-none focus:border-[#333] text-[#ebebeb] placeholder:text-[#444] min-h-[44px] transition-colors"
             />
           </div>
 
-          <div className="flex-1 overflow-y-auto p-2">
+          <div className="flex-1 overflow-y-auto py-2">
             {filteredPrompts.map((prompt) => (
-              <div
-                key={prompt.id}
-                className="w-full group"
-              >
+              <div key={prompt.id} className="w-full group px-2">
                 <button
                   onClick={() => {
                     setSelectedId(prompt.id);
                     setSidebarOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-3 mb-1 text-sm truncate transition-colors min-h-[44px] flex items-center justify-between ${
+                  className={`w-full text-left px-3 py-2.5 mb-px text-sm font-[family-name:var(--font-body)] truncate transition-colors min-h-[44px] flex items-center justify-between ${
                     selectedId === prompt.id
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-400 hover:bg-[#2a2a2a]'
+                      ? 'bg-[#ebebeb]/[0.07] text-[#ebebeb] border-l-2 border-l-[#ebebeb]'
+                      : 'text-[#777] hover:text-[#ebebeb] hover:bg-[#ebebeb]/[0.03] border-l-2 border-l-transparent'
                   }`}
                 >
                   <span className="truncate">{prompt.name}</span>
                   <button
                     onClick={(e) => togglePin(prompt.id, e)}
-                    className={`ml-2 text-sm px-1 transition-colors ${
-                      prompt.isPinned ? 'text-yellow-400' : 'text-gray-600 opacity-0 group-hover:opacity-100 hover:text-yellow-300'
+                    className={`ml-2 text-xs transition-colors flex-shrink-0 ${
+                      prompt.isPinned ? 'text-[#ebebeb]' : 'text-[#333] opacity-0 group-hover:opacity-100 hover:text-[#777]'
                     }`}
                     title={prompt.isPinned ? 'Unpin' : 'Pin to top'}
                   >
-                    {prompt.isPinned ? '★' : '☆'}
+                    {prompt.isPinned ? '\u25cf' : '\u25cb'}
                   </button>
                 </button>
               </div>
             ))}
           </div>
 
-          <div className="p-3 border-t border-[#2a2a2a] space-y-2">
+          <div className="p-3 border-t border-[#1a1a1a] space-y-1.5">
             <button
               onClick={() => setShowNewPrompt(true)}
-              className="w-full px-3 py-3 bg-blue-600 hover:bg-blue-700 text-sm font-medium transition-colors min-h-[44px] flex items-center justify-center"
+              className="w-full px-3 py-2.5 border border-[#1a1a1a] hover:border-[#333] text-xs font-[family-name:var(--font-body)] tracking-wide uppercase transition-colors min-h-[44px] flex items-center justify-center text-[#ebebeb]"
             >
-              + New Prompt
+              New Prompt
             </button>
             <button
               onClick={importFromFile}
-              className="w-full px-3 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-sm transition-colors min-h-[44px] flex items-center justify-center"
+              className="w-full px-3 py-2.5 text-xs font-[family-name:var(--font-body)] text-[#555] hover:text-[#999] transition-colors min-h-[44px] flex items-center justify-center"
             >
-              📤 Import .md
+              Import .md
             </button>
-            <div className="text-xs text-gray-500 text-center">or load preset:</div>
             <div className="relative">
               <button
                 onClick={() => setShowPresetDropdown(!showPresetDropdown)}
-                className="w-full px-3 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-sm transition-colors min-h-[44px] flex justify-between items-center"
+                className="w-full px-3 py-2.5 text-xs font-[family-name:var(--font-body)] text-[#555] hover:text-[#999] transition-colors min-h-[44px] flex justify-between items-center"
               >
-                <span>📋 Templates</span>
-                <span>{showPresetDropdown ? '▲' : '▼'}</span>
+                <span>Templates</span>
+                <span className="text-[10px]">{showPresetDropdown ? '\u25b2' : '\u25bc'}</span>
               </button>
               {showPresetDropdown && (
-                <div className="absolute bottom-full left-0 right-0 mb-1 bg-[#2a2a2a] border border-[#3a3a3a] shadow-lg z-10 max-h-48 overflow-y-auto">
+                <div className="absolute bottom-full left-0 right-0 mb-1 bg-[#0c0c0e] border border-[#1a1a1a] shadow-2xl z-10 max-h-48 overflow-y-auto">
                   {PRESETS.map((preset) => (
                     <button
                       key={preset.name}
@@ -529,7 +525,7 @@ export default function PromptLibrary() {
                         loadPreset(preset);
                         setShowPresetDropdown(false);
                       }}
-                      className="w-full px-3 py-3 text-left text-sm hover:bg-[#3a3a3a] transition-colors min-h-[44px] flex items-center"
+                      className="w-full px-3 py-2.5 text-left text-xs font-[family-name:var(--font-body)] text-[#777] hover:text-[#ebebeb] hover:bg-[#ebebeb]/[0.04] transition-colors min-h-[44px] flex items-center"
                     >
                       {preset.name}
                     </button>
@@ -541,74 +537,76 @@ export default function PromptLibrary() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden pt-14 md:pt-0">
+        <div className="flex-1 flex flex-col overflow-hidden">
           {selectedPrompt ? (
             <>
               {/* Header */}
-              <div className="p-3 md:p-4 border-b border-[#2a2a2a] flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-0">
+              <div className="px-4 md:px-6 py-3 border-b border-[#1a1a1a] flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-0">
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="text-lg md:text-xl font-semibold bg-transparent border-none outline-none text-white w-full md:w-64"
+                  className="text-lg md:text-xl font-[family-name:var(--font-display)] bg-transparent border-none outline-none text-[#ebebeb] w-full md:w-80 tracking-tight"
                 />
-                <div className="flex flex-wrap gap-1.5 md:gap-2">
+                <div className="flex flex-wrap gap-px">
                   <button
                     onClick={() => setShowSettings(!showSettings)}
-                    className={`px-2 md:px-3 py-2 text-xs md:text-sm transition-colors min-h-[44px] min-w-[44px] flex items-center ${
-                      showSettings ? 'bg-blue-600 text-white' : 'bg-[#2a2a2a] hover:bg-[#3a3a3a]'
+                    className={`px-3 py-2 text-xs font-[family-name:var(--font-mono)] tracking-tight transition-colors min-h-[44px] min-w-[44px] flex items-center border ${
+                      showSettings ? 'border-[#333] text-[#ebebeb] bg-[#ebebeb]/[0.05]' : 'border-[#1a1a1a] text-[#555] hover:text-[#999] hover:border-[#333]'
                     }`}
                   >
-                    ⚙️
+                    settings
                   </button>
                   <button
                     onClick={sharePrompt}
-                    className="px-2 md:px-3 py-2 text-xs md:text-sm bg-[#2a2a2a] hover:bg-[#3a3a3a] transition-colors min-h-[44px] min-w-[44px] flex items-center"
+                    className="px-3 py-2 text-xs font-[family-name:var(--font-mono)] tracking-tight border border-[#1a1a1a] text-[#555] hover:text-[#999] hover:border-[#333] transition-colors min-h-[44px] min-w-[44px] flex items-center"
                   >
-                    🔗
+                    share
                   </button>
                   <button
                     onClick={() => setShowPreview(!showPreview)}
-                    className="px-2 md:px-3 py-2 text-xs md:text-sm bg-[#2a2a2a] hover:bg-[#3a3a3a] transition-colors min-h-[44px] min-w-[44px] flex items-center"
+                    className={`px-3 py-2 text-xs font-[family-name:var(--font-mono)] tracking-tight transition-colors min-h-[44px] min-w-[44px] flex items-center border ${
+                      showPreview ? 'border-[#333] text-[#ebebeb] bg-[#ebebeb]/[0.05]' : 'border-[#1a1a1a] text-[#555] hover:text-[#999] hover:border-[#333]'
+                    }`}
                   >
-                    {showPreview ? '📝' : '👁'}
+                    {showPreview ? 'edit' : 'preview'}
                   </button>
                   <button
                     onClick={savePrompt}
-                    className="px-2 md:px-3 py-2 text-xs md:text-sm bg-green-600 hover:bg-green-700 transition-colors min-h-[44px] min-w-[44px] flex items-center"
+                    className="px-3 py-2 text-xs font-[family-name:var(--font-mono)] tracking-tight border border-[#1a1a1a] text-[#ebebeb] hover:bg-[#ebebeb]/[0.07] hover:border-[#333] transition-colors min-h-[44px] min-w-[44px] flex items-center"
                   >
-                    💾
+                    save
                   </button>
                   <button
                     onClick={() => deletePrompt(selectedPrompt.id)}
-                    className="px-2 md:px-3 py-2 text-xs md:text-sm bg-red-900/50 hover:bg-red-900 text-red-300 transition-colors min-h-[44px] min-w-[44px] flex items-center"
+                    className="px-3 py-2 text-xs font-[family-name:var(--font-mono)] tracking-tight border border-[#1a1a1a] text-[#444] hover:text-[#c33] hover:border-[#c33]/30 transition-colors min-h-[44px] min-w-[44px] flex items-center"
                   >
-                    🗑
+                    delete
                   </button>
                 </div>
               </div>
 
               {/* Settings Panel */}
               {showSettings && (
-                <div className="p-3 md:p-4 border-b border-[#2a2a2a] bg-[#08080a]/80">
-                  <h3 className="text-sm font-medium text-gray-400 mb-3">🔌 LLM API Settings</h3>
+                <div className="px-4 md:px-6 py-4 border-b border-[#1a1a1a]">
+                  <h3 className="text-[11px] font-[family-name:var(--font-body)] tracking-widest uppercase text-[#555] mb-3">API Configuration</h3>
                   <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-start">
                     <div className="flex-1 w-full">
-                      <label className="text-xs text-gray-500 block mb-1">API Key</label>
+                      <label className="text-[11px] text-[#444] block mb-1 font-[family-name:var(--font-mono)]">api_key</label>
                       <input
                         type="password"
                         value={settings.apiKey}
                         onChange={(e) => setSettings({ ...settings, apiKey: e.target.value })}
-                        placeholder="sk-... (OpenAI) or ant... (Anthropic)"
-                        className="w-full px-3 py-2.5 bg-[#08080a] border border-[#2a2a2a] text-sm outline-none focus:border-blue-600 min-h-[44px]"
+                        placeholder="sk-&#x2026; or ant-&#x2026;"
+                        className="w-full px-3 py-2.5 bg-transparent border border-[#1a1a1a] text-sm font-[family-name:var(--font-mono)] outline-none focus:border-[#333] min-h-[44px] text-[#ebebeb] placeholder:text-[#333] transition-colors"
                       />
                     </div>
-                    <div className="w-full md:w-48">
-                      <label className="text-xs text-gray-500 block mb-1">Model</label>
+                    <div className="w-full md:w-52">
+                      <label className="text-[11px] text-[#444] block mb-1 font-[family-name:var(--font-mono)]">model</label>
                       <select
                         value={settings.model}
                         onChange={(e) => setSettings({ ...settings, model: e.target.value })}
-                        className="w-full px-3 py-2.5 bg-[#08080a] border border-[#2a2a2a] text-sm outline-none focus:border-blue-600 min-h-[44px]"
+                        className="w-full px-3 py-2.5 bg-[#08080a] border border-[#1a1a1a] text-sm font-[family-name:var(--font-mono)] outline-none focus:border-[#333] min-h-[44px] text-[#ebebeb] transition-colors"
                       >
                         {MODELS.map((m) => (
                           <option key={m.id} value={m.id}>{m.name}</option>
@@ -616,65 +614,67 @@ export default function PromptLibrary() {
                       </select>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-600 mt-2">
-                    Keys stored locally in your browser. Not sent to any server except the LLM API directly.
+                  <p className="text-[11px] text-[#333] mt-3 font-[family-name:var(--font-mono)]">
+                    Keys stored locally. Sent only to the provider API.
                   </p>
                 </div>
               )}
 
               <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
                 {/* Editor / Preview */}
-                <div className="flex-1 p-3 md:p-4 overflow-auto">
+                <div className="flex-1 p-4 md:p-6 overflow-auto">
                   {showPreview ? (
                     <div className="space-y-4">
-                      <div className="bg-[#08080a] p-4 border border-[#2a2a2a]">
-                        <h3 className="text-sm font-medium text-gray-400 mb-2">Rendered Output</h3>
-                        <pre className="whitespace-pre-wrap text-sm text-[#ebebeb] font-mono">
+                      <div className="p-5 border border-[#1a1a1a]">
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-[11px] font-[family-name:var(--font-body)] tracking-widest uppercase text-[#555]">Rendered Output</h3>
+                          <button
+                            onClick={() => copyToClipboard(previewContent)}
+                            className="text-[11px] font-[family-name:var(--font-mono)] text-[#444] hover:text-[#999] transition-colors"
+                          >
+                            copy
+                          </button>
+                        </div>
+                        <pre className="whitespace-pre-wrap text-sm text-[#ccc] font-[family-name:var(--font-mono)] leading-relaxed">
                           {previewContent}
                         </pre>
                       </div>
-                      <button
-                        onClick={() => copyToClipboard(previewContent)}
-                        className="px-3 py-3 text-sm bg-[#2a2a2a] hover:bg-[#3a3a3a] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-                      >
-                        📋 Copy
-                      </button>
                     </div>
                   ) : (
                     <textarea
                       value={editContent}
                       onChange={(e) => setEditContent(e.target.value)}
-                      className="w-full h-full bg-[#08080a] p-4 text-sm font-mono text-[#ebebeb] resize-none outline-none border border-[#2a2a2a] min-h-[300px] md:min-h-0"
-                      placeholder="Write your prompt here... Use {{variable}} for variables."
+                      className="w-full h-full bg-transparent p-5 text-sm font-[family-name:var(--font-mono)] text-[#ccc] leading-relaxed resize-none outline-none border border-[#1a1a1a] focus:border-[#333] transition-colors min-h-[300px] md:min-h-0 placeholder:text-[#333]"
+                      placeholder="Write your prompt here&#x2026; Use {{variable}} for variables."
                     />
                   )}
                 </div>
 
-                {/* Variables Panel - full width on mobile, side on lg */}
-                <div className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-[#2a2a2a] p-3 md:p-4 overflow-y-auto">
-                  <h3 className="text-sm font-medium text-gray-400 mb-3">🔧 Variables</h3>
+                {/* Variables Panel */}
+                <div className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-[#1a1a1a] p-4 md:p-5 overflow-y-auto">
+                  <h3 className="text-[11px] font-[family-name:var(--font-body)] tracking-widest uppercase text-[#555] mb-4">Variables</h3>
                   {selectedPrompt.variables.length === 0 ? (
-                    <p className="text-xs text-gray-500">No variables found. Use {'{{variable}}'} syntax.</p>
+                    <p className="text-xs text-[#444] font-[family-name:var(--font-mono)]">No variables. Use {'{{variable}}'} syntax.</p>
                   ) : (
                     <div className="space-y-3">
                       {selectedPrompt.variables.map((v) => (
                         <div key={v}>
-                          <label className="text-xs text-gray-500 block mb-1">{v}</label>
+                          <label className="text-[11px] text-[#444] block mb-1 font-[family-name:var(--font-mono)]">{v}</label>
                           <input
                             type="text"
                             value={testValues[v] || ''}
                             onChange={(e) => setTestValues({ ...testValues, [v]: e.target.value })}
-                            className="w-full px-3 py-2.5 bg-[#08080a] border border-[#2a2a2a] text-sm outline-none focus:border-blue-600 min-h-[44px]"
-                            placeholder={`Enter ${v}...`}
+                            className="w-full px-3 py-2.5 bg-transparent border border-[#1a1a1a] text-sm font-[family-name:var(--font-mono)] outline-none focus:border-[#333] min-h-[44px] text-[#ebebeb] placeholder:text-[#333] transition-colors"
+                            placeholder={`${v}`}
                           />
                         </div>
                       ))}
                     </div>
                   )}
 
-                  <div className="mt-6 pt-4 border-t border-[#2a2a2a]">
-                    <h3 className="text-sm font-medium text-gray-400 mb-3">📜 Version History</h3>
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                  <div className="mt-6 pt-4 border-t border-[#1a1a1a]">
+                    <h3 className="text-[11px] font-[family-name:var(--font-body)] tracking-widest uppercase text-[#555] mb-3">Version History</h3>
+                    <div className="space-y-px max-h-48 overflow-y-auto">
                       {selectedPrompt.versions
                         .slice()
                         .reverse()
@@ -690,10 +690,10 @@ export default function PromptLibrary() {
                                 )
                               );
                             }}
-                            className="w-full text-xs bg-[#08080a] hover:bg-[#2a2a2a] p-3 flex justify-between items-center transition-colors min-h-[44px]"
+                            className="w-full text-xs font-[family-name:var(--font-mono)] hover:bg-[#ebebeb]/[0.04] p-3 flex justify-between items-center transition-colors min-h-[44px]"
                           >
-                            <span className="text-gray-500">v{selectedPrompt.versions.length - i}</span>
-                            <span className="text-gray-600">
+                            <span className="text-[#555]">v{selectedPrompt.versions.length - i}</span>
+                            <span className="text-[#333]">
                               {new Date(v.timestamp).toLocaleTimeString()}
                             </span>
                           </button>
@@ -701,26 +701,26 @@ export default function PromptLibrary() {
                     </div>
                   </div>
 
-                  <div className="mt-4 flex gap-2">
+                  <div className="mt-4 flex gap-px">
                     <button
                       onClick={() => copyToClipboard(editContent)}
-                      className="flex-1 px-3 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-sm transition-colors min-h-[44px] flex items-center justify-center"
+                      className="flex-1 px-3 py-2.5 border border-[#1a1a1a] hover:border-[#333] text-xs font-[family-name:var(--font-mono)] text-[#555] hover:text-[#999] transition-colors min-h-[44px] flex items-center justify-center"
                     >
-                      📋 Copy
+                      copy
                     </button>
                     <button
                       onClick={() => selectedPrompt && exportToMarkdown(selectedPrompt)}
-                      className="flex-1 px-3 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-sm transition-colors min-h-[44px] flex items-center justify-center"
+                      className="flex-1 px-3 py-2.5 border border-[#1a1a1a] hover:border-[#333] text-xs font-[family-name:var(--font-mono)] text-[#555] hover:text-[#999] transition-colors min-h-[44px] flex items-center justify-center"
                     >
-                      📥 Export
+                      export
                     </button>
                   </div>
 
                   {/* LLM Test Section */}
                   {llmResponse && (
-                    <div className="mt-4 p-3 bg-[#08080a] border border-[#2a2a2a]">
-                      <h4 className="text-xs font-medium text-gray-400 mb-2">🤖 LLM Response</h4>
-                      <pre className="text-xs text-gray-300 whitespace-pre-wrap max-h-40 overflow-y-auto">
+                    <div className="mt-4 p-4 border border-[#1a1a1a]">
+                      <h4 className="text-[11px] font-[family-name:var(--font-body)] tracking-widest uppercase text-[#555] mb-2">Response</h4>
+                      <pre className="text-xs text-[#999] font-[family-name:var(--font-mono)] whitespace-pre-wrap max-h-40 overflow-y-auto leading-relaxed">
                         {llmResponse}
                       </pre>
                     </div>
@@ -729,22 +729,22 @@ export default function PromptLibrary() {
                     <button
                       onClick={testWithLLM}
                       disabled={!settings.apiKey || llmLoading}
-                      className="w-full px-3 py-3 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm transition-colors min-h-[44px]"
+                      className="w-full px-3 py-2.5 border border-[#1a1a1a] hover:border-[#333] disabled:opacity-30 disabled:cursor-not-allowed text-xs font-[family-name:var(--font-mono)] text-[#ebebeb] transition-colors min-h-[44px]"
                     >
-                      {llmLoading ? '⏳ Calling API...' : '🤖 Test with LLM'}
+                      {llmLoading ? 'calling api\u2026' : 'test with llm'}
                     </button>
                     {!settings.apiKey && (
-                      <p className="text-xs text-gray-500 mt-1 text-center">Add API key in Settings first</p>
+                      <p className="text-[11px] text-[#333] mt-2 text-center font-[family-name:var(--font-mono)]">Configure API key in settings</p>
                     )}
                   </div>
                 </div>
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-500 p-4">
+            <div className="flex-1 flex items-center justify-center p-4">
               <div className="text-center">
-                <p className="text-lg mb-2">No prompt selected</p>
-                <p className="text-sm">Create a new prompt or load a preset to get started</p>
+                <p className="text-base font-[family-name:var(--font-display)] text-[#555] mb-2 tracking-tight">No prompt selected</p>
+                <p className="text-xs font-[family-name:var(--font-body)] text-[#333]">Create a new prompt or load a template to begin</p>
               </div>
             </div>
           )}
@@ -753,33 +753,33 @@ export default function PromptLibrary() {
 
       {/* New Prompt Modal */}
       {showNewPrompt && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#08080a] p-4 md:p-6 w-full max-w-sm border border-[#2a2a2a]">
-            <h2 className="text-lg font-semibold mb-4">New Prompt</h2>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0c0c0e] p-5 md:p-6 w-full max-w-sm border border-[#1a1a1a]">
+            <h2 className="text-base font-[family-name:var(--font-display)] mb-4 tracking-tight text-[#ebebeb]">New Prompt</h2>
             <input
               type="text"
               value={newPromptName}
               onChange={(e) => setNewPromptName(e.target.value)}
-              placeholder="Prompt name..."
-              className="w-full px-4 py-3 bg-[#08080a] border border-[#2a2a2a] mb-4 outline-none focus:border-blue-600 min-h-[44px]"
+              placeholder="Prompt name&#x2026;"
+              className="w-full px-4 py-3 bg-transparent border border-[#1a1a1a] mb-4 outline-none focus:border-[#333] min-h-[44px] text-sm font-[family-name:var(--font-body)] text-[#ebebeb] placeholder:text-[#333] transition-colors"
               autoFocus
             />
-            <div className="flex gap-2">
+            <div className="flex gap-px">
               <button
                 onClick={() => {
                   setShowNewPrompt(false);
                   setNewPromptName('');
                 }}
-                className="flex-1 px-4 py-3 bg-[#2a2a2a] hover:bg-[#3a3a3a] transition-colors min-h-[44px] flex items-center justify-center"
+                className="flex-1 px-4 py-3 border border-[#1a1a1a] hover:border-[#333] text-xs font-[family-name:var(--font-mono)] text-[#555] hover:text-[#999] transition-colors min-h-[44px] flex items-center justify-center"
               >
-                Cancel
+                cancel
               </button>
               <button
                 onClick={() => newPromptName && createPrompt(newPromptName)}
                 disabled={!newPromptName}
-                className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-h-[44px] flex items-center justify-center"
+                className="flex-1 px-4 py-3 border border-[#1a1a1a] hover:border-[#333] text-xs font-[family-name:var(--font-mono)] text-[#ebebeb] disabled:opacity-30 disabled:cursor-not-allowed transition-colors min-h-[44px] flex items-center justify-center"
               >
-                Create
+                create
               </button>
             </div>
           </div>
