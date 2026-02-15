@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { useAmbientAudio } from './useAmbientAudio';
+import { Comments } from '@/components/comments/Comments';
 
 // ── Constants & Types ──
 const MAX_ENT = 20, SPAWN_MS = 12000, BABY_P = 0.03, TRAIL_N = 50, NCNT = 14;
@@ -70,6 +71,7 @@ export default function TheBlobPage(){
   const reducedMotion=useRef(false);
   const dpr=useRef(1);
   const [reducedMotionState, setReducedMotionState] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const { isPlaying: audioPlaying, toggle: toggleAudio, startOnInteraction } = useAmbientAudio(reducedMotionState);
   const audioStartedOnce = useRef(false);
 
@@ -422,23 +424,93 @@ export default function TheBlobPage(){
           <span style={{color:'hsl(155,40%,55%)',opacity:.4}}>■</span> gravity
         </div>
       </div>
-      <button
-        onClick={(e)=>{e.stopPropagation();toggleAudio();}}
-        aria-label={audioPlaying?'Mute ambient audio':'Unmute ambient audio'}
+      {/* Bottom controls row */}
+      <div style={{position:'absolute',bottom:16,right:16,display:'flex',gap:8,zIndex:10}}>
+        <button
+          onClick={(e)=>{e.stopPropagation();setCommentsOpen(!commentsOpen);}}
+          aria-label={commentsOpen?'Close comments':'Open comments'}
+          style={{
+            background:'rgba(255,255,255,0.06)',
+            border:'1px solid rgba(255,255,255,0.08)',
+            padding:'6px 10px',
+            color:'rgba(255,255,255,0.25)',
+            fontSize:16,cursor:'pointer',
+            backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',
+            transition:'color 0.4s, background 0.4s',
+            lineHeight:1,
+          }}
+          onMouseEnter={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.5)';e.currentTarget.style.background='rgba(255,255,255,0.1)';}}
+          onMouseLeave={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.25)';e.currentTarget.style.background='rgba(255,255,255,0.06)';}}
+        >💬</button>
+        <button
+          onClick={(e)=>{e.stopPropagation();toggleAudio();}}
+          aria-label={audioPlaying?'Mute ambient audio':'Unmute ambient audio'}
+          style={{
+            background:'rgba(255,255,255,0.06)',
+            border:'1px solid rgba(255,255,255,0.08)',
+            padding:'6px 10px',
+            color:'rgba(255,255,255,0.25)',
+            fontSize:16,cursor:'pointer',
+            backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',
+            transition:'color 0.4s, background 0.4s',
+            lineHeight:1,
+          }}
+          onMouseEnter={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.5)';e.currentTarget.style.background='rgba(255,255,255,0.1)';}}
+          onMouseLeave={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.25)';e.currentTarget.style.background='rgba(255,255,255,0.06)';}}
+        >{audioPlaying?'🔊':'🔇'}</button>
+      </div>
+
+      {/* Comments slide-out panel */}
+      <div
         style={{
-          position:'absolute',bottom:16,right:16,
-          background:'rgba(255,255,255,0.06)',
-          border:'1px solid rgba(255,255,255,0.08)',
-          borderRadius:8,padding:'6px 10px',
-          color:'rgba(255,255,255,0.25)',
-          fontSize:16,cursor:'pointer',
-          backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',
-          transition:'color 0.4s, background 0.4s',
-          lineHeight:1,zIndex:10,
+          position:'absolute',
+          top:0,bottom:0,right:0,
+          width:'min(380px, 90vw)',
+          zIndex:20,
+          transform:commentsOpen?'translateX(0)':'translateX(100%)',
+          transition:'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          background:'rgba(8, 8, 10, 0.8)',
+          backdropFilter:'blur(24px) saturate(1.3)',
+          WebkitBackdropFilter:'blur(24px) saturate(1.3)',
+          borderLeft:'1px solid rgba(255,255,255,0.06)',
+          display:'flex',flexDirection:'column',
         }}
-        onMouseEnter={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.5)';e.currentTarget.style.background='rgba(255,255,255,0.1)';}}
-        onMouseLeave={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.25)';e.currentTarget.style.background='rgba(255,255,255,0.06)';}}
-      >{audioPlaying?'🔊':'🔇'}</button>
+        onClick={(e)=>e.stopPropagation()}
+      >
+        <div style={{
+          display:'flex',alignItems:'center',justifyContent:'space-between',
+          padding:'16px 20px',borderBottom:'1px solid rgba(255,255,255,0.06)',
+        }}>
+          <span style={{
+            fontFamily:'var(--font-display)',fontSize:16,color:'rgba(255,255,255,0.8)',
+          }}>Comments</span>
+          <button
+            onClick={()=>setCommentsOpen(false)}
+            style={{
+              background:'none',border:'none',color:'rgba(255,255,255,0.4)',
+              fontSize:18,cursor:'pointer',padding:'4px 8px',lineHeight:1,
+            }}
+            onMouseEnter={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.8)';}}
+            onMouseLeave={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.4)';}}
+            aria-label="Close comments"
+          >×</button>
+        </div>
+        <div style={{flex:1,overflowY:'auto',padding:'0 20px 20px'}}>
+          <Comments slug="the-blob" />
+        </div>
+      </div>
+
+      {/* Click-away overlay when comments open */}
+      {commentsOpen && (
+        <div
+          onClick={(e)=>{e.stopPropagation();setCommentsOpen(false);}}
+          style={{
+            position:'absolute',inset:0,zIndex:15,
+            background:'rgba(0,0,0,0.3)',
+            cursor:'default',
+          }}
+        />
+      )}
     </div>
   );
 }
