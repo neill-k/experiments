@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
+import { useAmbientAudio } from './useAmbientAudio';
 
 // ── Constants & Types ──
 const MAX_ENT = 20, SPAWN_MS = 12000, BABY_P = 0.03, TRAIL_N = 50, NCNT = 14;
@@ -68,6 +69,9 @@ export default function TheBlobPage(){
   const particles=useRef<Particle[]>([]);
   const reducedMotion=useRef(false);
   const dpr=useRef(1);
+  const [reducedMotionState, setReducedMotionState] = useState(false);
+  const { isPlaying: audioPlaying, toggle: toggleAudio, startOnInteraction } = useAmbientAudio(reducedMotionState);
+  const audioStartedOnce = useRef(false);
 
   const spawnF=useCallback((w:number,h:number,now:number)=>{
     const a=es.current;
@@ -96,8 +100,10 @@ export default function TheBlobPage(){
     // Detect prefers-reduced-motion
     const motionMQ=window.matchMedia('(prefers-reduced-motion: reduce)');
     reducedMotion.current=motionMQ.matches;
+    setReducedMotionState(motionMQ.matches);
     const onMotionChange=(e:MediaQueryListEvent)=>{
       reducedMotion.current=e.matches;
+      setReducedMotionState(e.matches);
       // Adjust particle count on change
       const targetCount=e.matches?REDUCED_PARTICLE_COUNT:PARTICLE_COUNT;
       if(particles.current.length>targetCount)particles.current.length=targetCount;
@@ -128,6 +134,8 @@ export default function TheBlobPage(){
     const onT=(e:TouchEvent)=>{if(e.touches[0]){ms.current={x:e.touches[0].clientX,y:e.touches[0].clientY};mi.current=true;}};
     const onC=(ev:Event)=>{
       ev.preventDefault();
+      // Start ambient audio on first interaction
+      if(!audioStartedOnce.current){audioStartedOnce.current=true;startOnInteraction();}
       const a=es.current,p=a.find(e=>e.t==='player');
       if(p&&p.r>18){const nr=p.r*.7;p.r=nr;p.ns=mkN(p.x,p.y,nr,NCNT);
         const ag=Math.random()*Math.PI*2;

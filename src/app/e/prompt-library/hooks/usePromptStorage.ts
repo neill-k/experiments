@@ -120,8 +120,21 @@ export function usePromptStorage() {
     );
   }, []);
 
-  const deletePrompt = useCallback((id: string) => {
-    setPrompts((prev) => prev.filter((p) => p.id !== id));
+  const deletePrompt = useCallback((id: string): Prompt | null => {
+    let deleted: Prompt | null = null;
+    setPrompts((prev) => {
+      deleted = prev.find((p) => p.id === id) ?? null;
+      return prev.filter((p) => p.id !== id);
+    });
+    return deleted;
+  }, []);
+
+  const restorePrompt = useCallback((prompt: Prompt) => {
+    setPrompts((prev) => {
+      // Avoid duplicates
+      if (prev.some((p) => p.id === prompt.id)) return prev;
+      return [...prev, prompt];
+    });
   }, []);
 
   const togglePin = useCallback((id: string) => {
@@ -155,6 +168,7 @@ export function usePromptStorage() {
     createPrompt,
     savePrompt,
     deletePrompt,
+    restorePrompt,
     togglePin,
     importFromFile,
   };

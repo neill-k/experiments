@@ -96,6 +96,13 @@ export function usePromptState(prompts: Prompt[]) {
     );
   }, []);
 
+  const clearSelection = useCallback(() => {
+    setSelectedId(null);
+    setEditName('');
+    setEditContent('');
+    setTestValues({});
+  }, []);
+
   return {
     selectedId,
     selectedPrompt,
@@ -114,6 +121,7 @@ export function usePromptState(prompts: Prompt[]) {
     filteredPrompts,
     previewContent,
     selectPrompt,
+    clearSelection,
     restoreVersion,
   };
 }

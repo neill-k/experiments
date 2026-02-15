@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Comments } from '@/components/comments/Comments';
 import { usePromptStorage } from './hooks/usePromptStorage';
 import { usePromptState } from './hooks/usePromptState';
+import { useAutoSave, type SaveStatus } from './hooks/useAutoSave';
 import { useLlmTest } from './hooks/useLlmTest';
 import { serializePrompt } from './utils';
 import { PromptList } from './components/PromptList';
@@ -24,6 +25,7 @@ export default function PromptLibrary() {
     createPrompt,
     savePrompt,
     deletePrompt,
+    restorePrompt,
     togglePin,
     importFromFile,
   } = usePromptStorage();
@@ -46,13 +48,24 @@ export default function PromptLibrary() {
     filteredPrompts,
     previewContent,
     selectPrompt,
+    clearSelection,
     restoreVersion,
   } = usePromptState(prompts);
 
   const { llmLoading, llmResponse, testWithLLM } = useLlmTest(settings);
 
+  const { status: saveStatus, saveNow } = useAutoSave({
+    selectedPrompt,
+    editName,
+    editContent,
+    savePrompt,
+  });
+
   const [showNewPrompt, setShowNewPrompt] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [undoToast, setUndoToast] = useState<{ prompt: Prompt; timer: number } | null>(null);
+  const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleCreatePrompt = useCallback(
     (name: string) => {
@@ -72,9 +85,8 @@ export default function PromptLibrary() {
   );
 
   const handleSave = useCallback(() => {
-    if (!selectedPrompt) return;
-    savePrompt(selectedPrompt.id, editName, editContent);
-  }, [selectedPrompt, savePrompt, editName, editContent]);
+    saveNow();
+  }, [saveNow]);
 
   const handleDelete = useCallback(() => {
     if (!selectedPrompt) return;
@@ -184,7 +196,8 @@ export default function PromptLibrary() {
                     color: 'var(--fg)',
                   }}
                 />
-                <div className="flex flex-wrap gap-px">
+                <div className="flex flex-wrap items-center gap-px">
+                  <SaveStatusIndicator status={saveStatus} />
                   <HeaderButton
                     label="settings"
                     active={showSettings}
@@ -304,6 +317,45 @@ export default function PromptLibrary() {
 /* ------------------------------------------------------------------ */
 /*  Small inline sub-components (no separate files needed)            */
 /* ------------------------------------------------------------------ */
+
+function SaveStatusIndicator({ status }: { status: SaveStatus }) {
+  const label =
+    status === 'saved' ? 'saved' : status === 'saving' ? 'saving…' : 'unsaved';
+  const color =
+    status === 'saved'
+      ? 'var(--border-hover)'
+      : status === 'saving'
+        ? 'var(--muted)'
+        : 'var(--fg)';
+
+  return (
+    <span
+      className="px-3 py-2 text-xs tracking-tight select-none flex items-center gap-1.5"
+      style={{
+        fontFamily: 'var(--font-mono)',
+        color,
+        opacity: status === 'saved' ? 0.5 : 0.85,
+        transition: 'color 150ms, opacity 150ms',
+      }}
+      title={
+        status === 'unsaved'
+          ? 'Changes will be auto-saved shortly'
+          : undefined
+      }
+    >
+      <span
+        style={{
+          display: 'inline-block',
+          width: 5,
+          height: 5,
+          backgroundColor: color,
+          transition: 'background-color 150ms',
+        }}
+      />
+      {label}
+    </span>
+  );
+}
 
 function HeaderButton({
   label,
