@@ -570,7 +570,7 @@ export default function PromptLibrary() {
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="md:hidden fixed top-16 left-3 z-50 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center border border-[#1a1a1a] bg-[#08080a] text-sm font-[family-name:var(--font-mono)] hover:border-[#333] transition-colors"
+        className="md:hidden fixed top-[60px] left-3 z-40 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center border border-[#1a1a1a] bg-[#08080a] text-sm font-[family-name:var(--font-mono)] hover:border-[#333] transition-colors"
         aria-label="Toggle sidebar"
       >
         {sidebarOpen ? '\u00d7' : '\u2261'}
