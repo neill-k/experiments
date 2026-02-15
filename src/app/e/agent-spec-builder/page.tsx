@@ -95,7 +95,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#08080a] text-[#ebebeb]">
+    <div className="min-h-screen bg-[#08080a] text-[#ebebeb] overflow-x-hidden">
       <header className="border-b border-[#2a2a2a] bg-[#08080a]">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div>
@@ -128,7 +128,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-6xl gap-4 px-4 py-6 sm:grid-cols-1 lg:grid-cols-2">
+      <main className="mx-auto grid max-w-6xl gap-4 px-4 py-6 grid-cols-1 lg:grid-cols-2 overflow-hidden">
         <section className="border border-[#2a2a2a] bg-[#08080a] p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -248,7 +248,7 @@ export default function Home() {
                             setInput({ ...input, toolContracts: updated });
                           }}
                           placeholder="Tool name (e.g., Slack: post message)"
-                          className="flex-1 rounded border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-sm text-[#ebebeb]"
+                          className="flex-1 w-full min-w-0 border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-sm text-[#ebebeb]"
                         />
                         <button
                           type="button"
@@ -272,7 +272,7 @@ export default function Home() {
                             setInput({ ...input, toolContracts: updated });
                           }}
                           placeholder="Purpose (what does this tool do?)"
-                          className="rounded border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <input
                           value={tc.auth}
@@ -282,7 +282,7 @@ export default function Home() {
                             setInput({ ...input, toolContracts: updated });
                           }}
                           placeholder="Auth (e.g., OAuth2, API key, user-approved)"
-                          className="rounded border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <input
                           value={tc.rateLimit}
@@ -292,7 +292,7 @@ export default function Home() {
                             setInput({ ...input, toolContracts: updated });
                           }}
                           placeholder="Rate limit (e.g., 100 req/min)"
-                          className="rounded border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <div className="flex items-center gap-2">
                           <input
@@ -318,7 +318,7 @@ export default function Home() {
                           }}
                           placeholder="Inputs (what data does it need?)"
                           rows={2}
-                          className="rounded border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <textarea
                           value={tc.outputs}
@@ -329,7 +329,7 @@ export default function Home() {
                           }}
                           placeholder="Outputs (what does it return?)"
                           rows={2}
-                          className="rounded border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -342,7 +342,7 @@ export default function Home() {
                           }}
                           placeholder="Failure modes (what can go wrong?)"
                           rows={2}
-                          className="rounded border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <textarea
                           value={tc.piiHandling}
@@ -353,7 +353,7 @@ export default function Home() {
                           }}
                           placeholder="PII handling (any personal data?)"
                           rows={2}
-                          className="rounded border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                       </div>
                     </div>
@@ -543,11 +543,11 @@ export default function Home() {
           </div>
 
           {previewMode === "raw" ? (
-            <pre className="mt-4 max-h-[60vh] overflow-auto border border-[#2a2a2a] bg-[#0a0a0c] p-4 text-xs leading-5 text-zinc-300">
+            <pre className="mt-4 max-h-[60vh] overflow-auto border border-[#2a2a2a] bg-[#0a0a0c] p-4 text-xs leading-5 text-zinc-300 whitespace-pre-wrap break-words">
               <code>{md}</code>
             </pre>
           ) : (
-            <div className="mt-4 max-h-[60vh] overflow-auto border border-[#2a2a2a] bg-[#08080a] p-4 prose prose-sm prose-invert max-w-none">
+            <div className="mt-4 max-h-[60vh] overflow-auto border border-[#2a2a2a] bg-[#08080a] p-4 prose prose-sm prose-invert max-w-none break-words">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{md}</ReactMarkdown>
             </div>
           )}
@@ -593,7 +593,7 @@ function Field(props: {
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
         placeholder={props.placeholder}
-        className="h-10 rounded border border-[#2a2a2a] bg-[#0a0a0c] px-3 text-sm text-[#ebebeb] outline-none ring-zinc-700 focus:ring-2"
+        className="h-10 w-full border border-[#2a2a2a] bg-[#0a0a0c] px-3 text-sm text-[#ebebeb] outline-none ring-zinc-700 focus:ring-2"
       />
     </label>
   );
@@ -614,7 +614,7 @@ function TextArea(props: {
         onChange={(e) => props.onChange(e.target.value)}
         placeholder={props.placeholder}
         rows={props.rows ?? 4}
-        className="rounded border border-[#2a2a2a] bg-[#0a0a0c] px-3 py-2 text-sm text-[#ebebeb] outline-none ring-zinc-700 focus:ring-2"
+        className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-3 py-2 text-sm text-[#ebebeb] outline-none ring-zinc-700 focus:ring-2"
       />
     </label>
   );
