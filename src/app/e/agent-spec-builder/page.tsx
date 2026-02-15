@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { generateSpecMarkdown, type SpecInput, type ToolContract, type EvalCase, EVAL_CATEGORIES } from "@/app/e/agent-spec-builder/lib/spec";
 import { presets } from "@/app/e/agent-spec-builder/lib/presets";
 import { Comments } from '@/components/comments/Comments';
+import { ExperimentNav } from '@/components/ExperimentNav';
 import Link from 'next/link';
 import { decodeSpecState, encodeSpecState } from "@/app/e/agent-spec-builder/lib/share";
 import { lintSpec } from "@/app/e/agent-spec-builder/lib/lint";
@@ -958,6 +959,11 @@ export default function Home() {
       {/* Comments */}
       <div className="mx-auto max-w-3xl px-4 pb-12">
         <Comments slug="agent-spec-builder" />
+      </div>
+
+      {/* Prev/Next experiment navigation */}
+      <div className="mx-auto max-w-3xl">
+        <ExperimentNav />
       </div>
     </div>
   );

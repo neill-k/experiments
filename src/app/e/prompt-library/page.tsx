@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Comments } from '@/components/comments/Comments';
+import { ExperimentNav } from '@/components/ExperimentNav';
 import { usePromptStorage } from './hooks/usePromptStorage';
 import { usePromptState } from './hooks/usePromptState';
 import { useAutoSave, type SaveStatus } from './hooks/useAutoSave';
@@ -443,6 +444,11 @@ export default function PromptLibrary() {
       {/* Comments */}
       <div className="mx-auto max-w-3xl px-4 pb-12">
         <Comments slug="prompt-library" />
+      </div>
+
+      {/* Prev/Next experiment navigation */}
+      <div className="mx-auto max-w-3xl">
+        <ExperimentNav />
       </div>
     </div>
   );
