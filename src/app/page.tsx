@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 
 const experiments = [
@@ -26,6 +27,8 @@ const experiments = [
   },
 ]
 
+const allTags = Array.from(new Set(experiments.flatMap((e) => e.tags))).sort()
+
 const isToday = (dateStr: string) => {
   const today = new Date().toISOString().split('T')[0]
   return dateStr === today
@@ -39,6 +42,16 @@ const isRecent = (dateStr: string) => {
 }
 
 export default function Home() {
+  const [activeTag, setActiveTag] = useState<string | null>(null)
+
+  const filtered = useMemo(
+    () =>
+      activeTag
+        ? experiments.filter((e) => e.tags.includes(activeTag))
+        : experiments,
+    [activeTag],
+  )
+
   return (
     <main className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto w-full max-w-3xl">
@@ -52,8 +65,35 @@ export default function Home() {
           <div className="mt-4 h-px w-16 bg-white/20" />
         </header>
 
-        <div className="mt-10 space-y-3">
-          {experiments.map((exp) => (
+        {/* Tag filter bar */}
+        <div className="mt-8 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setActiveTag(null)}
+            className={`px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
+              activeTag === null
+                ? 'border-white/30 text-white/80 bg-white/[0.08]'
+                : 'border-[var(--border)] text-white/30 hover:text-white/50 hover:border-[var(--border-hover)]'
+            }`}
+          >
+            all
+          </button>
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+              className={`px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
+                activeTag === tag
+                  ? 'border-white/30 text-white/80 bg-white/[0.08]'
+                  : 'border-[var(--border)] text-white/30 hover:text-white/50 hover:border-[var(--border-hover)]'
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-6 space-y-3">
+          {filtered.map((exp) => (
             <Link
               key={exp.slug}
               href={`/e/${exp.slug}`}
@@ -90,7 +130,9 @@ export default function Home() {
                 {exp.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="font-[family-name:var(--font-mono)] text-[10px] text-white/25 uppercase tracking-widest"
+                    className={`font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest transition-colors ${
+                      activeTag === tag ? 'text-white/60' : 'text-white/25'
+                    }`}
                   >
                     {tag}
                   </span>
@@ -98,6 +140,11 @@ export default function Home() {
               </div>
             </Link>
           ))}
+          {filtered.length === 0 && (
+            <p className="py-8 text-center text-sm font-[family-name:var(--font-body)] text-white/30">
+              No experiments match that tag yet.
+            </p>
+          )}
         </div>
 
         <footer className="mt-16 border-t border-[var(--border)] pt-6">
