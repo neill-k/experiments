@@ -324,7 +324,7 @@ export function Comments({ slug }: { slug: string }) {
         </div>
       ) : null}
 
-      <div className="mt-4 space-y-3">
+      <div className="mt-4 space-y-3" aria-live="polite" aria-relevant="additions">
         {comments.length === 0 ? (
           <div className="text-xs font-[family-name:var(--font-body)] text-white/50">No comments yet.</div>
         ) : (
