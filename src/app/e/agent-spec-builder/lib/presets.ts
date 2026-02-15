@@ -57,6 +57,7 @@ export const presets: Preset[] = [
         "\n"
       ),
       toolContracts: [],
+      evalCases: [],
       risks: [
         "Misclassification causing missed SLAs",
         "Over-escalation to on-call",
@@ -102,6 +103,7 @@ export const presets: Preset[] = [
         "Editing source-of-truth documents",
       ].join("\n"),
       toolContracts: [],
+      evalCases: [],
       risks: [
         "Hallucinated claims without citations",
         "Accidental disclosure of restricted content",
@@ -147,6 +149,7 @@ export const presets: Preset[] = [
         "Auto-scheduling people without consent",
       ].join("\n"),
       toolContracts: [],
+      evalCases: [],
       risks: [
         "Misattributing action items",
         "Leaking sensitive content",
@@ -189,6 +192,7 @@ export const presets: Preset[] = [
         "\n"
       ),
       toolContracts: [],
+      evalCases: [],
       risks: [
         "Incorrect routing causing delays",
         "Sensitive data exposure (credentials, access details)",
@@ -229,6 +233,7 @@ export const presets: Preset[] = [
       ].join("\n"),
       nonGoals: ["Making roadmap commitments", "Publishing externally"].join("\n"),
       toolContracts: [],
+      evalCases: [],
       risks: [
         "Stale data leading to wrong decisions",
         "Overconfident narrative without caveats",

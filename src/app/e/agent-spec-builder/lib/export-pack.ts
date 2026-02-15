@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import { generateSpecMarkdown, type SpecInput } from "./spec";
+import { generateSpecMarkdown, type SpecInput, EVAL_CATEGORIES } from "./spec";
 
 function slugify(name: string): string {
   return (name || "agent-spec")
@@ -65,7 +65,22 @@ ${metricsSection}
 
 ---
 
-## Offline Test Cases
+${input.evalCases && input.evalCases.length > 0
+    ? `## Eval Rubric (from builder)
+
+| # | Category | Scenario | Input | Expected Behavior | Pass Criteria |
+|---|----------|----------|-------|-------------------|---------------|
+${input.evalCases
+  .map((ec, i) => {
+    const catLabel = EVAL_CATEGORIES.find((c) => c.value === ec.category)?.label || ec.category;
+    return `| ${i + 1} | ${catLabel} | ${ec.scenario || "(TBD)"} | ${ec.input || "(TBD)"} | ${ec.expectedBehavior || "(TBD)"} | ${ec.passCriteria || "(TBD)"} |`;
+  })
+  .join("\n")}
+
+---
+
+`
+    : ""}## Offline Test Cases
 
 Write 10–30 realistic input/output pairs. Start with the happy path, then add edge cases.
 

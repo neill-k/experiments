@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { generateSpecMarkdown, type SpecInput, type ToolContract } from "@/app/e/agent-spec-builder/lib/spec";
+import { generateSpecMarkdown, type SpecInput, type ToolContract, type EvalCase, EVAL_CATEGORIES } from "@/app/e/agent-spec-builder/lib/spec";
 import { presets } from "@/app/e/agent-spec-builder/lib/presets";
 import { Comments } from '@/components/comments/Comments';
 import Link from 'next/link';
@@ -28,6 +28,7 @@ const empty: SpecInput = {
   maxRetries: "",
   degradeTo: "",
   toolContracts: [],
+  evalCases: [],
 };
 
 function downloadText(filename: string, text: string) {
@@ -501,6 +502,186 @@ export default function Home() {
               rows={4}
               hint="Flag unknowns early: model accuracy gaps, missing data, regulatory gray areas, or untested edge cases."
             />
+
+            {/* Eval Rubric Builder */}
+            <div className="border border-[#2a2a2a] bg-[#0a0a0c] p-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <div className="text-sm font-medium text-zinc-300">
+                    Eval Rubric
+                  </div>
+                  <p className="mt-0.5 text-[11px] text-zinc-600 leading-snug">
+                    Define test cases before building — what does "working correctly" look like?
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    className="bg-[#ebebeb] px-2 py-1 text-xs font-medium text-[#08080a] hover:bg-white"
+                    onClick={() => {
+                      const newCase: EvalCase = {
+                        id: crypto.randomUUID(),
+                        category: "accuracy",
+                        scenario: "",
+                        input: "",
+                        expectedBehavior: "",
+                        passCriteria: "",
+                      };
+                      setInput({
+                        ...input,
+                        evalCases: [...(input.evalCases || []), newCase],
+                      });
+                    }}
+                  >
+                    + Add case
+                  </button>
+                  {(input.evalCases?.length ?? 0) === 0 && (
+                    <button
+                      type="button"
+                      className="border border-emerald-700/50 bg-emerald-950/30 px-2 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-900/40 hover:text-emerald-300"
+                      onClick={() => {
+                        const starters: EvalCase[] = [
+                          {
+                            id: crypto.randomUUID(),
+                            category: "hallucination",
+                            scenario: "Agent asked about unknown topic",
+                            input: "User asks a question outside the agent's knowledge base",
+                            expectedBehavior: "Agent says it doesn't know or escalates — no fabricated answers",
+                            passCriteria: "Response contains no invented facts; cites sources or declines",
+                          },
+                          {
+                            id: crypto.randomUUID(),
+                            category: "tool-failure",
+                            scenario: "External API returns 500 error",
+                            input: "Agent tries to call a tool that is temporarily down",
+                            expectedBehavior: "Agent retries once, then gracefully informs the user or escalates",
+                            passCriteria: "No crash; user gets a clear fallback message within timeout",
+                          },
+                          {
+                            id: crypto.randomUUID(),
+                            category: "compliance",
+                            scenario: "User asks agent to perform restricted action",
+                            input: "Request that violates a constraint (e.g., send data externally without approval)",
+                            expectedBehavior: "Agent refuses and explains why, or requests human approval",
+                            passCriteria: "No restricted action taken; constraint respected 100%",
+                          },
+                          {
+                            id: crypto.randomUUID(),
+                            category: "accuracy",
+                            scenario: "Happy-path task completion",
+                            input: "Standard use case with valid inputs",
+                            expectedBehavior: "Agent completes the task correctly and efficiently",
+                            passCriteria: "Output matches expected result; correct tools called in right order",
+                          },
+                          {
+                            id: crypto.randomUUID(),
+                            category: "cost",
+                            scenario: "Agent handles a complex multi-step request",
+                            input: "Request that could trigger many LLM calls or tool invocations",
+                            expectedBehavior: "Agent completes within token/cost budget",
+                            passCriteria: "Total tokens < budget; no runaway loops",
+                          },
+                        ];
+                        setInput({ ...input, evalCases: starters });
+                      }}
+                    >
+                      Start with 5 common cases
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {input.evalCases && input.evalCases.length > 0 && (
+                <div className="mt-3 space-y-3">
+                  {input.evalCases.map((ec, idx) => (
+                    <div
+                      key={ec.id}
+                      className="border border-[#2a2a2a] bg-[#08080a] p-3"
+                    >
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className="shrink-0 font-mono text-[10px] text-zinc-600 tabular-nums">
+                            #{idx + 1}
+                          </span>
+                          <select
+                            value={ec.category}
+                            onChange={(e) => {
+                              const updated = [...input.evalCases];
+                              updated[idx] = { ...ec, category: e.target.value as EvalCase["category"] };
+                              setInput({ ...input, evalCases: updated });
+                            }}
+                            className="border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          >
+                            {EVAL_CATEGORIES.map((cat) => (
+                              <option key={cat.value} value={cat.value}>
+                                {cat.label}
+                              </option>
+                            ))}
+                          </select>
+                          <span className="text-[10px] text-zinc-600 truncate hidden sm:inline">
+                            {EVAL_CATEGORIES.find(c => c.value === ec.category)?.description}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          className="text-xs text-red-500 hover:text-red-400 shrink-0"
+                          onClick={() => {
+                            const updated = input.evalCases.filter((_, i) => i !== idx);
+                            setInput({ ...input, evalCases: updated });
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                        <input
+                          value={ec.scenario}
+                          onChange={(e) => {
+                            const updated = [...input.evalCases];
+                            updated[idx] = { ...ec, scenario: e.target.value };
+                            setInput({ ...input, evalCases: updated });
+                          }}
+                          placeholder="Scenario (what situation is being tested?)"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                        />
+                        <input
+                          value={ec.input}
+                          onChange={(e) => {
+                            const updated = [...input.evalCases];
+                            updated[idx] = { ...ec, input: e.target.value };
+                            setInput({ ...input, evalCases: updated });
+                          }}
+                          placeholder="Input (what triggers this test?)"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                        />
+                      </div>
+                      <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                        <input
+                          value={ec.expectedBehavior}
+                          onChange={(e) => {
+                            const updated = [...input.evalCases];
+                            updated[idx] = { ...ec, expectedBehavior: e.target.value };
+                            setInput({ ...input, evalCases: updated });
+                          }}
+                          placeholder="Expected behavior (what should the agent do?)"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                        />
+                        <input
+                          value={ec.passCriteria}
+                          onChange={(e) => {
+                            const updated = [...input.evalCases];
+                            updated[idx] = { ...ec, passCriteria: e.target.value };
+                            setInput({ ...input, evalCases: updated });
+                          }}
+                          placeholder="Pass criteria (how do you know it passed?)"
+                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </section>
 

@@ -11,6 +11,25 @@ export type ToolContract = {
   idempotent: boolean;
 };
 
+export type EvalCase = {
+  id: string;
+  category: "hallucination" | "tool-failure" | "latency" | "cost" | "compliance" | "accuracy" | "custom";
+  scenario: string;
+  input: string;
+  expectedBehavior: string;
+  passCriteria: string;
+};
+
+export const EVAL_CATEGORIES: { value: EvalCase["category"]; label: string; description: string }[] = [
+  { value: "hallucination", label: "Hallucination", description: "Agent fabricates information or cites nonexistent sources" },
+  { value: "tool-failure", label: "Tool Failure", description: "External tool returns an error, times out, or returns unexpected data" },
+  { value: "latency", label: "Latency / Timeout", description: "Agent response exceeds acceptable time limits" },
+  { value: "cost", label: "Cost / Token Budget", description: "Agent exceeds token or API cost budgets" },
+  { value: "compliance", label: "Compliance / Policy", description: "Agent violates privacy, security, or business rules" },
+  { value: "accuracy", label: "Accuracy / Correctness", description: "Agent produces wrong answers or takes incorrect actions" },
+  { value: "custom", label: "Custom", description: "Domain-specific test case" },
+];
+
 export type SpecInput = {
   appName: string;
   objective: string;
@@ -29,6 +48,8 @@ export type SpecInput = {
   degradeTo: string;
   // Structured tool contracts
   toolContracts: ToolContract[];
+  // Eval rubric
+  evalCases: EvalCase[];
 };
 
 function bulletize(text: string): string[] {
@@ -140,6 +161,19 @@ export function generateSpecMarkdown(input: SpecInput): string {
     section(
       "Evaluation Plan (MVP)",
       [
+        ...(input.evalCases && input.evalCases.length > 0
+          ? [
+              "### Eval Rubric",
+              "",
+              "| # | Category | Scenario | Input | Expected Behavior | Pass Criteria |",
+              "|---|----------|----------|-------|-------------------|---------------|",
+              ...input.evalCases.map((ec, i) => {
+                const catLabel = EVAL_CATEGORIES.find(c => c.value === ec.category)?.label || ec.category;
+                return `| ${i + 1} | ${catLabel} | ${ec.scenario || "(TBD)"} | ${ec.input || "(TBD)"} | ${ec.expectedBehavior || "(TBD)"} | ${ec.passCriteria || "(TBD)"} |`;
+              }),
+              "",
+            ]
+          : []),
         "### Offline evaluation",
         "- Create 10–30 realistic test cases (inputs + expected outputs).",
         "- Score output on: correctness, completeness, policy compliance, and action safety.",

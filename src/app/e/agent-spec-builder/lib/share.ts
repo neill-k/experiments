@@ -16,6 +16,7 @@ const EMPTY: SpecInput = {
   maxRetries: "",
   degradeTo: "",
   toolContracts: [],
+  evalCases: [],
 };
 
 function base64UrlEncode(input: string) {
@@ -50,6 +51,7 @@ export function decodeSpecState(encoded: string): SpecInput | null {
         Object.entries(raw ?? {}).map(([k, v]) => [k, typeof v === "string" ? v : v])
       ),
       toolContracts: Array.isArray(raw.toolContracts) ? raw.toolContracts : [],
+      evalCases: Array.isArray(raw.evalCases) ? raw.evalCases : [],
     } as SpecInput;
     return out;
   } catch {

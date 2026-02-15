@@ -111,6 +111,18 @@ export function evaluateQuality(input: SpecInput): {
           ? "Set a latency or cost target to keep scope realistic."
           : undefined,
     },
+    {
+      key: "eval",
+      label: "Eval Cases",
+      weight: 10,
+      filled: (input.evalCases?.length ?? 0) >= 2,
+      suggestion:
+        (input.evalCases?.length ?? 0) === 0
+          ? "Add eval test cases to validate agent behavior before building."
+          : (input.evalCases?.length ?? 0) < 2
+            ? "Add at least 2 eval cases for a meaningful rubric."
+            : undefined,
+    },
   ];
 
   const totalWeight = categories.reduce((s, c) => s + c.weight, 0);
