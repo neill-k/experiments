@@ -15,6 +15,14 @@ export interface Experiment {
 
 export const experiments: Experiment[] = [
   {
+    slug: 'ant-farm',
+    date: '2026-02-16',
+    title: 'Ant Farm',
+    description:
+      'A living ant colony simulation — watch ants dig tunnels, forage for food, and build an underground civilization',
+    tags: ['creative', 'canvas', 'simulation', 'interactive'],
+  },
+  {
     slug: 'the-blob',
     date: '2026-02-15',
     title: 'The Blob',
