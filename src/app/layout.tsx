@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { AuthButtons } from "@/components/AuthButtons";
 import Link from "next/link";
 import "./globals.css";
@@ -72,6 +73,7 @@ export default function RootLayout({
         <main id="main-content" className="pt-14">
           {children}
         </main>
+        <Analytics />
       </body>
     </html>
   );
