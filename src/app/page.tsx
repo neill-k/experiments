@@ -119,10 +119,38 @@ export default async function Home({
           )}
         </div>
 
-        <footer className="mt-16 border-t border-[var(--border)] pt-6">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] text-white/25">
-            Built overnight
-          </p>
+        <footer className="mt-16 border-t border-[var(--border)] pt-6 pb-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-1.5">
+              <p className="font-[family-name:var(--font-mono)] text-[11px] text-white/25">
+                Built overnight by an autonomous pipeline
+              </p>
+              {experiments.length > 0 && (
+                <p className="font-[family-name:var(--font-mono)] text-[11px] text-white/20">
+                  Last shipped {experiments[0].date}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://github.com/neill-k"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
+              >
+                GitHub
+              </a>
+              <span className="text-white/10">·</span>
+              <a
+                href="https://openclaw.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
+              >
+                Powered by OpenClaw
+              </a>
+            </div>
+          </div>
         </footer>
       </div>
     </main>
