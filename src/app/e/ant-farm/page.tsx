@@ -299,6 +299,9 @@ export default function AntFarmPage() {
         case 'R':
           triggerRain(sim);
           break;
+        case '?':
+          setShowHelp((h) => !h);
+          break;
       }
     }
     window.addEventListener('keydown', onKey);
@@ -370,6 +373,7 @@ export default function AntFarmPage() {
                 <span>R — trigger rain</span>
                 <span>Space — pause/resume</span>
                 <span>1 / 2 / 3 — speed (1x / 2x / 4x)</span>
+                <span>? — toggle this help</span>
               </div>
             </div>
           )}
@@ -432,6 +436,17 @@ export default function AntFarmPage() {
             <span className="hidden sm:inline font-[family-name:var(--font-mono)] text-[11px] text-white/20">
               Ant Farm
             </span>
+            <button
+              onClick={() => setShowHelp((h) => !h)}
+              className={`font-[family-name:var(--font-mono)] text-[11px] px-1.5 py-0.5 border transition-colors ${
+                showHelp
+                  ? 'border-white/30 text-white/70 bg-white/[0.06]'
+                  : 'border-white/10 text-white/25 hover:text-white/50'
+              }`}
+              title="Toggle controls help (?)"
+            >
+              ?
+            </button>
             <a
               href="https://github.com/neill-k/experiments/tree/main/src/app/e/ant-farm"
               target="_blank"
