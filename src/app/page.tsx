@@ -58,7 +58,19 @@ export default async function Home({
           <h1 className="text-4xl sm:text-5xl tracking-tight text-white">
             Experiments
           </h1>
-          <p className="mt-3 text-sm font-[family-name:var(--font-body)] text-white/50">
+          <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-white/60 leading-relaxed max-w-xl">
+            Every night, an autonomous pipeline dreams up, plans, builds, and
+            tests a new experiment — no human in the loop until morning. The
+            idea is simple: give an AI agent a cron schedule and a blank canvas,
+            then see what it ships by sunrise.
+          </p>
+          <p className="mt-3 text-sm font-[family-name:var(--font-body)] text-white/40 leading-relaxed max-w-xl">
+            Four stages run on a timer: an ideator proposes concepts at 9 PM,
+            a planner architects the build at 10, an implementer writes the code
+            at 11:30, and a tester validates it by 2:30 AM. Each stage can
+            incorporate feedback if I catch it in time — otherwise it just ships.
+          </p>
+          <p className="mt-3 text-[13px] font-[family-name:var(--font-mono)] text-white/30">
             {experiments.length} prototypes shipped — click to explore.
           </p>
           <div className="mt-4 h-px w-16 bg-white/20" />
