@@ -162,12 +162,12 @@ export default async function Home({
             </div>
             <div className="flex items-center gap-4">
               <a
-                href="https://github.com/neill-k"
+                href="https://github.com/neill-k/experiments"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
               >
-                GitHub
+                View source
               </a>
               <span className="text-white/10">·</span>
               <a

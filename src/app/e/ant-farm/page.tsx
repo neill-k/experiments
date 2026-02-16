@@ -432,6 +432,14 @@ export default function AntFarmPage() {
             <span className="hidden sm:inline font-[family-name:var(--font-mono)] text-[11px] text-white/20">
               Ant Farm
             </span>
+            <a
+              href="https://github.com/neill-k/experiments/tree/main/src/app/e/ant-farm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-[family-name:var(--font-mono)] text-[11px] text-white/15 hover:text-white/40 transition-colors"
+            >
+              &lt;/&gt;
+            </a>
             <button
               onClick={() => setShowComments((s) => !s)}
               className="font-[family-name:var(--font-mono)] text-[11px] text-white/40 hover:text-white/70 transition-colors"

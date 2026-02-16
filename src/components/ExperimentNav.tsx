@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { experiments } from '@/lib/experiments'
+import { experiments, sourceUrl } from '@/lib/experiments'
 
 export function ExperimentNav() {
   const pathname = usePathname()
@@ -37,12 +37,22 @@ export function ExperimentNav() {
         <div />
       )}
 
-      <Link
-        href="/"
-        className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-white/20 hover:text-white/50 transition-colors"
-      >
-        All experiments
-      </Link>
+      <div className="flex flex-col items-center gap-1.5">
+        <Link
+          href="/"
+          className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-white/20 hover:text-white/50 transition-colors"
+        >
+          All experiments
+        </Link>
+        <a
+          href={sourceUrl(currentSlug)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-[family-name:var(--font-mono)] text-[10px] text-white/15 hover:text-white/40 transition-colors"
+        >
+          view source ↗
+        </a>
+      </div>
 
       {next ? (
         <Link

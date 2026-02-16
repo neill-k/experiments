@@ -5,6 +5,8 @@
  * and inter-experiment navigation all read from this list.
  */
 
+export const REPO_URL = 'https://github.com/neill-k/experiments'
+
 export interface Experiment {
   slug: string
   date: string
@@ -12,6 +14,11 @@ export interface Experiment {
   description: string
   tags: string[]
   icon?: string
+}
+
+/** Returns the GitHub URL for an experiment's source directory. */
+export function sourceUrl(slug: string): string {
+  return `${REPO_URL}/tree/main/src/app/e/${slug}`
 }
 
 export const experiments: Experiment[] = [

@@ -458,6 +458,27 @@ export default function TheBlobPage(){
           onMouseEnter={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.5)';e.currentTarget.style.background='rgba(255,255,255,0.1)';}}
           onMouseLeave={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.25)';e.currentTarget.style.background='rgba(255,255,255,0.06)';}}
         >{audioPlaying?'🔊':'🔇'}</button>
+        <a
+          href="https://github.com/neill-k/experiments/tree/main/src/app/e/the-blob"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e)=>e.stopPropagation()}
+          style={{
+            background:'rgba(255,255,255,0.06)',
+            border:'1px solid rgba(255,255,255,0.08)',
+            padding:'6px 10px',
+            color:'rgba(255,255,255,0.15)',
+            fontSize:11,cursor:'pointer',
+            backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',
+            transition:'color 0.4s, background 0.4s',
+            lineHeight:1,
+            textDecoration:'none',
+            fontFamily:'var(--font-mono), monospace',
+            display:'flex',alignItems:'center',
+          }}
+          onMouseEnter={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.4)';e.currentTarget.style.background='rgba(255,255,255,0.1)';}}
+          onMouseLeave={(e)=>{e.currentTarget.style.color='rgba(255,255,255,0.15)';e.currentTarget.style.background='rgba(255,255,255,0.06)';}}
+        >&lt;/&gt;</a>
       </div>
 
       {/* Comments slide-out panel */}
