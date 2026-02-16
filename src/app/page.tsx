@@ -15,6 +15,27 @@ const isRecent = (dateStr: string) => {
   return diffDays <= 2
 }
 
+const relativeDate = (dateStr: string): string => {
+  const date = new Date(dateStr + 'T00:00:00Z')
+  const now = new Date()
+  const todayStr = now.toISOString().split('T')[0]
+  const yesterdayDate = new Date(now)
+  yesterdayDate.setUTCDate(yesterdayDate.getUTCDate() - 1)
+  const yesterdayStr = yesterdayDate.toISOString().split('T')[0]
+
+  if (dateStr === todayStr) return 'today'
+  if (dateStr === yesterdayStr) return 'yesterday'
+
+  const diffMs = now.getTime() - date.getTime()
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+  if (diffDays < 7) return `${diffDays} days ago`
+  if (diffDays < 14) return '1 week ago'
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`
+  if (diffDays < 60) return '1 month ago'
+  return `${Math.floor(diffDays / 30)} months ago`
+}
+
 export default async function Home({
   searchParams,
 }: {
@@ -95,6 +116,9 @@ export default async function Home({
                 <div className="shrink-0 text-right">
                   <div className="font-[family-name:var(--font-mono)] text-[11px] text-white/30">
                     {exp.date}
+                  </div>
+                  <div className="font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5">
+                    {relativeDate(exp.date)}
                   </div>
                 </div>
               </div>
