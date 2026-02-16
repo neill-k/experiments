@@ -141,7 +141,7 @@ export default async function Home({
 
         <footer className="mt-16 border-t border-[var(--border)] pt-6">
           <p className="font-[family-name:var(--font-mono)] text-[11px] text-white/25">
-            Built overnight by an AI agent for Neill Killgore
+            Built overnight
           </p>
         </footer>
       </div>
