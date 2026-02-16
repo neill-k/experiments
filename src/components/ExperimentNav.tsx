@@ -29,6 +29,7 @@ export function ExperimentNav() {
             ← Previous
           </span>
           <span className="font-[family-name:var(--font-display)] text-sm">
+            {prev.icon && <span className="mr-1.5" aria-hidden="true">{prev.icon}</span>}
             {prev.title}
           </span>
         </Link>
@@ -53,6 +54,7 @@ export function ExperimentNav() {
           </span>
           <span className="font-[family-name:var(--font-display)] text-sm">
             {next.title}
+            {next.icon && <span className="ml-1.5" aria-hidden="true">{next.icon}</span>}
           </span>
         </Link>
       ) : (

@@ -11,6 +11,7 @@ export interface Experiment {
   title: string
   description: string
   tags: string[]
+  icon?: string
 }
 
 export const experiments: Experiment[] = [
@@ -21,6 +22,7 @@ export const experiments: Experiment[] = [
     description:
       'A living ant colony simulation — watch ants dig tunnels, forage for food, and build an underground civilization',
     tags: ['creative', 'canvas', 'simulation', 'interactive'],
+    icon: '🐜',
   },
   {
     slug: 'the-blob',
@@ -29,6 +31,7 @@ export const experiments: Experiment[] = [
     description:
       'A bioluminescent ecosystem of cursor-following entities that split, merge, hunt, flee, and glitch',
     tags: ['creative', 'canvas', 'interactive'],
+    icon: '🫧',
   },
   {
     slug: 'prompt-library',
@@ -37,6 +40,7 @@ export const experiments: Experiment[] = [
     description:
       'Organize, version, and test prompts for LLM applications',
     tags: ['tools', 'llm'],
+    icon: '📝',
   },
   {
     slug: 'agent-spec-builder',
@@ -45,6 +49,7 @@ export const experiments: Experiment[] = [
     description:
       'Turn agent ideas into implementable Markdown specs',
     tags: ['agents', 'specs'],
+    icon: '🤖',
   },
 ]
 

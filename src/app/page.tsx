@@ -95,6 +95,11 @@ export default async function Home({
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2.5 flex-wrap">
+                    {exp.icon && (
+                      <span className="text-lg leading-none" aria-hidden="true">
+                        {exp.icon}
+                      </span>
+                    )}
                     <span className="text-base font-[family-name:var(--font-display)] text-white/90">
                       {exp.title}
                     </span>
