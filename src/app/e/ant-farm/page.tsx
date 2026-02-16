@@ -211,6 +211,8 @@ export default function AntFarmPage() {
   const rafRef = useRef<number>(0);
   const [showComments, setShowComments] = useState(false);
   const [showHelp, setShowHelp] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [speed, setSpeed] = useState(1);
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -288,10 +290,11 @@ export default function AntFarmPage() {
         case ' ':
           e.preventDefault();
           sim.paused = !sim.paused;
+          setIsPaused(sim.paused);
           break;
-        case '1': sim.speed = 1; break;
-        case '2': sim.speed = 2; break;
-        case '3': sim.speed = 4; break;
+        case '1': sim.speed = 1; setSpeed(1); break;
+        case '2': sim.speed = 2; setSpeed(2); break;
+        case '3': sim.speed = 4; setSpeed(4); break;
         case 'r':
         case 'R':
           triggerRain(sim);
@@ -375,16 +378,67 @@ export default function AntFarmPage() {
 
       {/* bottom bar */}
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#08080a]/90 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-2">
-          <span className="font-[family-name:var(--font-mono)] text-[11px] text-white/30">
-            Ant Farm — autonomous colony simulation
-          </span>
-          <button
-            onClick={() => setShowComments((s) => !s)}
-            className="font-[family-name:var(--font-mono)] text-[11px] text-white/40 hover:text-white/70 transition-colors"
-          >
-            {showComments ? 'hide comments' : 'comments'}
-          </button>
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-3 py-2 gap-2">
+          {/* control buttons */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => {
+                const sim = simRef.current;
+                if (!sim) return;
+                sim.paused = !sim.paused;
+                setIsPaused(sim.paused);
+              }}
+              className={`font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border transition-colors ${
+                isPaused
+                  ? 'border-amber-500/40 text-amber-400/80 bg-amber-500/10'
+                  : 'border-white/10 text-white/40 hover:text-white/70'
+              }`}
+              title="Pause / Resume (Space)"
+            >
+              {isPaused ? '▶' : '⏸'}
+            </button>
+            {([1, 2, 4] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => {
+                  const sim = simRef.current;
+                  if (!sim) return;
+                  sim.speed = s;
+                  setSpeed(s);
+                }}
+                className={`font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border transition-colors ${
+                  speed === s
+                    ? 'border-white/30 text-white/70 bg-white/[0.06]'
+                    : 'border-white/10 text-white/30 hover:text-white/60'
+                }`}
+                title={`Speed ${s}x`}
+              >
+                {s}x
+              </button>
+            ))}
+            <button
+              onClick={() => {
+                const sim = simRef.current;
+                if (sim) triggerRain(sim);
+              }}
+              className="font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border border-white/10 text-white/30 hover:text-blue-400/80 hover:border-blue-500/30 transition-colors"
+              title="Trigger Rain (R)"
+            >
+              🌧
+            </button>
+          </div>
+          {/* right side */}
+          <div className="flex items-center gap-3">
+            <span className="hidden sm:inline font-[family-name:var(--font-mono)] text-[11px] text-white/20">
+              Ant Farm
+            </span>
+            <button
+              onClick={() => setShowComments((s) => !s)}
+              className="font-[family-name:var(--font-mono)] text-[11px] text-white/40 hover:text-white/70 transition-colors"
+            >
+              {showComments ? 'hide comments' : 'comments'}
+            </button>
+          </div>
         </div>
       </div>
 
