@@ -1,22 +1,14 @@
 export const GRID_W = 400;
 export const GRID_H = 250;
 export const CELL_PX = 3;
-export const SURFACE_Y = 0.08;
-export const TOPSOIL_END = 0.20;
-export const MID_END = 0.72;
-export const HARD_END = 0.92;
 export const CANVAS_W = GRID_W * CELL_PX;
 export const CANVAS_H = GRID_H * CELL_PX;
 export const INITIAL_ANTS = 15;
 export const MAX_ANTS = 300;
-export const MOBILE_MAX_ANTS = 200;
 export const ANT_SPEED = 1.2;
+export const ANT_TURN_RATE = 0.15;
 export const ANT_ENERGY_MAX = 100;
 export const ANT_ENERGY_DRAIN = 0.02;
-export const QUEEN_SIZE = 2.5;
-export const WORKER_SIZE = 1.4;
-export const DIG_PROB_DIRT = 0.08;
-export const DIG_PROB_HARD = 0.03;
 export const PHERO_DECAY_FOOD = 0.997;
 export const PHERO_DECAY_HOME = 0.995;
 export const PHERO_DECAY_ALARM = 0.97;
@@ -28,32 +20,36 @@ export const PHERO_SENSE_RANGE = 5;
 export const PHERO_WALK_DECAY = 0.995;
 export const EGG_INTERVAL = 600;
 export const HATCH_TIME = 900;
+export const MATURE_TIME = 600;
 export const FOOD_SPAWN_INTERVAL = 2700;
-export const FOOD_DROP_AMOUNT = 0.8;
-export const INITIAL_CHAMBER_W = 12;
-export const INITIAL_CHAMBER_H = 8;
-export const ENTRANCE_WIDTH = 4;
-export const ENTRANCE_DEPTH = 30;
 export const WATER_EVAP_RATE = 0.0003;
 export const RAIN_DURATION = 300;
-export const RAIN_DROP_COUNT = 8;
 export const PHERO_RENDER_SKIP = 3;
+export const PHERO_RENDER_SCALE = 0.25;
+export const MOBILE_MAX_ANTS = 200;
 export const MAX_DPR = 2;
-export const COL_SKY_TOP = '#0a0e1a';
-export const COL_SKY_BOT = '#1a1530';
-export const COL_GRASS = '#2d4a1c';
-export const COL_TOPSOIL = '#2a1f14';
-export const COL_CLAY = '#3d2b1a';
-export const COL_SAND = '#4a3c28';
-export const COL_DEEP = '#1a1209';
-export const COL_BEDROCK = '#0f0f0f';
-export const COL_ROCK = '#3a3a3a';
-export const COL_FOOD_SRC = '#5fa33e';
-export const COL_WATER = '#1a4a6e';
-export const COL_TUNNEL = '#110d08';
-export const COL_ANT = '#c4722a';
-export const COL_ANT_DARK = '#8b4513';
-export const COL_QUEEN = '#d4823a';
-export const PH_FOOD_RGB = [0, 200, 255] as const;
-export const PH_HOME_RGB = [255, 170, 0] as const;
-export const PH_ALARM_RGB = [255, 50, 50] as const;
+
+export const COLORS = {
+  bg: '#08080a',
+  text: '#ebebeb',
+  topsoil: '#2a1f14',
+  clay: '#3d2b1a',
+  sand: '#4a3c28',
+  deepEarth: '#1a1209',
+  bedrock: '#0f0f0f',
+  tunnel: '#110d08',
+  antBody: '#c4722a',
+  antDark: '#8b4513',
+  queen: '#d4823a',
+  grass: '#2d4a1c',
+  skyTop: '#0a0e1a',
+  skyBottom: '#1a1530',
+  foodLeaf: '#5fa33e',
+  foodBerry: '#c43a3a',
+  water: '#1a4a6e',
+  rock: '#3a3a3a',
+  foodStore: '#8b6914',
+  pheroFood: '#00c8ff',
+  pheroHome: '#ffaa00',
+  pheroAlarm: '#ff3333',
+} as const;
