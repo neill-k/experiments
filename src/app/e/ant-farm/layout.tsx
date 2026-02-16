@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     url: "https://experiments.neillkillgore.com/e/ant-farm",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Ant Farm — Experiments",
     description: "A living ant colony simulation — watch ants dig tunnels, forage for food, and build an underground civilization.",
   },

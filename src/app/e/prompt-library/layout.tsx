@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     siteName: "Experiments",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Prompt Library & Playground — Experiments",
     description: "Organize, version, and test prompts for LLM applications.",
   },

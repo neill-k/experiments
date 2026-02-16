@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     url: "https://experiments.neillkillgore.com",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Experiments — Neill Killgore",
     description: "Daily shipped prototypes — interactive tools, creative canvases, and AI utilities.",
   },

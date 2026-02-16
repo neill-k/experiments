@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     url: "https://experiments.neillkillgore.com/e/the-blob",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "The Blob — Experiments",
     description:
       "A bioluminescent ecosystem of cursor-following entities that split, merge, hunt, flee, and glitch.",

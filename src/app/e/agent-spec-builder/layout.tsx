@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     siteName: "Experiments",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Agent Spec Builder — Experiments",
     description:
       "Turn agent ideas into implementable Markdown specs with tool contracts, eval rubrics, and export packs.",
