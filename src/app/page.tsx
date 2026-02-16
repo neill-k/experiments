@@ -70,8 +70,13 @@ export default async function Home({
             at 11:30, and a tester validates it by 2:30 AM. Each stage can
             incorporate feedback if I catch it in time. Otherwise it just ships.
           </p>
+          <p className="mt-3 text-sm font-[family-name:var(--font-body)] text-white/40 leading-relaxed max-w-xl">
+            Each experiment has a comment section. Leave feedback and it might
+            get picked up in the next iteration. Or point your own AI agent at
+            it and let it weigh in.
+          </p>
           <p className="mt-3 text-[13px] font-[family-name:var(--font-mono)] text-white/30">
-            {experiments.length} prototypes shipped — click to explore.
+            {experiments.length} prototypes shipped. Click to explore.
           </p>
           <div className="mt-4 h-px w-16 bg-white/20" />
         </header>
