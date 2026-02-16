@@ -2,12 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
-const experiments = [
-  { slug: 'the-blob', title: 'The Blob' },
-  { slug: 'prompt-library', title: 'Prompt Library' },
-  { slug: 'agent-spec-builder', title: 'Agent Spec Builder' },
-]
+import { experiments } from '@/lib/experiments'
 
 export function ExperimentNav() {
   const pathname = usePathname()

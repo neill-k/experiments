@@ -1,32 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { TagFilter } from '@/components/TagFilter'
-
-const experiments = [
-  {
-    slug: 'the-blob',
-    date: '2026-02-15',
-    title: 'The Blob',
-    description: 'A bioluminescent ecosystem of cursor-following entities that split, merge, hunt, flee, and glitch',
-    tags: ['creative', 'canvas', 'interactive'],
-  },
-  {
-    slug: 'prompt-library',
-    date: '2026-02-14',
-    title: 'Prompt Library',
-    description: 'Organize, version, and test prompts for LLM applications',
-    tags: ['tools', 'llm'],
-  },
-  {
-    slug: 'agent-spec-builder',
-    date: '2026-02-13',
-    title: 'Agent Spec Builder',
-    description: 'Turn agent ideas into implementable Markdown specs',
-    tags: ['agents', 'specs'],
-  },
-]
-
-const allTags = Array.from(new Set(experiments.flatMap((e) => e.tags))).sort()
+import { experiments, allTags } from '@/lib/experiments'
 
 const isToday = (dateStr: string) => {
   const today = new Date().toISOString().split('T')[0]

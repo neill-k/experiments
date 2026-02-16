@@ -1,10 +1,5 @@
 import type { MetadataRoute } from 'next'
-
-const experiments = [
-  { slug: 'the-blob', date: '2026-02-15' },
-  { slug: 'prompt-library', date: '2026-02-14' },
-  { slug: 'agent-spec-builder', date: '2026-02-13' },
-]
+import { experiments } from '@/lib/experiments'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://experiments.neillkillgore.com'
