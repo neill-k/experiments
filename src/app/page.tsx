@@ -60,7 +60,7 @@ export default async function Home({
           </h1>
           <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-white/60 leading-relaxed max-w-xl">
             Every night, an autonomous pipeline dreams up, plans, builds, and
-            tests a new experiment — no human in the loop until morning. The
+            tests a new experiment. No human in the loop until morning. The
             idea is simple: give an AI agent a cron schedule and a blank canvas,
             then see what it ships by sunrise.
           </p>
@@ -68,7 +68,7 @@ export default async function Home({
             Four stages run on a timer: an ideator proposes concepts at 9 PM,
             a planner architects the build at 10, an implementer writes the code
             at 11:30, and a tester validates it by 2:30 AM. Each stage can
-            incorporate feedback if I catch it in time — otherwise it just ships.
+            incorporate feedback if I catch it in time. Otherwise it just ships.
           </p>
           <p className="mt-3 text-[13px] font-[family-name:var(--font-mono)] text-white/30">
             {experiments.length} prototypes shipped — click to explore.
@@ -141,7 +141,7 @@ export default async function Home({
 
         <footer className="mt-16 border-t border-[var(--border)] pt-6">
           <p className="font-[family-name:var(--font-mono)] text-[11px] text-white/25">
-            Built overnight by Quill ✒️ — Neill Killgore&apos;s AI assistant
+            Built overnight by an AI agent for Neill Killgore
           </p>
         </footer>
       </div>
