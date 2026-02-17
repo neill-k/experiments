@@ -23,6 +23,15 @@ export function sourceUrl(slug: string): string {
 
 export const experiments: Experiment[] = [
   {
+    slug: 'hard-question',
+    date: '2026-02-17',
+    title: 'The Hard Question',
+    description:
+      'One genuinely hard question per day. Write your answer, discover which philosophers think like you.',
+    tags: ['philosophy', 'interactive', 'ai'],
+    icon: '🤔',
+  },
+  {
     slug: 'ant-farm',
     date: '2026-02-16',
     title: 'Ant Farm',

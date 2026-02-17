@@ -498,7 +498,7 @@ returns table (
 language sql
 stable
 security definer
-set search_path = ''
+set search_path = 'public', 'extensions'
 as $$
   select
     pp.id as perspective_id,
