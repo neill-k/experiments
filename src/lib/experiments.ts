@@ -1,7 +1,7 @@
 /**
  * Single source of truth for the experiment registry.
  *
- * When adding a new experiment, add it here — homepage, sitemap,
+ * When adding a new experiment, add it here - homepage, sitemap,
  * and inter-experiment navigation all read from this list.
  */
 
@@ -39,7 +39,7 @@ export const experiments: Experiment[] = [
     date: '2026-02-16',
     title: 'Ant Farm',
     description:
-      'A living ant colony simulation — watch ants dig tunnels, forage for food, and build an underground civilization',
+      'A living ant colony simulation - watch ants dig tunnels, forage for food, and build an underground civilization',
     tags: ['creative', 'canvas', 'simulation', 'interactive'],
     icon: '🐜',
     accent: 'rgba(180, 120, 80, 0.5)',

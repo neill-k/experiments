@@ -207,7 +207,7 @@ export const presets: Preset[] = [
     data: {
       appName: "Executive Briefing Agent Spec",
       objective:
-        "Produce a weekly briefing: top wins, risks, metrics deltas, and decisions needed — with sources and confidence tags to avoid overclaiming.",
+        "Produce a weekly briefing: top wins, risks, metrics deltas, and decisions needed - with sources and confidence tags to avoid overclaiming.",
       primaryUsers: "Executives, chiefs of staff, PM leadership",
       context:
         "The agent runs on a schedule, pulling from approved sources (dashboards, incident log, OKRs). It drafts a concise briefing for review.",
@@ -251,7 +251,7 @@ export const presets: Preset[] = [
         "Reduce new-hire ramp time by 40% through guided setup, automated tool provisioning requests, personalized learning paths, and proactive check-ins during the first 30 days.",
       primaryUsers: "New hires, hiring managers, People Ops",
       context:
-        "New employees receive a chat-based copilot on day 1. It walks them through company policies, benefits enrollment, tool access requests, team introductions, and role-specific training — escalating to People Ops when human judgment is needed.",
+        "New employees receive a chat-based copilot on day 1. It walks them through company policies, benefits enrollment, tool access requests, team introductions, and role-specific training - escalating to People Ops when human judgment is needed.",
       tools: [
         "HRIS: read employee profile + department",
         "Identity provisioning: request tool access (requires approval)",
@@ -267,7 +267,7 @@ export const presets: Preset[] = [
         "Role-specific training plans",
       ].join("\n"),
       constraints: [
-        "Never approve access requests autonomously — always route to manager",
+        "Never approve access requests autonomously - always route to manager",
         "Don't share compensation or performance data",
         "Respect regional differences in benefits and compliance",
         "All policy answers must cite the specific handbook section",
@@ -284,7 +284,7 @@ export const presets: Preset[] = [
       nonGoals: [
         "Making hiring or termination decisions",
         "Processing payroll or compensation changes",
-        "Replacing People Ops — augmenting them",
+        "Replacing People Ops - augmenting them",
       ].join("\n"),
       toolContracts: [],
       evalCases: [],
@@ -303,10 +303,10 @@ export const presets: Preset[] = [
     data: {
       appName: "Code Review Assistant Spec",
       objective:
-        "Accelerate code review by providing automated first-pass feedback on PRs — catching bugs, security vulnerabilities, style violations, and test gaps before human reviewers spend time.",
+        "Accelerate code review by providing automated first-pass feedback on PRs - catching bugs, security vulnerabilities, style violations, and test gaps before human reviewers spend time.",
       primaryUsers: "Software engineers, tech leads, security team",
       context:
-        "Triggered on every PR via GitHub webhook. The agent reads the diff, checks against team style guides and security rules, and posts inline comments. It never approves or merges — only suggests. Human reviewers get a pre-triaged PR with known issues already flagged.",
+        "Triggered on every PR via GitHub webhook. The agent reads the diff, checks against team style guides and security rules, and posts inline comments. It never approves or merges - only suggests. Human reviewers get a pre-triaged PR with known issues already flagged.",
       tools: [
         "GitHub: read PR diff + file contents",
         "GitHub: post review comments (inline + summary)",
@@ -359,7 +359,7 @@ export const presets: Preset[] = [
     data: {
       appName: "Incident Response Coordinator Spec",
       objective:
-        "Reduce mean-time-to-resolution by 30% by automating incident signal gathering, timeline tracking, communication drafting, and runbook step suggestions — keeping humans in the decision loop for all actions.",
+        "Reduce mean-time-to-resolution by 30% by automating incident signal gathering, timeline tracking, communication drafting, and runbook step suggestions - keeping humans in the decision loop for all actions.",
       primaryUsers: "On-call engineers, incident commanders, SRE leads",
       context:
         "When an alert fires (PagerDuty/OpsGenie), the agent creates an incident channel, pulls relevant metrics and logs, suggests runbook steps, drafts status page updates, and maintains a real-time timeline. All destructive actions require human confirmation.",
@@ -382,7 +382,7 @@ export const presets: Preset[] = [
         "Never execute remediation commands (suggest only)",
         "External communications (status page, customer emails) always require IC approval",
         "Preserve full audit trail of every action and suggestion",
-        "Respect on-call rotation — don't page outside policy",
+        "Respect on-call rotation - don't page outside policy",
       ].join("\n"),
       p95Latency: "<= 15s for signal gathering",
       maxCostPerDay: "<= $40/day",
@@ -415,7 +415,7 @@ export const presets: Preset[] = [
     data: {
       appName: "Data Pipeline Monitor Spec",
       objective:
-        "Proactively detect data pipeline failures, quality anomalies, and SLA breaches — then alert the right team with root-cause hypotheses and suggested remediation steps.",
+        "Proactively detect data pipeline failures, quality anomalies, and SLA breaches - then alert the right team with root-cause hypotheses and suggested remediation steps.",
       primaryUsers: "Data engineers, analytics leads, platform team",
       context:
         "The agent monitors scheduled ETL/ELT jobs (Airflow, dbt, Fivetran). When a job fails or data quality checks flag anomalies, it gathers context (logs, row counts, schema changes), identifies likely root cause, and alerts with actionable next steps.",
@@ -437,7 +437,7 @@ export const presets: Preset[] = [
         "Never modify production data or re-run pipelines autonomously",
         "Read-only SQL only (no DDL/DML)",
         "Limit alert frequency: deduplicate related failures into single threads",
-        "Respect data classification — don't include PII in alert messages",
+        "Respect data classification - don't include PII in alert messages",
       ].join("\n"),
       p95Latency: "<= 30s for anomaly detection",
       maxCostPerDay: "<= $15/day",
@@ -526,10 +526,10 @@ export const presets: Preset[] = [
     data: {
       appName: "Contract Review Assistant Spec",
       objective:
-        "Accelerate contract review by automatically flagging risky clauses, missing standard terms, and deviations from the approved playbook — reducing legal review time by 50% for routine agreements.",
+        "Accelerate contract review by automatically flagging risky clauses, missing standard terms, and deviations from the approved playbook - reducing legal review time by 50% for routine agreements.",
       primaryUsers: "Legal team, procurement, sales ops",
       context:
-        "When a new contract or redline is uploaded, the agent compares it against the company's standard clause library and risk playbook. It produces a structured review: flagged clauses with risk level, missing required terms, and suggested counter-language — all for human legal review.",
+        "When a new contract or redline is uploaded, the agent compares it against the company's standard clause library and risk playbook. It produces a structured review: flagged clauses with risk level, missing required terms, and suggested counter-language - all for human legal review.",
       tools: [
         "Document parser: extract text from PDF/DOCX",
         "Clause library: search standard/approved clauses",
@@ -545,7 +545,7 @@ export const presets: Preset[] = [
         "Regulatory requirements by jurisdiction",
       ].join("\n"),
       constraints: [
-        "Never provide legal advice — flag and suggest, humans decide",
+        "Never provide legal advice - flag and suggest, humans decide",
         "Always surface the original clause text alongside any flag",
         "Clearly distinguish standard deviations from actual risk",
         "Support multi-jurisdiction awareness (US, EU, UK at minimum)",

@@ -1,6 +1,6 @@
 # experiments
 
-A collection of small, self-contained web experiments — built overnight by AI agents, reviewed by a human in the morning.
+A collection of small, self-contained web experiments - built overnight by AI agents, reviewed by a human in the morning.
 
 **Live at** [experiments.neillkillgore.com](https://experiments.neillkillgore.com)
 
@@ -8,12 +8,12 @@ A collection of small, self-contained web experiments — built overnight by AI 
 
 An automated pipeline runs nightly:
 
-1. **Ideator** (9 PM CT) — generates and selects an experiment concept
-2. **Planner** (10 PM CT) — writes a detailed implementation plan
-3. **Implementer** (11:30 PM CT) — builds it
-4. **Tester** (2:30 AM CT) — validates TypeScript, checks for regressions
+1. **Ideator** (9 PM CT) - generates and selects an experiment concept
+2. **Planner** (10 PM CT) - writes a detailed implementation plan
+3. **Implementer** (11:30 PM CT) - builds it
+4. **Tester** (2:30 AM CT) - validates TypeScript, checks for regressions
 
-Between stages, a human can review output and leave feedback. By morning, there's a new experiment live on the site — or at least a solid attempt at one.
+Between stages, a human can review output and leave feedback. By morning, there's a new experiment live on the site - or at least a solid attempt at one.
 
 Improvement crons also run periodically to polish existing experiments (bug fixes, mobile improvements, visual tweaks).
 
@@ -21,7 +21,7 @@ Improvement crons also run periodically to polish existing experiments (bug fixe
 
 | Experiment | Description |
 |---|---|
-| 🐜 [Ant Farm](https://experiments.neillkillgore.com/e/ant-farm) | A living ant colony simulation — dig tunnels, forage, build underground |
+| 🐜 [Ant Farm](https://experiments.neillkillgore.com/e/ant-farm) | A living ant colony simulation - dig tunnels, forage, build underground |
 | 🫧 [The Blob](https://experiments.neillkillgore.com/e/the-blob) | Bioluminescent entities that split, merge, hunt, flee, and glitch |
 | 📝 [Prompt Library](https://experiments.neillkillgore.com/e/prompt-library) | Organize, version, and test prompts for LLM applications |
 | 🤖 [Agent Spec Builder](https://experiments.neillkillgore.com/e/agent-spec-builder) | Turn agent ideas into implementable Markdown specs |
@@ -59,7 +59,7 @@ docs/                         # Design specs and API docs
 
 1. Create a directory under `src/app/e/<slug>/`
 2. Add the experiment to the registry in `src/lib/experiments.ts`
-3. Run `npx tsc --noEmit` to validate (do NOT run `next build` — it OOMs on this machine)
+3. Run `npx tsc --noEmit` to validate (do NOT run `next build` - it OOMs on this machine)
 
 ## Local development
 
@@ -73,7 +73,7 @@ npm run dev
 ## Design constraints
 
 - Dark theme (`#08080a` / `#ebebeb`)
-- No rounded corners — hard edges everywhere
+- No rounded corners - hard edges everywhere
 - Mobile-first
 - Each experiment should feel self-contained but visually consistent with the site
 

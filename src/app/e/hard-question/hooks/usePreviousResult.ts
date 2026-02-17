@@ -29,7 +29,7 @@ export function usePreviousResult(questionId: string | null) {
           `/api/hard-question/perspectives?question_id=${questionId}`
         )
         if (res.status === 401 || res.status === 403) {
-          // Not authenticated or hasn't answered — no previous result
+          // Not authenticated or hasn't answered - no previous result
           return
         }
         if (!res.ok) throw new Error('Failed to fetch previous results')

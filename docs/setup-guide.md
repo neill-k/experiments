@@ -1,6 +1,6 @@
 # Setting Up Your Own Overnight AI Experiment Pipeline
 
-> **A note before you start:** This guide documents one person's setup for having AI agents build and deploy web experiments overnight. It's not the only way to do this — it's just a way that works. Take what's useful, adapt it to your situation, and make it your own.
+> **A note before you start:** This guide documents one person's setup for having AI agents build and deploy web experiments overnight. It's not the only way to do this - it's just a way that works. Take what's useful, adapt it to your situation, and make it your own.
 
 ---
 
@@ -8,7 +8,7 @@
 
 1. [Prerequisites](#1-prerequisites)
 2. [Project Setup](#2-project-setup)
-3. [The Overnight Pipeline — How It Works](#3-the-overnight-pipeline--how-it-works)
+3. [The Overnight Pipeline - How It Works](#3-the-overnight-pipeline--how-it-works)
 4. [Setting Up the Crons](#4-setting-up-the-crons)
 5. [The Improvement Crons](#5-the-improvement-crons)
 6. [The Human-in-the-Loop Flow](#6-the-human-in-the-loop-flow)
@@ -24,11 +24,11 @@ Before you begin, you'll need the following:
 
 ### OpenClaw
 
-This pipeline runs on [OpenClaw](https://docs.openclaw.ai), an AI agent platform that provides cron scheduling, subagent spawning, tool access (shell, browser, file I/O), and messaging. Install it and get it running first — the rest of this guide assumes you have a working OpenClaw setup with access to a capable model (Claude Sonnet 4 or better recommended for the implementation stage).
+This pipeline runs on [OpenClaw](https://docs.openclaw.ai), an AI agent platform that provides cron scheduling, subagent spawning, tool access (shell, browser, file I/O), and messaging. Install it and get it running first - the rest of this guide assumes you have a working OpenClaw setup with access to a capable model (Claude Sonnet 4 or better recommended for the implementation stage).
 
 ### A Web Framework
 
-This guide uses **Next.js** (App Router) as the example, but the pipeline pattern works with any web framework — Astro, SvelteKit, plain HTML, whatever you like. You just need something that:
+This guide uses **Next.js** (App Router) as the example, but the pipeline pattern works with any web framework - Astro, SvelteKit, plain HTML, whatever you like. You just need something that:
 
 - Has a dev server for local testing
 - Can be deployed automatically from a git push
@@ -44,7 +44,7 @@ Your code lives in a GitHub repo. The AI agent commits and pushes directly to `m
 
 ### Supabase (Optional)
 
-If your experiments need a database, auth, or real-time features, [Supabase](https://supabase.com) is a good fit — free tier is generous, Postgres is solid, and the JS client is straightforward. But plenty of experiments are purely client-side and don't need a database at all. Skip this if you're starting simple.
+If your experiments need a database, auth, or real-time features, [Supabase](https://supabase.com) is a good fit - free tier is generous, Postgres is solid, and the JS client is straightforward. But plenty of experiments are purely client-side and don't need a database at all. Skip this if you're starting simple.
 
 ---
 
@@ -61,7 +61,7 @@ git remote add origin git@github.com:YOUR_USERNAME/experiments.git
 
 ### Set up the experiment registry
 
-The experiment registry is a central file that lists every experiment on the site. This is important — the pipeline reads it to know what already exists (so it doesn't repeat ideas), and the homepage reads it to display the experiment index.
+The experiment registry is a central file that lists every experiment on the site. This is important - the pipeline reads it to know what already exists (so it doesn't repeat ideas), and the homepage reads it to display the experiment index.
 
 Create `src/lib/experiments.ts`:
 
@@ -69,7 +69,7 @@ Create `src/lib/experiments.ts`:
 /**
  * Single source of truth for the experiment registry.
  *
- * When adding a new experiment, add it here — homepage, sitemap,
+ * When adding a new experiment, add it here - homepage, sitemap,
  * and inter-experiment navigation all read from this list.
  */
 
@@ -103,7 +103,7 @@ export const experiments: Experiment[] = [
 ]
 ```
 
-Each experiment lives in its own directory under `src/app/e/<slug>/` with at least a `page.tsx`. This keeps experiments isolated — one broken experiment doesn't take down the others.
+Each experiment lives in its own directory under `src/app/e/<slug>/` with at least a `page.tsx`. This keeps experiments isolated - one broken experiment doesn't take down the others.
 
 ### Project structure
 
@@ -154,7 +154,7 @@ Or just connect the GitHub repo through the Vercel dashboard. The important thin
 
 ---
 
-## 3. The Overnight Pipeline — How It Works
+## 3. The Overnight Pipeline - How It Works
 
 The core idea: **four stages run sequentially overnight, each building on the previous stage's output**. You go to sleep, and by morning there's a new experiment deployed to your site.
 
@@ -209,7 +209,7 @@ The Implementer is where the actual code gets written. It:
 - Commits and pushes to `main`
 - Writes a summary to `pipeline/03-implementer.md`
 
-This stage can spawn subagents for parallel work — for example, one subagent builds the main simulation logic while another handles the UI chrome and layout. The auto-deploy picks up the push and the experiment goes live.
+This stage can spawn subagents for parallel work - for example, one subagent builds the main simulation logic while another handles the UI chrome and layout. The auto-deploy picks up the push and the experiment goes live.
 
 ### Stage 4: Tester (2:30 AM)
 
@@ -222,7 +222,7 @@ The Tester validates the deployed experiment. It:
 - Runs TypeScript checks to make sure nothing else broke
 - Writes a test report to `pipeline/04-tester.md`
 
-The gap between Implementer (11:30 PM) and Tester (2:30 AM) is intentional — it gives Vercel time to deploy and for any edge caching to settle.
+The gap between Implementer (11:30 PM) and Tester (2:30 AM) is intentional - it gives Vercel time to deploy and for any edge caching to settle.
 
 ---
 
@@ -232,9 +232,9 @@ Each pipeline stage is an **OpenClaw cron job**. Crons fire on schedule, start a
 
 ### Key concepts
 
-- **`sessionTarget: isolated`** — Each cron runs in its own session, not your main chat. This keeps your conversation clean and prevents stages from interfering with each other.
-- **`payload.kind: agentTurn`** — The cron delivers a prompt to the agent, as if you typed it.
-- **Timezone** — Set your cron timezone to wherever you are. The examples below use `America/Chicago` (US Central).
+- **`sessionTarget: isolated`** - Each cron runs in its own session, not your main chat. This keeps your conversation clean and prevents stages from interfering with each other.
+- **`payload.kind: agentTurn`** - The cron delivers a prompt to the agent, as if you typed it.
+- **Timezone** - Set your cron timezone to wherever you are. The examples below use `America/Chicago` (US Central).
 
 ### Stage 1: Ideator
 
@@ -252,14 +252,14 @@ payload:
     Generate 3-5 experiment ideas for the experiments site.
 
     ## Read These First
-    - `src/lib/experiments.ts` — the experiment registry (don't repeat existing ones)
-    - `FEEDBACK.md` — human feedback, if any (then delete it after reading)
+    - `src/lib/experiments.ts` - the experiment registry (don't repeat existing ones)
+    - `FEEDBACK.md` - human feedback, if any (then delete it after reading)
 
     ## Requirements
     - Each idea: title, one-paragraph description, key technical approach, estimated complexity
     - Pick a top recommendation and explain why
     - Ideas should be self-contained, buildable in one night
-    - Think creatively — interactive visualizations, simulations, tools, toys, generative art
+    - Think creatively - interactive visualizations, simulations, tools, toys, generative art
 
     ## Output
     Write your ideas to `pipeline/01-ideator.md`.
@@ -282,10 +282,10 @@ payload:
     Read the Ideator output and create a detailed implementation plan.
 
     ## Read These First
-    - `pipeline/01-ideator.md` — tonight's experiment ideas
-    - `FEEDBACK.md` — human feedback, if any (may override the idea selection)
-    - `src/lib/experiments.ts` — existing experiments for context
-    - `DESIGN.md` — design constraints, if it exists
+    - `pipeline/01-ideator.md` - tonight's experiment ideas
+    - `FEEDBACK.md` - human feedback, if any (may override the idea selection)
+    - `src/lib/experiments.ts` - existing experiments for context
+    - `DESIGN.md` - design constraints, if it exists
 
     ## Requirements
     - Select one experiment to build (top recommendation unless feedback says otherwise)
@@ -315,16 +315,16 @@ payload:
     Build the planned experiment.
 
     ## Read These First
-    - `pipeline/02-planner.md` — the implementation plan
-    - `FEEDBACK.md` — human feedback, if any
-    - `DESIGN.md` — design constraints, if it exists
-    - `src/lib/experiments.ts` — the experiment registry
+    - `pipeline/02-planner.md` - the implementation plan
+    - `FEEDBACK.md` - human feedback, if any
+    - `DESIGN.md` - design constraints, if it exists
+    - `src/lib/experiments.ts` - the experiment registry
 
     ## Requirements
     - Create the experiment under `src/app/e/<slug>/`
     - Add it to the registry in `src/lib/experiments.ts`
     - Follow the design constraints (dark theme, no rounded corners, etc.)
-    - Run `npx tsc --noEmit` to validate — do NOT run `next build`
+    - Run `npx tsc --noEmit` to validate - do NOT run `next build`
     - Fix any TypeScript errors before committing
     - Commit with a descriptive message and push to main
     - Use subagents for parallel work if the experiment has independent parts
@@ -350,13 +350,13 @@ payload:
     Test tonight's deployed experiment and fix any issues.
 
     ## Read These First
-    - `pipeline/03-implementer.md` — what was built and where it's deployed
-    - `src/lib/experiments.ts` — to find the experiment URL
+    - `pipeline/03-implementer.md` - what was built and where it's deployed
+    - `src/lib/experiments.ts` - to find the experiment URL
 
     ## Requirements
     - Open the experiment in a browser at desktop size (1280x800) and mobile size (390x844)
     - Check for: visual bugs, broken interactions, console errors, layout issues
-    - Test the homepage too — make sure the new experiment appears in the index
+    - Test the homepage too - make sure the new experiment appears in the index
     - Fix any issues you find, run `npx tsc --noEmit`, commit and push
     - Check that existing experiments still work (no regressions)
 
@@ -379,7 +379,7 @@ I'd prefer the "particle garden" idea over the "drum machine." Keep it purely cl
 Make sure the canvas is full-screen. Use requestAnimationFrame, not setInterval.
 ```
 
-Each stage reads `FEEDBACK.md` at the start. This is your lever — you don't have to use it, but it's there when you want to steer the pipeline.
+Each stage reads `FEEDBACK.md` at the start. This is your lever - you don't have to use it, but it's there when you want to steer the pipeline.
 
 ---
 
@@ -423,9 +423,9 @@ payload:
     Pick ONE unchecked item from `IMPROVEMENTS.md` and implement it.
 
     ## Rules
-    - Read `IMPROVEMENTS.md` — pick the top unchecked item
+    - Read `IMPROVEMENTS.md` - pick the top unchecked item
     - If all items are checked or the file doesn't exist, reply HEARTBEAT_OK and do nothing
-    - Keep changes small and focused — one improvement per run
+    - Keep changes small and focused - one improvement per run
     - Run `npx tsc --noEmit` to validate
     - Commit with a clear message, push to main
     - Check off the item in `IMPROVEMENTS.md` and commit that too
@@ -450,16 +450,16 @@ payload:
     Pick ONE unchecked item from `IMPROVEMENTS.md` and implement it.
 
     ## Rules
-    - Read `IMPROVEMENTS.md` — pick the top unchecked item
+    - Read `IMPROVEMENTS.md` - pick the top unchecked item
     - If all items are checked or the file doesn't exist, reply HEARTBEAT_OK and do nothing
-    - Keep changes small and focused — one improvement per run
+    - Keep changes small and focused - one improvement per run
     - Run `npx tsc --noEmit` to validate
     - Commit with a clear message, push to main
     - Check off the item in `IMPROVEMENTS.md` and commit that too
     - Announce what you did to the user
 ```
 
-You can add items to `IMPROVEMENTS.md` anytime — just tell your agent "add this to the improvements backlog" or edit the file yourself.
+You can add items to `IMPROVEMENTS.md` anytime - just tell your agent "add this to the improvements backlog" or edit the file yourself.
 
 ---
 
@@ -486,8 +486,8 @@ You didn't do anything. The pipeline ran autonomously. This is the default.
 9:15    You read them → "I like idea #3 but make it use WebGL instead of Canvas2D"
 9:16    You write that to FEEDBACK.md (or just tell the agent to do it)
 10 PM   Planner fires → reads FEEDBACK.md → plans around your preference
-10:05   Planner announces: "Here's the plan — WebGL particle system with..."
-10:10   You: "Looks good, go for it" (no FEEDBACK.md needed — silence = approval)
+10:05   Planner announces: "Here's the plan - WebGL particle system with..."
+10:10   You: "Looks good, go for it" (no FEEDBACK.md needed - silence = approval)
 11:30   Implementer fires → builds it → pushes
 ...
 ```
@@ -497,7 +497,7 @@ You didn't do anything. The pipeline ran autonomously. This is the default.
 1. **Silence is consent.** If you don't leave feedback, the next stage proceeds with the previous stage's output as-is.
 2. **Never jump ahead.** Don't tell the Ideator to also build the experiment. Each stage has its job. The pipeline files are the handoff mechanism.
 3. **FEEDBACK.md is the interface.** If you want to change something, write it there. The next cron picks it up.
-4. **Announcements keep you informed.** Each stage messages you with a summary. You can read them in the morning or respond in real-time — your choice.
+4. **Announcements keep you informed.** Each stage messages you with a summary. You can read them in the morning or respond in real-time - your choice.
 
 ---
 
@@ -522,7 +522,7 @@ If you want visual consistency across experiments, define your constraints in a 
 - Code: JetBrains Mono (monospace)
 
 ## Layout
-- No rounded corners — hard edges everywhere (`rounded-none` or `border-radius: 0`)
+- No rounded corners - hard edges everywhere (`rounded-none` or `border-radius: 0`)
 - Mobile-first: design for 390px wide, then scale up
 - Full-bleed experiments: use the entire viewport when it makes sense
 - Consistent header/nav when the experiment has UI controls
@@ -534,8 +534,8 @@ If you want visual consistency across experiments, define your constraints in a 
 
 ## General
 - Each experiment should feel self-contained
-- Dark theme always — no light mode toggle
-- Keep dependencies minimal — prefer vanilla JS/CSS over libraries
+- Dark theme always - no light mode toggle
+- Keep dependencies minimal - prefer vanilla JS/CSS over libraries
 ```
 
 The pipeline stages reference this file like a style guide. The Planner incorporates these constraints into the implementation plan. The Implementer follows them while coding. The Tester checks for violations.
@@ -558,7 +558,7 @@ This validates TypeScript without actually building the project. On a resource-c
 
 ### Subagent parallelism is powerful, but be careful
 
-OpenClaw lets a stage spawn subagents that work in parallel. This is great for the Implementer — you can have one subagent build the simulation logic while another builds the UI. But watch out for **concurrent file write conflicts**. If two subagents try to edit the same file at the same time, one of them will win and the other's changes will be lost.
+OpenClaw lets a stage spawn subagents that work in parallel. This is great for the Implementer - you can have one subagent build the simulation logic while another builds the UI. But watch out for **concurrent file write conflicts**. If two subagents try to edit the same file at the same time, one of them will win and the other's changes will be lost.
 
 **Solutions:**
 - Structure the work so subagents touch different files
@@ -573,7 +573,7 @@ If you want to rerun a stage, wait for the next cron cycle, or adjust the cron s
 
 ### Keep IMPROVEMENTS.md as a living backlog
 
-Every time you notice something — a visual bug, a missing feature, a mobile issue — add it to `IMPROVEMENTS.md`. Don't try to fix it yourself. The improvement crons will get to it. This keeps your backlog organized and ensures nothing falls through the cracks.
+Every time you notice something - a visual bug, a missing feature, a mobile issue - add it to `IMPROVEMENTS.md`. Don't try to fix it yourself. The improvement crons will get to it. This keeps your backlog organized and ensures nothing falls through the cracks.
 
 ### The pipeline directory is your paper trail
 
@@ -601,7 +601,7 @@ Any web framework works. The pipeline cares about:
 - A way to validate the code (`tsc`, `eslint`, framework-specific checks)
 - A way to deploy (push to git → auto-deploy)
 
-Astro, SvelteKit, Nuxt, Remix, even plain HTML with a static site generator — all fine.
+Astro, SvelteKit, Nuxt, Remix, even plain HTML with a static site generator - all fine.
 
 ### You don't need Supabase
 
@@ -644,7 +644,7 @@ Try different things:
 - **Themed weeks:** Tell the Ideator to focus on physics simulations for a week
 - **Collaborative experiments:** Have the pipeline build multiplayer experiences
 - **Portfolio pieces:** Use the pipeline to build polished showcase projects, not just toys
-- **Learning tool:** Focus on areas you want to learn — tell the Ideator "I want to learn WebGL" and it'll generate ideas that teach you WebGL
+- **Learning tool:** Focus on areas you want to learn - tell the Ideator "I want to learn WebGL" and it'll generate ideas that teach you WebGL
 
 The pipeline is a creative engine. Point it at whatever interests you and let it run.
 

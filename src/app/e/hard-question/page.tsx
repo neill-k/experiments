@@ -45,7 +45,7 @@ export default function HardQuestionPage() {
       return
     }
 
-    // Already answered — show previous results once loaded
+    // Already answered - show previous results once loaded
     if (todayData.has_answered && previousResult) {
       setPageState('revealed')
       return
@@ -71,7 +71,7 @@ export default function HardQuestionPage() {
     }
   }
 
-  // The similarities to display — prefer fresh result, fall back to previous
+  // The similarities to display - prefer fresh result, fall back to previous
   const displaySimilarities = result?.similarities ?? previousResult?.similarities ?? []
 
   // Loading state
@@ -116,7 +116,7 @@ export default function HardQuestionPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      {/* Intro — only show before answering */}
+      {/* Intro - only show before answering */}
       {!isRevealed && !hasAnswered && (
         <div className="px-4 pt-8 pb-2">
           <p
@@ -126,7 +126,7 @@ export default function HardQuestionPage() {
               color: 'var(--muted)',
             }}
           >
-            One hard question a day. Write what you actually think — not what sounds smart.
+            One hard question a day. Write what you actually think - not what sounds smart.
             Your answer is matched against real quotes from real philosophers using semantic
             similarity. Over time, a philosophical fingerprint emerges: the schools of thought
             your mind naturally gravitates toward.

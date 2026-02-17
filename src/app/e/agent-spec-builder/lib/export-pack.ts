@@ -49,7 +49,7 @@ function generateEvalPlan(input: SpecInput): string {
           .join("\n")
       : "- [ ] (add risk-specific test cases)";
 
-  return `# Evaluation Plan — ${name}
+  return `# Evaluation Plan - ${name}
 
 **Generated:** ${new Date().toISOString()}
 
@@ -141,18 +141,18 @@ function generateSecurityNotes(input: SpecInput): string {
           .map((t) => {
             const needsApproval = t.toLowerCase().includes("approval");
             const readOnly = t.toLowerCase().includes("read");
-            const risk = needsApproval ? "🟡 Medium" : readOnly ? "🟢 Low" : "🔴 High — needs review";
+            const risk = needsApproval ? "🟡 Medium" : readOnly ? "🟢 Low" : "🔴 High - needs review";
             return `| ${t} | ${risk} | ${needsApproval ? "Yes" : readOnly ? "N/A (read)" : "**Add approval gate**"} |`;
           })
           .join("\n")
-      : "| (no tools listed) | — | — |";
+      : "| (no tools listed) | - | - |";
 
   const dataClassification =
     dataSources.length > 0
       ? dataSources
           .map((d) => `| ${d} | (classify) | (define) | (define) |`)
           .join("\n")
-      : "| (no sources listed) | — | — | — |";
+      : "| (no sources listed) | - | - | - |";
 
   const constraintsChecklist =
     constraints.length > 0
@@ -168,12 +168,12 @@ function generateSecurityNotes(input: SpecInput): string {
               `- **Auth:** ${tc.auth || "(TBD)"}\n` +
               `- **PII handling:** ${tc.piiHandling || "(TBD)"}\n` +
               `- **Failure modes:** ${tc.failureModes || "(TBD)"}\n` +
-              `- **Idempotent:** ${tc.idempotent ? "Yes" : "No — needs deduplication strategy"}\n`
+              `- **Idempotent:** ${tc.idempotent ? "Yes" : "No - needs deduplication strategy"}\n`
           )
           .join("\n")
-      : "(No structured tool contracts defined — consider adding them in the spec builder.)";
+      : "(No structured tool contracts defined - consider adding them in the spec builder.)";
 
-  return `# Security Notes — ${name}
+  return `# Security Notes - ${name}
 
 **Generated:** ${new Date().toISOString()}
 
@@ -205,7 +205,7 @@ ${dataClassification}
 
 ---
 
-## Tool Contracts — Security View
+## Tool Contracts - Security View
 
 ${contracts}
 
@@ -283,7 +283,7 @@ export async function downloadExportPack(input: SpecInput): Promise<void> {
   // Add a small README for the pack
   folder.file(
     "README.md",
-    `# ${input.appName.trim() || "Agent Spec"} — Export Pack\n\n` +
+    `# ${input.appName.trim() || "Agent Spec"} - Export Pack\n\n` +
       `Generated on ${new Date().toISOString()}\n\n` +
       `## Contents\n\n` +
       `| File | Description |\n` +

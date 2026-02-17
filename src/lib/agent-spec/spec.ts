@@ -88,7 +88,7 @@ export function generateSpecMarkdown(input: SpecInput): string {
     kv("p95 latency", input.p95Latency, "(TBD)"),
     kv("Max cost/day", input.maxCostPerDay, "(TBD)"),
     kv("Max retries", input.maxRetries, "(TBD)"),
-    kv("Degrade to", input.degradeTo, "(TBD — e.g., human handoff, safer mode, or partial output)"),
+    kv("Degrade to", input.degradeTo, "(TBD - e.g., human handoff, safer mode, or partial output)"),
   ].join("\n");
 
   return [

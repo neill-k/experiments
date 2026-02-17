@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
           }
         }
       } catch {
-        // Auth failed — treat as free tier
+        // Auth failed - treat as free tier
       }
     }
 

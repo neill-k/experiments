@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
       .single()
 
     if (qErr && qErr.code !== 'PGRST116') {
-      // PGRST116 = no rows found — that's OK (no question today)
+      // PGRST116 = no rows found - that's OK (no question today)
       console.error('Error fetching question:', qErr)
       return NextResponse.json({ error: 'Failed to fetch question' }, { status: 500 })
     }
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
           }
         }
       } catch {
-        // Auth failed silently — treat as unauthenticated
+        // Auth failed silently - treat as unauthenticated
       }
     }
 

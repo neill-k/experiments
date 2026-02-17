@@ -180,7 +180,7 @@ export default function TheBlobPage(){
             // Gentle hue drift
             e.h=PALETTE.cyan+Math.sin(now*.0003+e.sd*10)*15;break;}
           case'mimic':{
-            // Dance partner — follows with graceful delay
+            // Dance partner - follows with graceful delay
             if(!e.mb)e.mb=[];e.mb.push({x:m.x,y:m.y});const dl=180;
             if(e.mb.length>dl){const t=e.mb[e.mb.length-dl];e.vx+=(t.x-e.x)*.008;e.vy+=(t.y-e.y)*.008;}
             if(e.mb.length>dl+60)e.mb=e.mb.slice(-(dl+60));
@@ -189,7 +189,7 @@ export default function TheBlobPage(){
             if(pp)e.h=pp.h+20+Math.sin(now*.0005)*10;
             e.al=.5+Math.sin(now*.001)*.15;break;}
           case'shy':{
-            // Ethereal — gently drifts away but is beautiful
+            // Ethereal - gently drifts away but is beautiful
             const dx=e.x-m.x,dy=e.y-m.y,dd=Math.hypot(dx,dy)||1;
             if(dd<250){e.vx+=(dx/dd)*.04;e.vy+=(dy/dd)*.04;}
             // Gentle attraction to other entities (not player)
@@ -260,19 +260,19 @@ export default function TheBlobPage(){
           A.h+=(hB-hA)*blend;B.h+=(hA-hB)*blend;
         }
 
-        // Mimic — gentle orbit interaction
+        // Mimic - gentle orbit interaction
         if((A.t==='mimic'||B.t==='mimic')&&(A.t==='player'||B.t==='player')){
           const mi2=A.t==='mimic'?A:B,pl=A.t==='player'?A:B;
           // Orbit gently instead of collision
           const ag=Math.atan2(mi2.y-pl.y,mi2.x-pl.x);
           mi2.vx+=Math.cos(ag+Math.PI/2)*.1;mi2.vy+=Math.sin(ag+Math.PI/2)*.1;}
 
-        // Shy — gently fades and drifts away
+        // Shy - gently fades and drifts away
         if(A.t==='shy'||B.t==='shy'){const sh=A.t==='shy'?A:B,ot=A.t==='shy'?B:A;
           const ag=Math.atan2(sh.y-ot.y,sh.x-ot.x);
           sh.vx+=Math.cos(ag)*.15;sh.vy+=Math.sin(ag)*.15;sh.al=Math.max(.1,sh.al-.02);}
 
-        // Gravity well — gentle redirect
+        // Gravity well - gentle redirect
         if(A.t==='gravity'||B.t==='gravity'){const g=A.t==='gravity'?A:B,o=A.t==='gravity'?B:A;
           if(o.t!=='gravity'){const ag=Math.atan2(o.y-g.y,o.x-g.x);
             o.vx+=Math.cos(ag)*.4;o.vy+=Math.sin(ag)*.4;}}
@@ -311,7 +311,7 @@ export default function TheBlobPage(){
         // Reduce effective alpha for additive mode to prevent blowout
         const glowAl=e.al*.65;
 
-        // Trail — soft glowing trails that fade slowly
+        // Trail - soft glowing trails that fade slowly
         for(let i=1;i<e.tr.length;i++){const t=i/e.tr.length;
           const trAlpha=t*.15*glowAl;
           const trGrad=ctx.createRadialGradient(e.tr[i].x,e.tr[i].y,0,e.tr[i].x,e.tr[i].y,e.r*t*.4);
@@ -319,12 +319,12 @@ export default function TheBlobPage(){
           ctx.beginPath();ctx.fillStyle=trGrad;
           ctx.arc(e.tr[i].x,e.tr[i].y,e.r*t*.4,0,Math.PI*2);ctx.fill();}
 
-        // Bloom ring — large, soft outer glow for bioluminescent bloom
+        // Bloom ring - large, soft outer glow for bioluminescent bloom
         const bloom=ctx.createRadialGradient(e.x,e.y,e.r*.3,e.x,e.y,e.r*4);
         bloom.addColorStop(0,hsl(e.h,55,50,glowAl*.1));bloom.addColorStop(.4,hsl(e.h,50,45,glowAl*.05));bloom.addColorStop(1,hsl(e.h,50,40,0));
         ctx.beginPath();ctx.fillStyle=bloom;ctx.arc(e.x,e.y,e.r*4,0,Math.PI*2);ctx.fill();
 
-        // Outer glow — soft bioluminescent aura
+        // Outer glow - soft bioluminescent aura
         const gr=ctx.createRadialGradient(e.x,e.y,e.r*.5,e.x,e.y,e.r*2.5);
         gr.addColorStop(0,hsl(e.h,60,55,glowAl*.15));gr.addColorStop(.5,hsl(e.h,50,50,glowAl*.07));gr.addColorStop(1,hsl(e.h,50,45,0));
         ctx.beginPath();ctx.fillStyle=gr;ctx.arc(e.x,e.y,e.r*2.5,0,Math.PI*2);ctx.fill();
@@ -396,7 +396,7 @@ export default function TheBlobPage(){
       // ── Reset to normal blending for HUD ──
       ctx.globalCompositeOperation='source-over';
 
-      // HUD — subtle
+      // HUD - subtle
       ctx.font='11px monospace';ctx.fillStyle='rgba(255,255,255,0.12)';
       ctx.fillText(`entities: ${a.length}`,12,h-32);
       ctx.fillText('click/tap to split',w-130,h-32);

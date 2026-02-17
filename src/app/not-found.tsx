@@ -11,7 +11,7 @@ export default function NotFound() {
           404
         </h1>
         <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-white/40 leading-relaxed">
-          This experiment doesn&apos;t exist yet — or it dissolved
+          This experiment doesn&apos;t exist yet - or it dissolved
           <br className="hidden sm:inline" />
           {' '}into the void like a dreamer blob.
         </p>

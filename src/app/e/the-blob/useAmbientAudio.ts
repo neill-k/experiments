@@ -3,7 +3,7 @@ import { useRef, useState, useCallback, useEffect } from 'react';
 
 /**
  * Generative ambient audio for deep-sea bioluminescence experience.
- * Uses Web Audio API only — no external audio files.
+ * Uses Web Audio API only - no external audio files.
  *
  * Architecture:
  *   3 detuned sine oscillators → lowpass filter → master gain
@@ -51,9 +51,9 @@ export function useAmbientAudio(reducedMotion: boolean): AmbientAudioState {
     // ── 3 layered oscillators at slightly detuned low frequencies ──
     // Base frequencies: deep ocean hum territory (50–80 Hz)
     const freqs = [
-      { freq: 55, detune: 0, gain: 0.09 },      // A1 — deep fundamental
-      { freq: 58.5, detune: -5, gain: 0.07 },    // slightly sharp — beating
-      { freq: 73.4, detune: 3, gain: 0.05 },     // D2-ish — gentle fifth above
+      { freq: 55, detune: 0, gain: 0.09 },      // A1 - deep fundamental
+      { freq: 58.5, detune: -5, gain: 0.07 },    // slightly sharp - beating
+      { freq: 73.4, detune: 3, gain: 0.05 },     // D2-ish - gentle fifth above
     ];
 
     const oscNodes: OscillatorNode[] = [];

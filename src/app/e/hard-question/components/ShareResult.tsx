@@ -14,7 +14,7 @@ export function ShareResult({ matches, dayNumber }: ShareResultProps) {
   const topMatch = matches[0]
   if (!topMatch) return null
 
-  const shareText = `Day ${dayNumber} — I think like ${topMatch.philosopher_name} (${Math.round(topMatch.similarity * 100)}% alignment). What about you?`
+  const shareText = `Day ${dayNumber} - I think like ${topMatch.philosopher_name} (${Math.round(topMatch.similarity * 100)}% alignment). What about you?`
   const shareUrl = 'https://experiments.neillkillgore.com/e/hard-question'
 
   const handleShare = useCallback(async () => {
@@ -28,7 +28,7 @@ export function ShareResult({ matches, dayNumber }: ShareResultProps) {
         })
         return
       } catch {
-        // User cancelled or share failed — fall through to clipboard
+        // User cancelled or share failed - fall through to clipboard
       }
     }
 
@@ -39,7 +39,7 @@ export function ShareResult({ matches, dayNumber }: ShareResultProps) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      // Clipboard API failed — do nothing
+      // Clipboard API failed - do nothing
     }
   }, [shareText, shareUrl])
 

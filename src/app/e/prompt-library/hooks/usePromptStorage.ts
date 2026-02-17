@@ -47,7 +47,7 @@ export function usePromptStorage() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts));
     } catch {
-      // QuotaExceededError — silently fail
+      // QuotaExceededError - silently fail
     }
   }, [prompts]);
 

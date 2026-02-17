@@ -343,7 +343,7 @@ export default function AntFarmPage() {
 
   return (
     <div className="relative min-h-dvh" style={{ background: COLORS.bg }}>
-      {/* canvas container — responsive */}
+      {/* canvas container - responsive */}
       <div className="flex items-center justify-center px-2 py-4 sm:py-8">
         <div className="w-full" style={{ maxWidth: CANVAS_W }}>
           <canvas
@@ -368,12 +368,12 @@ export default function AntFarmPage() {
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-x-6 gap-y-0.5 mt-2">
-                <span>Click — drop food</span>
-                <span>Double-click — cave-in</span>
-                <span>R — trigger rain</span>
-                <span>Space — pause/resume</span>
-                <span>1 / 2 / 3 — speed (1x / 2x / 4x)</span>
-                <span>? — toggle this help</span>
+                <span>Click - drop food</span>
+                <span>Double-click - cave-in</span>
+                <span>R - trigger rain</span>
+                <span>Space - pause/resume</span>
+                <span>1 / 2 / 3 - speed (1x / 2x / 4x)</span>
+                <span>? - toggle this help</span>
               </div>
             </div>
           )}

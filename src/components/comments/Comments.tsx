@@ -50,7 +50,7 @@ export function Comments({ slug }: { slug: string }) {
         return
       }
 
-      // Experiment row doesn't exist yet — create it
+      // Experiment row doesn't exist yet - create it
       const { data: inserted, error: insErr } = await getSupabase()
         .from('experiments')
         .insert({ slug })

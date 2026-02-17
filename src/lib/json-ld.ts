@@ -14,9 +14,9 @@ export function homepageJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Experiments — Neill Killgore',
+    name: 'Experiments - Neill Killgore',
     description:
-      'Daily shipped prototypes — interactive tools, creative canvases, and AI utilities built by an autonomous pipeline.',
+      'Daily shipped prototypes - interactive tools, creative canvases, and AI utilities built by an autonomous pipeline.',
     url: SITE_URL,
     author: {
       '@type': 'Person',

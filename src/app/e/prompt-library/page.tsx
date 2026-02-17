@@ -106,7 +106,7 @@ export default function PromptLibrary() {
     };
   }, []);
 
-  // Step 3: confirm delete — remove prompt, show undo toast, auto-select next
+  // Step 3: confirm delete - remove prompt, show undo toast, auto-select next
   const handleDeleteConfirm = useCallback(() => {
     if (!selectedPrompt) return;
 
@@ -141,7 +141,7 @@ export default function PromptLibrary() {
     }
   }, [selectedPrompt, deletePrompt, prompts, selectPrompt, clearSelection]);
 
-  // Step 4: undo — restore the deleted prompt and select it
+  // Step 4: undo - restore the deleted prompt and select it
   const handleUndo = useCallback(() => {
     if (!undoToast) return;
     if (undoTimerRef.current) {

@@ -1,4 +1,4 @@
-# Agent Spec Builder — Architecture & Quality Analysis
+# Agent Spec Builder - Architecture & Quality Analysis
 
 **Date:** 2026-02-15  
 **Scope:** All files in `src/app/e/agent-spec-builder/`, `src/components/AgentSpecBuilder.tsx`, `src/lib/agent-spec/`, and `overnight-builder/DESIGN.md`  
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-The Agent Spec Builder is a well-conceived tool with solid domain logic (spec generation, linting, quality scoring, eval rubrics, export packs, prompt packs). The lib layer is clean and well-separated. However, the UI is a **927-line monolithic component** with significant architectural debt, duplicated code across two parallel implementations, design system misalignment, and accessibility gaps. The tool feels like a **strong prototype** — functional and useful, but not polished enough for production.
+The Agent Spec Builder is a well-conceived tool with solid domain logic (spec generation, linting, quality scoring, eval rubrics, export packs, prompt packs). The lib layer is clean and well-separated. However, the UI is a **927-line monolithic component** with significant architectural debt, duplicated code across two parallel implementations, design system misalignment, and accessibility gaps. The tool feels like a **strong prototype** - functional and useful, but not polished enough for production.
 
 **Biggest wins available:**
 1. Eliminate the duplicated codebase (two complete implementations exist)
@@ -56,7 +56,7 @@ And **two complete lib directories**:
 | `src/app/e/agent-spec-builder/lib/` | spec.ts, lint.ts, presets.ts, share.ts, quality.ts, export-pack.ts, prompt-pack.ts, local-stats.ts |
 | `src/lib/agent-spec/` | spec.ts, lint.ts, presets.ts, share.ts (older versions, missing evalCases field) |
 
-The `src/lib/agent-spec/` versions are stale — `SpecInput` doesn't include `evalCases`, presets have only 5 items vs 11, and share.ts doesn't handle evalCases. This is a maintenance landmine.
+The `src/lib/agent-spec/` versions are stale - `SpecInput` doesn't include `evalCases`, presets have only 5 items vs 11, and share.ts doesn't handle evalCases. This is a maintenance landmine.
 
 ### What Should Be Extracted
 
@@ -82,7 +82,7 @@ components/
     └── useLocalStats.ts           # Session tracking wrapper
 ```
 
-**Impact: HIGH** — Enables independent testing, reduces rerender scope, makes the codebase navigable.
+**Impact: HIGH** - Enables independent testing, reduces rerender scope, makes the codebase navigable.
 
 ---
 
@@ -100,10 +100,10 @@ This is **fine for the current scale** but has issues:
 ### Issue: Every Field Change Rerenders Everything
 
 Each keystroke in any field triggers:
-1. `setInput(...)` — new state object
-2. `useMemo(() => generateSpecMarkdown(input), [input])` — regenerates full markdown
-3. `useMemo(() => lintSpec(input), [input])` — re-lints
-4. `useMemo(() => evaluateQuality(input), [input])` — re-scores
+1. `setInput(...)` - new state object
+2. `useMemo(() => generateSpecMarkdown(input), [input])` - regenerates full markdown
+3. `useMemo(() => lintSpec(input), [input])` - re-lints
+4. `useMemo(() => evaluateQuality(input), [input])` - re-scores
 5. Full component re-render (927 lines of JSX)
 
 The `useMemo` calls are appropriate for derived values, but the entire tree re-renders because nothing is extracted or memoized. The tool contract and eval case editors are particularly expensive since they map over arrays inline.
@@ -145,7 +145,7 @@ The single-threaded, synchronous state model means no race conditions exist. Cli
 **Verdict: Functional prototype, not a polished tool.**
 
 ### Strengths
-- Quality meter is a genuinely good UX idea — provides progressive disclosure of what's missing
+- Quality meter is a genuinely good UX idea - provides progressive disclosure of what's missing
 - Lint results offer specific, actionable suggestions
 - Presets are well-written and cover diverse use cases
 - "Start with 5 common cases" button for eval rubric is excellent onboarding
@@ -164,7 +164,7 @@ The single-threaded, synchronous state model means no race conditions exist. Cli
 The output section header has 7 buttons (Raw/Preview toggle, Copy, Share link, Download .md, Export Pack, Prompt Pack). On medium screens, these wrap awkwardly. On mobile, they stack vertically but consume significant viewport space.
 
 **No persistence of work-in-progress:**
-If the browser tab closes, all work is lost. There's no auto-save to localStorage. The `local-stats` module tracks usage stats but doesn't save the spec itself. This is the single biggest UX gap — users creating complex specs with tool contracts and eval cases can lose everything.
+If the browser tab closes, all work is lost. There's no auto-save to localStorage. The `local-stats` module tracks usage stats but doesn't save the spec itself. This is the single biggest UX gap - users creating complex specs with tool contracts and eval cases can lose everything.
 
 **No undo/redo:**
 "Clear" button wipes everything with no confirmation and no undo. Destructive action with no safety net violates web interface guidelines.
@@ -174,7 +174,7 @@ No `beforeunload` handler to warn about leaving with unsaved work.
 
 **Examples page is broken:**
 - Renders in **light mode** (white background, `text-zinc-900`) while the main builder is dark
-- Uses `className="rounded-none-lg"` and `className="rounded-none-xl"` — these are not valid Tailwind classes (probably meant to remove rounding but the syntax is wrong)
+- Uses `className="rounded-none-lg"` and `className="rounded-none-xl"` - these are not valid Tailwind classes (probably meant to remove rounding but the syntax is wrong)
 - Links point to `/?example=...` (root) instead of `/e/agent-spec-builder?example=...`
 - Header link "Back to builder" points to `/` instead of `/e/agent-spec-builder`
 
@@ -193,11 +193,11 @@ With 11 presets, the preset buttons in the header overflow. Consider a dropdown 
 ### Issues
 
 **Touch targets too small:**
-- Tool contract "Remove" button: bare text link, no padding — fails 44×44px minimum
+- Tool contract "Remove" button: bare text link, no padding - fails 44×44px minimum
 - Eval case "Remove" button: same issue
 - Eval category `<select>`: `text-xs` with minimal padding
-- Quality category tags: `text-[10px]` with `px-1.5 py-0.5` — too small for touch
-- Preset buttons: `px-3 py-1` at `text-sm` — borderline
+- Quality category tags: `text-[10px]` with `px-1.5 py-0.5` - too small for touch
+- Preset buttons: `px-3 py-1` at `text-sm` - borderline
 
 **Overflow in tool contract/eval editors:**
 - `grid-cols-1 md:grid-cols-2` is fine, but the nested cards have no max-width constraint
@@ -237,17 +237,17 @@ The blob → URL → anchor → click → cleanup pattern appears in `page.tsx`,
 
 ### Naming
 
-- `Home()` as the component name for the main page — should be `AgentSpecBuilderPage` or similar
-- `empty` as the initial state constant — `INITIAL_SPEC` or `EMPTY_SPEC` would be clearer
-- `md` as the markdown variable — too terse, `specMarkdown` is clearer
-- `copy()` and `copyShareLink()` — fine
-- `ec` for eval case and `tc` for tool contract — acceptable in inline map callbacks
+- `Home()` as the component name for the main page - should be `AgentSpecBuilderPage` or similar
+- `empty` as the initial state constant - `INITIAL_SPEC` or `EMPTY_SPEC` would be clearer
+- `md` as the markdown variable - too terse, `specMarkdown` is clearer
+- `copy()` and `copyShareLink()` - fine
+- `ec` for eval case and `tc` for tool contract - acceptable in inline map callbacks
 
 ### Typing
 
 Generally good. `SpecInput`, `ToolContract`, `EvalCase`, `LintFinding`, `LocalStats` are all well-typed. No `any` usage. One concern:
 
-- `decodeSpecState` does minimal validation — it trusts that parsed JSON conforms to `SpecInput`. A runtime schema validator (zod) would prevent malformed share links from corrupting state.
+- `decodeSpecState` does minimal validation - it trusts that parsed JSON conforms to `SpecInput`. A runtime schema validator (zod) would prevent malformed share links from corrupting state.
 
 ### Error Handling
 
@@ -295,7 +295,7 @@ useEffect(() => {
 `encodeSpecState` base64-encodes the full JSON state into a URL query parameter. With 10 tool contracts and 10 eval cases with detailed content, this can easily exceed browser URL length limits (~2,000–8,000 chars depending on browser). No warning or fallback is provided.
 
 **localStorage quota:**
-The stats object is tiny (<1KB). If spec auto-save is added, a fully loaded spec could be 5-20KB — well within the ~5MB quota. But consider adding a size check.
+The stats object is tiny (<1KB). If spec auto-save is added, a fully loaded spec could be 5-20KB - well within the ~5MB quota. But consider adding a size check.
 
 ---
 
@@ -306,15 +306,15 @@ The stats object is tiny (<1KB). If spec auto-save is added, a fully loaded spec
 ### Actual Issues
 
 **Wrong font family:**
-Layout uses Geist Sans and Geist Mono, not Instrument Serif / DM Sans / JetBrains Mono. This is a standalone experiment layout, so it has its own font choices — but it doesn't match the parent site's design language.
+Layout uses Geist Sans and Geist Mono, not Instrument Serif / DM Sans / JetBrains Mono. This is a standalone experiment layout, so it has its own font choices - but it doesn't match the parent site's design language.
 
 **Rounded corners inconsistency:**
-The DESIGN.md says dark theme family but doesn't mandate corner styles. However, the quality meter progress bar uses `rounded-full`, and the quality category indicator dots use `rounded-full`. The rest of the UI correctly uses no rounding (`border` without `rounded-*`). The `AgentSpecBuilder.tsx` version uses `rounded` on inputs — inconsistent.
+The DESIGN.md says dark theme family but doesn't mandate corner styles. However, the quality meter progress bar uses `rounded-full`, and the quality category indicator dots use `rounded-full`. The rest of the UI correctly uses no rounding (`border` without `rounded-*`). The `AgentSpecBuilder.tsx` version uses `rounded` on inputs - inconsistent.
 
 **Color system:**
-- Main page uses `bg-[#08080a]`, `text-[#ebebeb]`, `border-[#2a2a2a]`, `bg-[#0a0a0c]` — a consistent dark palette ✓
-- Older `AgentSpecBuilder.tsx` uses `bg-white/[0.02]`, `text-white/80`, `bg-white/5` — alpha-based approach, inconsistent with the main version
-- Accent colors: emerald for positive states, amber for prompt pack, red for remove — reasonable but undocumented
+- Main page uses `bg-[#08080a]`, `text-[#ebebeb]`, `border-[#2a2a2a]`, `bg-[#0a0a0c]` - a consistent dark palette ✓
+- Older `AgentSpecBuilder.tsx` uses `bg-white/[0.02]`, `text-white/80`, `bg-white/5` - alpha-based approach, inconsistent with the main version
+- Accent colors: emerald for positive states, amber for prompt pack, red for remove - reasonable but undocumented
 
 **Typography tokens:**
 No use of the semantic font variables. Body text uses Tailwind defaults. The globals.css sets `font-family: Arial, Helvetica, sans-serif` which overrides the Geist font variable, meaning the Google font load is wasted.
@@ -329,7 +329,7 @@ No use of the semantic font variables. Body text uses Tailwind defaults. The glo
 The page hardcodes dark colors directly, never referencing these CSS variables.
 
 ### Examples Page: Complete Design Break
-The examples page renders in light mode (`bg-zinc-50 text-zinc-900 border-zinc-200 bg-white`) — completely breaking the dark theme requirement.
+The examples page renders in light mode (`bg-zinc-50 text-zinc-900 border-zinc-200 bg-white`) - completely breaking the dark theme requirement.
 
 ---
 
@@ -410,7 +410,7 @@ The `<select>` for eval case category has no associated `<label>` or `aria-label
 | **`beforeunload` warning** | P1 | Prevent accidental navigation away |
 | **Keyboard shortcuts** | P2 | Cmd+S to download, Cmd+C to copy, etc. |
 | **Collapsible sections** | P2 | Form is very long; collapsing filled sections would improve navigation |
-| **Import from markdown** | P2 | Allow round-tripping — paste an existing spec and parse it |
+| **Import from markdown** | P2 | Allow round-tripping - paste an existing spec and parse it |
 | **URL state sync** | P2 | Per web guidelines: tabs, sections, and filter state should reflect in URL |
 | **Diff view** | P3 | Show what changed between edits (useful for share link comparison) |
 | **Version history** | P3 | List of past saved drafts in localStorage |
@@ -421,7 +421,7 @@ The `<select>` for eval case category has no associated `<label>` or `aria-label
 
 ## 10. Concrete Recommendations Ranked by Impact
 
-### Tier 1 — Ship Blockers (Do First)
+### Tier 1 - Ship Blockers (Do First)
 
 1. **Delete `src/lib/agent-spec/` and `src/components/AgentSpecBuilder.tsx`**  
    These are stale duplicates. The canonical code is in `src/app/e/agent-spec-builder/`. The old lib is missing `evalCases` in `SpecInput` and will cause type errors if anything imports it.  
@@ -429,7 +429,7 @@ The `<select>` for eval case category has no associated `<label>` or `aria-label
 
 2. **Add localStorage auto-save for the draft spec**  
    Save `input` state to localStorage on change (debounced 500ms). Load on mount (before URL params, which should override). Key: `agent-spec-builder-draft:v1`.  
-   *Effort: 30 min. Impact: Prevents data loss — the #1 UX issue.*
+   *Effort: 30 min. Impact: Prevents data loss - the #1 UX issue.*
 
 3. **Fix the Examples page**  
    - Switch to dark theme to match the builder
@@ -448,16 +448,16 @@ The `<select>` for eval case category has no associated `<label>` or `aria-label
    And wrap the Clear button with `if (!confirm('Clear all fields?')) return;`.  
    *Effort: 10 min. Impact: Prevents accidental data loss.*
 
-### Tier 2 — Architecture (Do Next)
+### Tier 2 - Architecture (Do Next)
 
 5. **Extract the monolith into ~8 focused components**  
    Follow the component structure in Section 1. Key extractions:
-   - `ToolContractEditor` — eliminates 14 inline onChange handlers
-   - `EvalRubricEditor` — eliminates 5 inline onChange handlers  
-   - `QualityMeter` — self-contained, memoizable
-   - `ExportActions` — 7 buttons with handlers
-   - `LintResults` — stateless display
-   - `Field` / `TextArea` — already extracted, move to shared `ui/`
+   - `ToolContractEditor` - eliminates 14 inline onChange handlers
+   - `EvalRubricEditor` - eliminates 5 inline onChange handlers  
+   - `QualityMeter` - self-contained, memoizable
+   - `ExportActions` - 7 buttons with handlers
+   - `LintResults` - stateless display
+   - `Field` / `TextArea` - already extracted, move to shared `ui/`
    *Effort: 2-3 hours. Impact: Halves the component size, enables memoization, makes code navigable.*
 
 6. **Create shared utility module for `bulletize`, `slugify`, `downloadBlob`**  
@@ -468,7 +468,7 @@ The `<select>` for eval case category has no associated `<label>` or `aria-label
    Consolidate the 7+ useState hooks and URL parsing logic into a single hook. Provides a cleaner API and enables undo/redo via action history.  
    *Effort: 1 hour. Impact: Cleaner state management, enables undo feature.*
 
-### Tier 3 — Polish (Refinements)
+### Tier 3 - Polish (Refinements)
 
 8. **Add accessibility fixes**  
    - `aria-live="polite"` on toast container
@@ -492,10 +492,10 @@ The `<select>` for eval case category has no associated `<label>` or `aria-label
     *Effort: 20 min. Impact: Prevents silent failures on complex specs.*
 
 12. **Fix globals.css font override**  
-    Remove `font-family: Arial, Helvetica, sans-serif` from `body` — it overrides the Geist font variable loaded in `layout.tsx`, wasting a Google Fonts network request.  
+    Remove `font-family: Arial, Helvetica, sans-serif` from `body` - it overrides the Geist font variable loaded in `layout.tsx`, wasting a Google Fonts network request.  
     *Effort: 5 min. Impact: Correct typography, faster load.*
 
-### Tier 4 — Future Features
+### Tier 4 - Future Features
 
 13. **Keyboard shortcuts** (Cmd+S, Cmd+C, Cmd+Shift+S for share)
 14. **Import from markdown** (parse an existing spec into the form)
@@ -506,9 +506,9 @@ The `<select>` for eval case category has no associated `<label>` or `aria-label
 
 ## Appendix: File-Level Notes
 
-### `page.tsx:1` — Missing `"use client"` is actually present ✓
+### `page.tsx:1` - Missing `"use client"` is actually present ✓
 
-### `page.tsx` — Web Interface Guidelines Findings
+### `page.tsx` - Web Interface Guidelines Findings
 
 ```
 page.tsx:70    - "..." → "…" in placeholder strings (multiple instances)
@@ -517,17 +517,17 @@ page.tsx:115   - GitHub link points to https://github.com (generic, not actual r
 page.tsx:141   - Quality meter progress bar uses rounded-full (inconsistent with no-rounding design)
 page.tsx:199   - Tool contract "Remove" button: no focus-visible style
 page.tsx:199   - Tool contract "Remove" button: touch target too small (text-only)
-page.tsx:229   - Checkbox not wrapped in <label> — clicking text doesn't toggle
+page.tsx:229   - Checkbox not wrapped in <label> - clicking text doesn't toggle
 page.tsx:248   - textarea fields missing name attribute
 page.tsx:376   - Eval category <select> missing aria-label
 page.tsx:402   - "Remove" eval case button: no focus-visible, small touch target
-page.tsx:490   - 7 action buttons in header — consider dropdown on mobile
+page.tsx:490   - 7 action buttons in header - consider dropdown on mobile
 page.tsx:544   - Toast div missing aria-live="polite"
 page.tsx:598   - <pre> code block: no max-width, very long lines won't wrap in raw mode
 page.tsx:627   - Footer "..." should be "…"
 ```
 
-### `examples/page.tsx` — Critical Issues
+### `examples/page.tsx` - Critical Issues
 
 ```
 examples/page.tsx:6   - Light mode (bg-zinc-50) breaks dark theme requirement
@@ -538,46 +538,46 @@ examples/page.tsx:36  - "rounded-none-xl" is not a valid Tailwind class
 examples/page.tsx:44  - "rounded-none-lg" repeated
 ```
 
-### `globals.css` — Issues
+### `globals.css` - Issues
 
 ```
 globals.css:14 - body font-family overrides Geist font variable from layout.tsx
 globals.css:3-5 - Light mode CSS variables defined but never used (page hardcodes dark colors)
 ```
 
-### `layout.tsx` — Clean ✓
+### `layout.tsx` - Clean ✓
 
 Properly sets metadata, OG tags, and font variables. No issues.
 
-### `lib/spec.ts` — Clean ✓
+### `lib/spec.ts` - Clean ✓
 
 Well-structured markdown generation. Good use of helper functions.
 
-### `lib/quality.ts` — Clean ✓
+### `lib/quality.ts` - Clean ✓
 
 Weighted scoring system is well-designed. Clear category definitions.
 
-### `lib/lint.ts` — Clean ✓
+### `lib/lint.ts` - Clean ✓
 
 Good heuristic-based linting. `isVagueMetric` is clever.
 
-### `lib/presets.ts` — Good but Large
+### `lib/presets.ts` - Good but Large
 
 578 lines of preset data. Consider moving to a JSON file or splitting into individual preset files for maintainability.
 
-### `lib/local-stats.ts` — Missing Key Versioning
+### `lib/local-stats.ts` - Missing Key Versioning
 
 Otherwise clean. Try/catch on all storage operations ✓.
 
-### `lib/share.ts` — Fragile Decoding
+### `lib/share.ts` - Fragile Decoding
 
 No schema validation on decoded JSON. Malformed share links could inject unexpected data into state.
 
-### `lib/export-pack.ts` — Well Done ✓
+### `lib/export-pack.ts` - Well Done ✓
 
 Clean ZIP generation. Good README generation. Minor: `bulletize` and `slugify` should be imported from a shared utility.
 
-### `lib/prompt-pack.ts` — Well Done ✓
+### `lib/prompt-pack.ts` - Well Done ✓
 
 Clever deterministic prompt generation without LLM. Good category coverage. Same utility duplication issue.
 
@@ -585,4 +585,4 @@ Clever deterministic prompt generation without LLM. Good category coverage. Same
 
 ## Summary
 
-The Agent Spec Builder has **excellent domain logic** — the spec generator, linter, quality scorer, eval rubric, export pack, and prompt pack are all well-designed and useful. The main issues are **architectural** (monolith, duplication) and **UX-level** (no persistence, broken examples page, accessibility gaps). The Tier 1 fixes (delete duplicates, add auto-save, fix examples, add `beforeunload`) can be done in under 2 hours and would dramatically improve the tool's reliability and polish.
+The Agent Spec Builder has **excellent domain logic** - the spec generator, linter, quality scorer, eval rubric, export pack, and prompt pack are all well-designed and useful. The main issues are **architectural** (monolith, duplication) and **UX-level** (no persistence, broken examples page, accessibility gaps). The Tier 1 fixes (delete duplicates, add auto-save, fix examples, add `beforeunload`) can be done in under 2 hours and would dramatically improve the tool's reliability and polish.

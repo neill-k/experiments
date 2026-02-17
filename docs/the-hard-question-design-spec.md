@@ -1,4 +1,4 @@
-# The Hard Question — UI/UX Design Specification
+# The Hard Question - UI/UX Design Specification
 
 > A daily philosophy app. One question. Your answer. Which philosophers think like you?
 
@@ -30,7 +30,7 @@ This app lives inside the existing `experiments` site. It inherits:
 
 ```css
 :root {
-  /* Philosopher school colors — muted, sophisticated */
+  /* Philosopher school colors - muted, sophisticated */
   --school-stoicism:       #8B9DAF; /* steel blue-gray */
   --school-existentialism: #C4785C; /* burnt sienna */
   --school-utilitarianism: #7BA68C; /* sage green */
@@ -43,10 +43,10 @@ This app lives inside the existing `experiments` site. It inherits:
   --school-eastern:        #D4A574; /* warm sand */
 
   /* Similarity score gradient */
-  --sim-low:    #6B6B6B;  /* <30% — gray */
-  --sim-mid:    #C9A84C;  /* 30-60% — gold */
-  --sim-high:   #7BA68C;  /* 60-85% — green */
-  --sim-exact:  #ebebeb;  /* 85%+ — white (you think alike) */
+  --sim-low:    #6B6B6B;  /* <30% - gray */
+  --sim-mid:    #C9A84C;  /* 30-60% - gold */
+  --sim-high:   #7BA68C;  /* 60-85% - green */
+  --sim-exact:  #ebebeb;  /* 85%+ - white (you think alike) */
 
   /* UI accents for this experiment */
   --thq-surface: #0f0f12;       /* slightly lifted surface */
@@ -129,7 +129,7 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
 
 ## 4. View Specifications
 
-### 4.1 Question View (Main Screen) — `page.tsx`
+### 4.1 Question View (Main Screen) - `page.tsx`
 
 **Layout:**
 ```
@@ -221,7 +221,7 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
 </div>
 ```
 
-### 4.2 Philosopher Reveal — appears after submit
+### 4.2 Philosopher Reveal - appears after submit
 
 **Layout (replaces answer input area):**
 ```
@@ -240,7 +240,7 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
 │ │ EXISTENTIALISM              │ │     [stagger delay: 0ms]
 │ │ ████████████████████░░░░    │ │
 │ │ "Existence precedes essence │ │
-│ │  — we are condemned to be   │ │
+│ │   -  we are condemned to be   │ │
 │ │  free..."                   │ │
 │ └─────────────────────────────┘ │
 │                                 │
@@ -346,7 +346,7 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
 </div>
 ```
 
-### 4.3 Fingerprint View — `/fingerprint`
+### 4.3 Fingerprint View - `/fingerprint`
 
 **Layout:**
 ```
@@ -392,13 +392,13 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
 
 **FingerprintChart (SVG Radar):**
 ```tsx
-// Custom SVG radar chart — NO external charting library
+// Custom SVG radar chart - NO external charting library
 // Each vertex = philosophical school
 // Values 0-100 mapped to radius
 // Animated: vertices interpolate from center to final position over 800ms
 
 <svg viewBox="0 0 400 400" className="w-full max-w-[20rem] md:max-w-[24rem] mx-auto">
-  {/* Grid lines — concentric polygons at 25%, 50%, 75%, 100% */}
+  {/* Grid lines - concentric polygons at 25%, 50%, 75%, 100% */}
   {[0.25, 0.5, 0.75, 1].map(scale => (
     <polygon
       key={scale}
@@ -420,7 +420,7 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
     />
   ))}
 
-  {/* Data polygon — the fingerprint shape */}
+  {/* Data polygon - the fingerprint shape */}
   <polygon
     points={animatedDataPoints}
     fill="rgba(200, 180, 255, 0.08)"
@@ -501,7 +501,7 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
 </div>
 ```
 
-### 4.4 Archive View — `/archive` (paid)
+### 4.4 Archive View - `/archive` (paid)
 
 **Layout:**
 ```
@@ -588,7 +588,7 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
 </div>
 ```
 
-### 4.5 Navigation — `THQNav`
+### 4.5 Navigation - `THQNav`
 
 ```
 ┌─────────────────────────────────────────┐
@@ -631,7 +631,7 @@ LOADING → QUESTION → ANSWERING → SUBMITTING → REVEAL → COMPLETE
     <div className="flex items-center gap-4">
       <DayCounter day={currentDay} />
 
-      {/* Archive icon — lock if free tier */}
+      {/* Archive icon - lock if free tier */}
       <Link href="/e/the-hard-question/archive" className="
         w-11 h-11
         flex items-center justify-center
@@ -983,7 +983,7 @@ Keyboard:          Answer area should use `pb-[env(safe-area-inset-bottom)]`
     min-h-[44px]
     transition-all duration-200
   ">
-    Upgrade — $4/month
+    Upgrade - $4/month
   </button>
 
   <p className="
@@ -1137,7 +1137,7 @@ export type QuestionState =
 ## 11. Accessibility Considerations
 
 ### Semantic Structure
-- Question is an `<h1>` — one per page, screen readers announce it
+- Question is an `<h1>` - one per page, screen readers announce it
 - Philosopher names are `<h3>` within the reveal section
 - Nav uses `<nav>` with `aria-label="The Hard Question navigation"`
 - Archive uses `<ol>` (ordered list of days)
@@ -1159,7 +1159,7 @@ export type QuestionState =
 // Philosopher reveal
 <section aria-label="Philosopher perspectives" aria-live="polite">
   <div role="list">
-    <div role="listitem" aria-label="Jean-Paul Sartre — 87% match">
+    <div role="listitem" aria-label="Jean-Paul Sartre - 87% match">
       ...
     </div>
   </div>
@@ -1178,7 +1178,7 @@ export type QuestionState =
 
 // Paywall blur
 <div aria-hidden="true" className="paywall-blur">
-  {/* Blurred content — hidden from screen readers */}
+  {/* Blurred content - hidden from screen readers */}
 </div>
 <button aria-label="Unlock all philosopher perspectives for $4 per month">
   Unlock all perspectives

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     'One genuinely hard question per day. Write your answer, discover which philosophers think like you.',
   openGraph: {
-    title: 'The Hard Question — Experiments',
+    title: 'The Hard Question - Experiments',
     description:
       'One genuinely hard question per day. Write your answer, discover which philosophers think like you.',
     url: 'https://experiments.neillkillgore.com/e/hard-question',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'The Hard Question — Experiments',
+    title: 'The Hard Question - Experiments',
     description:
       'One genuinely hard question per day. Write your answer, discover which philosophers think like you.',
   },

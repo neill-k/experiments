@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     try {
       body = await req.json()
     } catch {
-      // No body or invalid JSON — use defaults
+      // No body or invalid JSON - use defaults
     }
 
     const startDate = new Date(body.start_date || '2026-02-17')

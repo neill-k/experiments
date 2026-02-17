@@ -203,7 +203,7 @@ export const presets: Preset[] = [
     data: {
       appName: "Executive Briefing Agent Spec",
       objective:
-        "Produce a weekly briefing: top wins, risks, metrics deltas, and decisions needed — with sources and confidence tags to avoid overclaiming.",
+        "Produce a weekly briefing: top wins, risks, metrics deltas, and decisions needed - with sources and confidence tags to avoid overclaiming.",
       primaryUsers: "Executives, chiefs of staff, PM leadership",
       context:
         "The agent runs on a schedule, pulling from approved sources (dashboards, incident log, OKRs). It drafts a concise briefing for review.",

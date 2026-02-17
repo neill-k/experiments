@@ -199,7 +199,7 @@ export default function Home() {
               Agent Spec Builder
             </h1>
             <p className="text-sm text-zinc-500">
-              Turn an agent idea into an implementable Markdown spec (no backend —
+              Turn an agent idea into an implementable Markdown spec (no backend  - 
               stays in your browser).
             </p>
           </div>
@@ -314,7 +314,7 @@ export default function Home() {
               value={input.appName}
               onChange={(v) => setInput({ ...input, appName: v })}
               placeholder="e.g., Support Triage Agent Spec"
-              hint="Use a descriptive name your team will recognize — this becomes the doc title."
+              hint="Use a descriptive name your team will recognize - this becomes the doc title."
             />
             <TextArea
               label="Objective"
@@ -349,7 +349,7 @@ export default function Home() {
                 "Docs search",
               ].join("\n")}
               rows={5}
-              hint="Include permission level for each tool — e.g., read-only, requires human approval, fully autonomous."
+              hint="Include permission level for each tool - e.g., read-only, requires human approval, fully autonomous."
             />
 
             <div className="border border-[#2a2a2a] bg-[#0a0a0c] p-3">
@@ -547,7 +547,7 @@ export default function Home() {
                   value={input.p95Latency}
                   onChange={(v) => setInput({ ...input, p95Latency: v })}
                   placeholder="e.g., <= 10s"
-                  hint="95th percentile — the worst acceptable wait for most users."
+                  hint="95th percentile - the worst acceptable wait for most users."
                 />
                 <Field
                   label="Max cost/day"
@@ -568,7 +568,7 @@ export default function Home() {
                   value={input.degradeTo}
                   onChange={(v) => setInput({ ...input, degradeTo: v })}
                   placeholder="e.g., human handoff / safer mode"
-                  hint="What happens when the agent fails — silent fallback, alert, or queue for human?"
+                  hint="What happens when the agent fails - silent fallback, alert, or queue for human?"
                 />
               </div>
             </div>
@@ -611,7 +611,7 @@ export default function Home() {
                     Eval Rubric
                   </div>
                   <p className="mt-0.5 text-[11px] text-zinc-600 leading-snug">
-                    Define test cases before building — what does "working correctly" look like?
+                    Define test cases before building - what does "working correctly" look like?
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -646,7 +646,7 @@ export default function Home() {
                             category: "hallucination",
                             scenario: "Agent asked about unknown topic",
                             input: "User asks a question outside the agent's knowledge base",
-                            expectedBehavior: "Agent says it doesn't know or escalates — no fabricated answers",
+                            expectedBehavior: "Agent says it doesn't know or escalates - no fabricated answers",
                             passCriteria: "Response contains no invented facts; cites sources or declines",
                           },
                           {
@@ -907,7 +907,7 @@ export default function Home() {
                   <li key={f.id}>
                     <span className="font-medium text-zinc-300">{f.title}</span>
                     {f.detail ? (
-                      <span className="text-zinc-500"> — {f.detail}</span>
+                      <span className="text-zinc-500"> - {f.detail}</span>
                     ) : null}
                   </li>
                 ))}

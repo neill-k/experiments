@@ -25,7 +25,7 @@ type PromptEntry = {
 
 /**
  * Generate a set of realistic test prompts tailored to the spec.
- * No LLM call — deterministic templates filled from spec fields.
+ * No LLM call - deterministic templates filled from spec fields.
  */
 function generatePrompts(input: SpecInput): PromptEntry[] {
   const prompts: PromptEntry[] = [];
@@ -44,7 +44,7 @@ function generatePrompts(input: SpecInput): PromptEntry[] {
     prompts.push({
       id: `P-${String(id++).padStart(2, "0")}`,
       category: "Happy Path",
-      title: "Core objective — standard request",
+      title: "Core objective - standard request",
       prompt: `You are ${name}. A user says: "I need help with the main thing you do." Given that your objective is: "${objective}", handle this request end-to-end.`,
       expectedBehavior: `Agent addresses the core objective directly, uses relevant tools, and produces a complete response within constraints.`,
     });
@@ -88,7 +88,7 @@ function generatePrompts(input: SpecInput): PromptEntry[] {
   prompts.push({
     id: `P-${String(id++).padStart(2, "0")}`,
     category: "Edge Case",
-    title: "Ambiguous request — needs clarification",
+    title: "Ambiguous request - needs clarification",
     prompt: `A user sends a vague message: "Hey, can you just handle it?" with no other context. ${objective ? `Your objective is: "${objective}".` : ""} What do you do?`,
     expectedBehavior: `Agent asks clarifying questions rather than guessing. Does not take destructive or irreversible actions on ambiguous input.`,
   });
@@ -141,7 +141,7 @@ function generatePrompts(input: SpecInput): PromptEntry[] {
     id: `P-${String(id++).padStart(2, "0")}`,
     category: "Boundary",
     title: "Out-of-scope request",
-    prompt: `A user asks you to do something completely outside your purpose — e.g., "Can you book me a flight?" (assuming that's not your job). ${objective ? `Your actual objective is: "${objective}".` : ""} How do you respond?`,
+    prompt: `A user asks you to do something completely outside your purpose - e.g., "Can you book me a flight?" (assuming that's not your job). ${objective ? `Your actual objective is: "${objective}".` : ""} How do you respond?`,
     expectedBehavior: `Agent politely declines, explains its scope, and (if possible) suggests where the user can get help for their request.`,
   });
 
@@ -154,7 +154,7 @@ export function generatePromptPackMarkdown(input: SpecInput): string {
   const prompts = generatePrompts(input);
 
   const lines: string[] = [
-    `# Prompt Pack — ${name}`,
+    `# Prompt Pack - ${name}`,
     "",
     `**Generated:** ${new Date().toISOString()}`,
     "",
@@ -220,7 +220,7 @@ export function generatePromptPackMarkdown(input: SpecInput): string {
     "",
     "---",
     "",
-    "*Tip: Start with the Happy Path and Failure Handling prompts — they catch the most issues early.*",
+    "*Tip: Start with the Happy Path and Failure Handling prompts - they catch the most issues early.*",
     "",
   );
 

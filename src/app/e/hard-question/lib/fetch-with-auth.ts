@@ -20,7 +20,7 @@ export async function fetchWithAuth(
       headers.set('Authorization', `Bearer ${token}`)
     }
   } catch {
-    // No session — proceed without auth
+    // No session - proceed without auth
   }
 
   return fetch(url, { ...init, headers })

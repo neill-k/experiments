@@ -1,9 +1,9 @@
 import { experiments } from '@/lib/experiments'
 
 const SITE_URL = 'https://experiments.neillkillgore.com'
-const SITE_TITLE = 'Experiments — Neill Killgore'
+const SITE_TITLE = 'Experiments - Neill Killgore'
 const SITE_DESCRIPTION =
-  'Daily shipped prototypes — interactive tools, creative canvases, and AI utilities built overnight by an autonomous pipeline.'
+  'Daily shipped prototypes - interactive tools, creative canvases, and AI utilities built overnight by an autonomous pipeline.'
 
 function escapeXml(str: string): string {
   return str

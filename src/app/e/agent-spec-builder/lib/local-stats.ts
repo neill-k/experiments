@@ -1,6 +1,6 @@
 /**
  * Lightweight local-only usage stats.
- * All data stays in localStorage — no network calls, no cookies, no tracking pixels.
+ * All data stays in localStorage - no network calls, no cookies, no tracking pixels.
  */
 
 const STORAGE_KEY = "agent-spec-builder-stats";
@@ -45,7 +45,7 @@ function saveStats(stats: LocalStats): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
   } catch {
-    // storage full or unavailable — silently ignore
+    // storage full or unavailable - silently ignore
   }
 }
 

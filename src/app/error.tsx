@@ -25,7 +25,7 @@ export default function Error({
         <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-white/40 leading-relaxed">
           This experiment hit an unexpected snag.
           <br />
-          Try reloading — it might just need a fresh start.
+          Try reloading - it might just need a fresh start.
         </p>
         <div className="mt-8 h-px w-16 bg-white/10 mx-auto" />
         <div className="mt-8 flex items-center justify-center gap-3">

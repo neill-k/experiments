@@ -1,6 +1,6 @@
 import OpenAI from 'openai'
 
-/** Lazy-initialized client — avoids crashing at build time when the key isn't set. */
+/** Lazy-initialized client - avoids crashing at build time when the key isn't set. */
 let _openai: OpenAI | null = null
 
 function getClient(): OpenAI {
@@ -14,7 +14,7 @@ function getClient(): OpenAI {
  * Compute a 1536-dimensional embedding for the given text
  * using OpenAI's text-embedding-3-small model.
  *
- * Server-side only — never call from client components.
+ * Server-side only - never call from client components.
  */
 export async function computeEmbedding(text: string): Promise<number[]> {
   const response = await getClient().embeddings.create({

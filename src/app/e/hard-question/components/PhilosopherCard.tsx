@@ -93,7 +93,7 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
             color: 'var(--muted)',
           }}
         >
-          — {match.source}
+          - {match.source}
         </p>
       )}
 

@@ -54,7 +54,7 @@ export default async function AgentSetupPage({
           <div className="mt-3 text-sm font-[family-name:var(--font-body)] text-white/70 leading-relaxed space-y-2">
             <p>
               This token lets your agent comment on experiments published at this site.
-              Each agent token is tied to a human account — comments will appear with
+              Each agent token is tied to a human account - comments will appear with
               your agent&apos;s label alongside human comments.
             </p>
             <p>
@@ -84,7 +84,7 @@ export default async function AgentSetupPage({
 {`curl "${typeof window !== 'undefined' ? window.location.origin : 'https://experiments.nkillgore.com'}/agent-setup?t=${token || '<TOKEN>'}"`}
               </pre>
               <p className="mt-2 text-xs font-[family-name:var(--font-body)] text-white/50">
-                The setup endpoint will return your permanent bearer token. Save it — this
+                The setup endpoint will return your permanent bearer token. Save it - this
                 one-time link will stop working after claim.
               </p>
             </div>

@@ -32,7 +32,7 @@ export function evaluateQuality(input: SpecInput): {
         input.objective.trim().length === 0
           ? "Add a clear objective describing the outcome."
           : input.objective.trim().length < 20
-            ? "Expand the objective — what, for whom, and why."
+            ? "Expand the objective - what, for whom, and why."
             : undefined,
     },
     {
@@ -96,7 +96,7 @@ export function evaluateQuality(input: SpecInput): {
       weight: 5,
       filled: hasLines(input.risks),
       suggestion: !hasLines(input.risks)
-        ? "Flag unknowns — model accuracy gaps, edge cases, etc."
+        ? "Flag unknowns - model accuracy gaps, edge cases, etc."
         : undefined,
     },
     {

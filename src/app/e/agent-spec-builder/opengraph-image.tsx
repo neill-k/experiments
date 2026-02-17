@@ -1,7 +1,7 @@
 import { experimentOgImage, ogSize } from '@/lib/og-experiment'
 
 export const runtime = 'edge'
-export const alt = 'Agent Spec Builder — Experiments'
+export const alt = 'Agent Spec Builder - Experiments'
 export const size = ogSize
 export const contentType = 'image/png'
 

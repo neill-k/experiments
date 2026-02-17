@@ -81,7 +81,7 @@ export function usePromptState(prompts: Prompt[]) {
         setSelectedId(id);
         // Fields will be synced by the useEffect above
       } else {
-        // Prompt not in array yet (just created) — schedule for next render
+        // Prompt not in array yet (just created) - schedule for next render
         pendingSelectRef.current = id;
       }
     },

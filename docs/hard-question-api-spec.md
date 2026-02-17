@@ -1,8 +1,8 @@
-# The Hard Question — API & Embedding Pipeline Specification
+# The Hard Question - API & Embedding Pipeline Specification
 
 ## Overview
 
-A daily philosophy app where users answer a question, their response is embedded via OpenAI, and cosine similarity is calculated against pre-embedded philosopher perspectives. Over time, users build a "philosophical fingerprint" — a profile of which schools of thought they most align with.
+A daily philosophy app where users answer a question, their response is embedded via OpenAI, and cosine similarity is calculated against pre-embedded philosopher perspectives. Over time, users build a "philosophical fingerprint" - a profile of which schools of thought they most align with.
 
 ---
 
@@ -172,7 +172,7 @@ $$;
 
 ### Why pgvector for similarity?
 
-- **Performance**: `<=>` operator is optimized and runs in Postgres — no round-trip to JS for vector math
+- **Performance**: `<=>` operator is optimized and runs in Postgres - no round-trip to JS for vector math
 - **Correctness**: pgvector's cosine distance is well-tested
 - **Simplicity**: One SQL call computes all similarities for a question
 - **Scalability**: Can add IVFFlat or HNSW indexes later if needed
@@ -185,29 +185,29 @@ $$;
 src/app/api/
 ├── hard-question/
 │   ├── _lib/
-│   │   ├── auth.ts              # requireUser() helper — extracts & validates user from request
-│   │   ├── openai.ts            # getEmbedding() — calls OpenAI text-embedding-3-small
-│   │   ├── subscription.ts      # getSubscriptionTier() — checks user's tier
+│   │   ├── auth.ts              # requireUser() helper - extracts & validates user from request
+│   │   ├── openai.ts            # getEmbedding() - calls OpenAI text-embedding-3-small
+│   │   ├── subscription.ts      # getSubscriptionTier() - checks user's tier
 │   │   └── errors.ts            # Standardized error responses
 │   ├── question/
-│   │   └── route.ts             # GET — today's question
+│   │   └── route.ts             # GET - today's question
 │   ├── question/[date]/
-│   │   └── route.ts             # GET — question by date (archive, paid only)
+│   │   └── route.ts             # GET - question by date (archive, paid only)
 │   ├── answer/
-│   │   └── route.ts             # POST — submit answer
+│   │   └── route.ts             # POST - submit answer
 │   ├── perspectives/[questionId]/
-│   │   └── route.ts             # GET — perspectives + similarity scores
+│   │   └── route.ts             # GET - perspectives + similarity scores
 │   ├── fingerprint/
-│   │   └── route.ts             # GET — philosophical fingerprint
+│   │   └── route.ts             # GET - philosophical fingerprint
 │   ├── archive/
-│   │   └── route.ts             # GET — browse past questions
+│   │   └── route.ts             # GET - browse past questions
 │   ├── favorites/
-│   │   └── route.ts             # GET, POST, DELETE — manage favorites
+│   │   └── route.ts             # GET, POST, DELETE - manage favorites
 │   ├── subscription/
-│   │   └── route.ts             # GET, PATCH — check/manage subscription
+│   │   └── route.ts             # GET, PATCH - check/manage subscription
 │   └── admin/
 │       └── seed/
-│           └── route.ts         # POST — seed questions (admin only)
+│           └── route.ts         # POST - seed questions (admin only)
 ```
 
 ---
@@ -292,7 +292,7 @@ const MODEL = 'text-embedding-3-small'   // 1536 dimensions
 
 /**
  * Compute an embedding vector for the given text.
- * Runs server-side only — never expose OPENAI_API_KEY to the client.
+ * Runs server-side only - never expose OPENAI_API_KEY to the client.
  */
 export async function getEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.OPENAI_API_KEY
@@ -327,7 +327,7 @@ export async function getEmbeddings(texts: string[]): Promise<number[][]> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) throw new Error('OPENAI_API_KEY not configured')
 
-  // OpenAI supports batch input — up to ~2048 items per call
+  // OpenAI supports batch input - up to ~2048 items per call
   const BATCH_SIZE = 100
   const results: number[][] = []
 
@@ -508,7 +508,7 @@ ORDER BY score DESC;
 | Field | Value |
 |-------|-------|
 | Auth | Required (Bearer token) |
-| Tier gating | None — all tiers see today's question |
+| Tier gating | None - all tiers see today's question |
 
 #### Request
 
@@ -530,7 +530,7 @@ No body. No query params.
 }
 ```
 
-`hasAnswered` — lets the client know whether to show the answer form or the results.
+`hasAnswered` - lets the client know whether to show the answer form or the results.
 
 #### Response `404`
 
@@ -783,7 +783,7 @@ Free tier: `otherMatches` shows philosopher names and schools (tease) but scores
 
 ### 5.4 `GET /api/hard-question/fingerprint`
 
-**Get the user's philosophical fingerprint — aggregate similarity profile across all answered questions.**
+**Get the user's philosophical fingerprint - aggregate similarity profile across all answered questions.**
 
 | Field | Value |
 |-------|-------|
@@ -792,7 +792,7 @@ Free tier: `otherMatches` shows philosopher names and schools (tease) but scores
 
 #### Request
 
-No body. Optional query param: `?detailed=true` (paid only — includes per-question breakdown).
+No body. Optional query param: `?detailed=true` (paid only - includes per-question breakdown).
 
 #### Response `200` (Free)
 
@@ -1114,7 +1114,7 @@ For paid:
 
 | Field | Value |
 |-------|-------|
-| Auth | Required (admin only — checked via `ADMIN_USER_IDS` env var) |
+| Auth | Required (admin only - checked via `ADMIN_USER_IDS` env var) |
 | Tier gating | N/A |
 
 #### Request
