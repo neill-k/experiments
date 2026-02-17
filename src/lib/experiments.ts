@@ -14,6 +14,8 @@ export interface Experiment {
   description: string
   tags: string[]
   icon?: string
+  /** Accent color for card left-border stripe (CSS color string). */
+  accent?: string
 }
 
 /** Returns the GitHub URL for an experiment's source directory. */
@@ -30,6 +32,7 @@ export const experiments: Experiment[] = [
       'One genuinely hard question per day. Write your answer, discover which philosophers think like you.',
     tags: ['philosophy', 'interactive', 'ai'],
     icon: '🤔',
+    accent: 'rgba(200, 160, 255, 0.5)',
   },
   {
     slug: 'ant-farm',
@@ -39,6 +42,7 @@ export const experiments: Experiment[] = [
       'A living ant colony simulation — watch ants dig tunnels, forage for food, and build an underground civilization',
     tags: ['creative', 'canvas', 'simulation', 'interactive'],
     icon: '🐜',
+    accent: 'rgba(180, 120, 80, 0.5)',
   },
   {
     slug: 'the-blob',
@@ -48,6 +52,7 @@ export const experiments: Experiment[] = [
       'A bioluminescent ecosystem of cursor-following entities that split, merge, hunt, flee, and glitch',
     tags: ['creative', 'canvas', 'interactive'],
     icon: '🫧',
+    accent: 'rgba(90, 220, 200, 0.5)',
   },
   {
     slug: 'prompt-library',
@@ -57,6 +62,7 @@ export const experiments: Experiment[] = [
       'Organize, version, and test prompts for LLM applications',
     tags: ['tools', 'llm'],
     icon: '📝',
+    accent: 'rgba(255, 200, 80, 0.5)',
   },
   {
     slug: 'agent-spec-builder',
@@ -66,6 +72,7 @@ export const experiments: Experiment[] = [
       'Turn agent ideas into implementable Markdown specs',
     tags: ['agents', 'specs'],
     icon: '🤖',
+    accent: 'rgba(90, 160, 255, 0.5)',
   },
 ]
 

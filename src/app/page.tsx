@@ -96,6 +96,8 @@ export default async function Home({
               className="experiment-card block border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5 text-white/80 hover:text-white animate-fade-in-up"
               style={{
                 animationDelay: `${i * 80}ms`,
+                borderLeftColor: exp.accent ?? 'var(--border)',
+                borderLeftWidth: exp.accent ? '3px' : undefined,
               }}
             >
               <div className="flex items-start justify-between gap-3">
