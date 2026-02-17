@@ -14,6 +14,7 @@ export type PhilosophySchool =
   | 'taoism'
   | 'buddhist_philosophy'
   | 'ubuntu'
+  | 'confucianism'
 
 export type QuestionDifficulty = 'beginner' | 'intermediate' | 'advanced'
 export type SubscriptionTier = 'free' | 'paid'
@@ -86,6 +87,18 @@ export interface TodayResponse {
 export interface AnswerResponse {
   answer_id: string
   similarities: PerspectiveMatch[]
+  corpus_matches?: CorpusMatch[]
+}
+
+/** A corpus match from the full philosopher library */
+export interface CorpusMatch {
+  corpus_id: string
+  philosopher: string
+  school: PhilosophySchool
+  work: string
+  section: string | null
+  passage_text: string
+  similarity: number
 }
 
 /** A single philosopher match with similarity score */

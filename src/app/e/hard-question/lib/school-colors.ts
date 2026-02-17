@@ -16,6 +16,7 @@ export const schoolColors: Record<PhilosophySchool, string> = {
   taoism: '#D4A574',
   buddhist_philosophy: '#C4A882',
   ubuntu: '#C47878',
+  confucianism: '#C9986B',
 }
 
 /** Human-readable labels for philosophy schools */
@@ -34,6 +35,7 @@ export const schoolLabels: Record<PhilosophySchool, string> = {
   taoism: 'Taoism',
   buddhist_philosophy: 'Buddhist Philosophy',
   ubuntu: 'Ubuntu',
+  confucianism: 'Confucianism',
 }
 
 /** Get the color for a school, with fallback */

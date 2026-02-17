@@ -9,6 +9,7 @@ import { usePreviousResult } from './hooks/usePreviousResult'
 import { QuestionDisplay } from './components/QuestionDisplay'
 import { AnswerInput } from './components/AnswerInput'
 import { PhilosopherReveal } from './components/PhilosopherReveal'
+import { CorpusReveal } from './components/CorpusReveal'
 import { FavoriteButton } from './components/FavoriteButton'
 import { Comments } from '@/components/comments/Comments'
 import { ExperimentNav } from '@/components/ExperimentNav'
@@ -73,6 +74,9 @@ export default function HardQuestionPage() {
 
   // The similarities to display - prefer fresh result, fall back to previous
   const displaySimilarities = result?.similarities ?? previousResult?.similarities ?? []
+
+  // Corpus matches - only available on fresh submissions
+  const displayCorpusMatches = result?.corpus_matches ?? []
 
   // Loading state
   if (pageState === 'loading') {
@@ -194,6 +198,16 @@ export default function HardQuestionPage() {
             visible={true}
             dayNumber={todayData!.day_number}
           />
+
+          {/* Corpus matches - "From the library" */}
+          {displayCorpusMatches.length > 0 && (
+            <div style={{ borderTop: '1px solid var(--border)' }}>
+              <CorpusReveal
+                matches={displayCorpusMatches}
+                visible={true}
+              />
+            </div>
+          )}
 
           {/* Link to fingerprint */}
           {isAuthenticated && (

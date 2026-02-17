@@ -66,16 +66,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to save answer' }, { status: 500 })
     }
 
-    // 6. Match perspectives using the SQL function
+    // 6. Match perspectives using the SQL function (question-specific)
     const { data: matches, error: matchErr } = await admin.rpc('match_perspectives', {
       p_answer_embedding: JSON.stringify(embedding),
       p_question_id: question_id,
-      p_match_count: 10, // get all perspectives for the question
+      p_match_count: 10,
     })
 
     if (matchErr) {
       console.error('Error matching perspectives:', matchErr)
       return NextResponse.json({ error: 'Failed to compute similarities' }, { status: 500 })
+    }
+
+    // 6b. Match against full philosopher corpus (top passage per philosopher, top 5)
+    const { data: corpusMatches, error: corpusErr } = await admin.rpc('match_corpus_by_philosopher', {
+      p_answer_embedding: JSON.stringify(embedding),
+      p_top_n: 5,
+    })
+
+    if (corpusErr) {
+      console.error('Error matching corpus:', corpusErr)
+      // Non-fatal: continue without corpus matches
     }
 
     // 7. Fetch source field for each perspective
@@ -142,9 +153,29 @@ export async function POST(req: NextRequest) {
         .eq('id', user.id)
     }
 
+    // 10. Build corpus match results
+    const corpusResults = (corpusMatches || []).map((m: {
+      corpus_id: string
+      philosopher: string
+      school: string
+      work: string
+      section: string | null
+      passage_text: string
+      similarity: number
+    }) => ({
+      corpus_id: m.corpus_id,
+      philosopher: m.philosopher,
+      school: m.school,
+      work: m.work,
+      section: m.section,
+      passage_text: m.passage_text,
+      similarity: m.similarity,
+    }))
+
     return NextResponse.json({
       answer_id: answer.id,
       similarities,
+      corpus_matches: corpusResults,
     })
   } catch (err) {
     console.error('Unexpected error in /api/hard-question/answer:', err)
