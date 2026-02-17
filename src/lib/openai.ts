@@ -1,8 +1,14 @@
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+/** Lazy-initialized client — avoids crashing at build time when the key isn't set. */
+let _openai: OpenAI | null = null
+
+function getClient(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  }
+  return _openai
+}
 
 /**
  * Compute a 1536-dimensional embedding for the given text
@@ -11,7 +17,7 @@ const openai = new OpenAI({
  * Server-side only — never call from client components.
  */
 export async function computeEmbedding(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
+  const response = await getClient().embeddings.create({
     model: 'text-embedding-3-small',
     input: text,
   })
