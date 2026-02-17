@@ -77,6 +77,10 @@ npm run dev
 - Mobile-first
 - Each experiment should feel self-contained but visually consistent with the site
 
+## Want to build your own?
+
+See the **[Setup Guide](docs/setup-guide.md)** for a full walkthrough of how to configure the overnight pipeline, set up the cron jobs, and adapt it for your own projects.
+
 ## License
 
 MIT
