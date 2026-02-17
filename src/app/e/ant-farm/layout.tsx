@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ExperimentJsonLd } from "@/components/ExperimentJsonLd";
 
 export const metadata: Metadata = {
   title: "Ant Farm",
@@ -16,5 +17,10 @@ export const metadata: Metadata = {
 };
 
 export default function AntFarmLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ExperimentJsonLd slug="ant-farm" />
+      {children}
+    </>
+  );
 }

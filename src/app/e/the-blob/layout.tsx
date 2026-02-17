@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ExperimentJsonLd } from "@/components/ExperimentJsonLd";
 
 export const metadata: Metadata = {
   title: "The Blob",
@@ -23,5 +24,10 @@ export default function BlobLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <ExperimentJsonLd slug="the-blob" />
+      {children}
+    </>
+  );
 }

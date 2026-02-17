@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ExperimentJsonLd } from "@/components/ExperimentJsonLd";
 
 export const metadata: Metadata = {
   title: "Prompt Library & Playground",
@@ -21,5 +22,10 @@ export default function PromptLibraryLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <ExperimentJsonLd slug="prompt-library" />
+      {children}
+    </>
+  );
 }

@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { TagFilter } from '@/components/TagFilter'
 import { experiments, allTags } from '@/lib/experiments'
+import { homepageJsonLd } from '@/lib/json-ld'
 
 const isToday = (dateStr: string) => {
   const today = new Date().toISOString().split('T')[0]
@@ -48,7 +49,12 @@ export default async function Home({
     : experiments
 
   return (
-    <div className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd()) }}
+      />
+      <div className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto w-full max-w-3xl">
         <header>
           <h1 className="text-4xl sm:text-5xl tracking-tight text-white">
@@ -183,5 +189,6 @@ export default async function Home({
         </footer>
       </div>
     </div>
+    </>
   )
 }

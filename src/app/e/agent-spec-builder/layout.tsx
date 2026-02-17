@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ExperimentJsonLd } from "@/components/ExperimentJsonLd";
 
 export const metadata: Metadata = {
   title: "Agent Spec Builder",
@@ -23,5 +24,10 @@ export default function AgentSpecBuilderLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <ExperimentJsonLd slug="agent-spec-builder" />
+      {children}
+    </>
+  );
 }
