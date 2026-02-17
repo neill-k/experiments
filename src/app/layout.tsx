@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { AuthButtons } from "@/components/AuthButtons";
@@ -22,6 +22,13 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#08080a",
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://experiments.neillkillgore.com"),
   title: {
@@ -29,7 +36,6 @@ export const metadata: Metadata = {
     template: "%s - Experiments",
   },
   description: "Daily shipped prototypes. Click one to explore.",
-  themeColor: "#08080a",
   openGraph: {
     type: "website",
     siteName: "Experiments",

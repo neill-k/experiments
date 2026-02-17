@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { experiments } from '@/lib/experiments'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -16,5 +17,11 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/x-icon',
       },
     ],
+    shortcuts: experiments.slice(0, 4).map((exp) => ({
+      name: exp.title,
+      short_name: exp.title,
+      description: exp.description,
+      url: `/e/${exp.slug}`,
+    })),
   }
 }
