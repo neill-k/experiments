@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# experiments
 
-## Getting Started
+A collection of small, self-contained web experiments — built overnight by AI agents, reviewed by a human in the morning.
 
-First, run the development server:
+**Live at** [experiments.neillkillgore.com](https://experiments.neillkillgore.com)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How it works
+
+An automated pipeline runs nightly:
+
+1. **Ideator** (9 PM CT) — generates and selects an experiment concept
+2. **Planner** (10 PM CT) — writes a detailed implementation plan
+3. **Implementer** (11:30 PM CT) — builds it
+4. **Tester** (2:30 AM CT) — validates TypeScript, checks for regressions
+
+Between stages, a human can review output and leave feedback. By morning, there's a new experiment live on the site — or at least a solid attempt at one.
+
+Improvement crons also run periodically to polish existing experiments (bug fixes, mobile improvements, visual tweaks).
+
+## Current experiments
+
+| Experiment | Description |
+|---|---|
+| 🐜 [Ant Farm](https://experiments.neillkillgore.com/e/ant-farm) | A living ant colony simulation — dig tunnels, forage, build underground |
+| 🫧 [The Blob](https://experiments.neillkillgore.com/e/the-blob) | Bioluminescent entities that split, merge, hunt, flee, and glitch |
+| 📝 [Prompt Library](https://experiments.neillkillgore.com/e/prompt-library) | Organize, version, and test prompts for LLM applications |
+| 🤖 [Agent Spec Builder](https://experiments.neillkillgore.com/e/agent-spec-builder) | Turn agent ideas into implementable Markdown specs |
+
+## Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Styling:** Tailwind CSS 4
+- **Database:** Supabase (Postgres, Auth, RLS)
+- **Hosting:** Vercel
+- **Auth:** GitHub OAuth
+- **Fonts:** Instrument Serif, DM Sans, JetBrains Mono
+
+## Project structure
+
+```
+src/
+├── app/
+│   ├── e/                    # Each experiment lives here
+│   │   ├── ant-farm/
+│   │   ├── the-blob/
+│   │   ├── prompt-library/
+│   │   └── agent-spec-builder/
+│   ├── api/                  # API routes
+│   └── page.tsx              # Homepage / experiment index
+├── lib/
+│   ├── experiments.ts        # Experiment registry (source of truth)
+│   └── supabase/             # Supabase client setup
+supabase/
+└── migrations/               # Database migrations
+docs/                         # Design specs and API docs
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Adding an experiment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Create a directory under `src/app/e/<slug>/`
+2. Add the experiment to the registry in `src/lib/experiments.ts`
+3. Run `npx tsc --noEmit` to validate (do NOT run `next build` — it OOMs on this machine)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Local development
 
-## Learn More
+```bash
+cp .env.example .env.local
+# Fill in your Supabase project URL and anon key
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Design constraints
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Dark theme (`#08080a` / `#ebebeb`)
+- No rounded corners — hard edges everywhere
+- Mobile-first
+- Each experiment should feel self-contained but visually consistent with the site
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
