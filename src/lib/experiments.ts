@@ -46,7 +46,7 @@ export const experiments: Experiment[] = [
     tags: ['creative', 'canvas', 'simulation', 'interactive'],
     icon: '🐜',
     accent: 'rgba(180, 120, 80, 0.5)',
-    favorite: true,
+    favorite: false,
   },
   {
     slug: 'the-blob',
@@ -57,7 +57,7 @@ export const experiments: Experiment[] = [
     tags: ['creative', 'canvas', 'interactive'],
     icon: '🫧',
     accent: 'rgba(90, 220, 200, 0.5)',
-    favorite: true,
+    favorite: false,
   },
   {
     slug: 'prompt-library',

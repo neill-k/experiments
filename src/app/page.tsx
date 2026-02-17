@@ -103,7 +103,7 @@ export default async function Home({
             <h2 className="text-xs font-[family-name:var(--font-mono)] text-white/30 uppercase tracking-widest mb-4">
               Neill&apos;s Favorites
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className={`grid gap-3 ${favorites.length === 1 ? 'grid-cols-1 max-w-sm' : favorites.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}`}>
               {favorites.map((exp, i) => (
                 <Link
                   key={exp.slug}
