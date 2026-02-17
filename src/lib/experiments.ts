@@ -16,6 +16,8 @@ export interface Experiment {
   icon?: string
   /** Accent color for card left-border stripe (CSS color string). */
   accent?: string
+  /** Neill's favorite experiments get featured in a special section. */
+  favorite?: boolean
 }
 
 /** Returns the GitHub URL for an experiment's source directory. */
@@ -33,6 +35,7 @@ export const experiments: Experiment[] = [
     tags: ['philosophy', 'interactive', 'ai'],
     icon: '🤔',
     accent: 'rgba(200, 160, 255, 0.5)',
+    favorite: true,
   },
   {
     slug: 'ant-farm',
@@ -43,6 +46,7 @@ export const experiments: Experiment[] = [
     tags: ['creative', 'canvas', 'simulation', 'interactive'],
     icon: '🐜',
     accent: 'rgba(180, 120, 80, 0.5)',
+    favorite: true,
   },
   {
     slug: 'the-blob',
@@ -53,6 +57,7 @@ export const experiments: Experiment[] = [
     tags: ['creative', 'canvas', 'interactive'],
     icon: '🫧',
     accent: 'rgba(90, 220, 200, 0.5)',
+    favorite: true,
   },
   {
     slug: 'prompt-library',

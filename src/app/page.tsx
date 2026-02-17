@@ -48,6 +48,8 @@ export default async function Home({
     ? experiments.filter((e) => e.tags.includes(activeTag))
     : experiments
 
+  const favorites = experiments.filter((e) => e.favorite)
+
   return (
     <>
       <script
@@ -94,6 +96,43 @@ export default async function Home({
           </p>
           <div className="mt-4 h-px w-16 bg-white/20" />
         </header>
+
+        {/* Neill's Favorites */}
+        {!activeTag && favorites.length > 0 && (
+          <section className="mt-10 mb-8">
+            <h2 className="text-xs font-[family-name:var(--font-mono)] text-white/30 uppercase tracking-widest mb-4">
+              Neill&apos;s Favorites
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {favorites.map((exp, i) => (
+                <Link
+                  key={exp.slug}
+                  href={`/e/${exp.slug}`}
+                  className="group block border border-[var(--border)] bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors animate-fade-in-up"
+                  style={{
+                    animationDelay: `${i * 60}ms`,
+                    borderTopColor: exp.accent ?? 'var(--border)',
+                    borderTopWidth: '3px',
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    {exp.icon && (
+                      <span className="text-lg leading-none" aria-hidden="true">
+                        {exp.icon}
+                      </span>
+                    )}
+                    <span className="text-sm font-[family-name:var(--font-display)] text-white/90 group-hover:text-white transition-colors">
+                      {exp.title}
+                    </span>
+                  </div>
+                  <p className="text-xs font-[family-name:var(--font-body)] text-white/40 leading-relaxed line-clamp-2">
+                    {exp.description}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Tag filter bar - client component for interactivity */}
         <Suspense>
