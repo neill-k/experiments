@@ -10,6 +10,7 @@ import { AnswerInput } from './components/AnswerInput'
 import { PhilosopherReveal } from './components/PhilosopherReveal'
 import { FavoriteButton } from './components/FavoriteButton'
 import { Comments } from '@/components/comments/Comments'
+import { ExperimentNav } from '@/components/ExperimentNav'
 
 type PageState = 'loading' | 'no-question' | 'question' | 'answering' | 'revealed'
 
@@ -166,6 +167,9 @@ export default function HardQuestionPage() {
       <div className="px-4 py-8" style={{ borderTop: '1px solid var(--border)' }}>
         <Comments slug="hard-question" />
       </div>
+
+      {/* Prev/Next experiment navigation */}
+      <ExperimentNav />
     </div>
   )
 }
