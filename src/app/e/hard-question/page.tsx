@@ -174,6 +174,7 @@ export default function HardQuestionPage() {
           <PhilosopherReveal
             matches={displaySimilarities}
             visible={true}
+            dayNumber={todayData!.day_number}
           />
 
           {/* Link to fingerprint */}

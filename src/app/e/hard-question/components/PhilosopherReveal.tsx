@@ -2,13 +2,15 @@
 
 import type { PerspectiveMatch } from '../lib/types'
 import { PhilosopherCard } from './PhilosopherCard'
+import { ShareResult } from './ShareResult'
 
 interface PhilosopherRevealProps {
   matches: (PerspectiveMatch & { source?: string })[]
   visible: boolean
+  dayNumber?: number
 }
 
-export function PhilosopherReveal({ matches, visible }: PhilosopherRevealProps) {
+export function PhilosopherReveal({ matches, visible, dayNumber }: PhilosopherRevealProps) {
   if (!visible || matches.length === 0) return null
 
   const topMatch = matches[0]
@@ -46,6 +48,20 @@ export function PhilosopherReveal({ matches, visible }: PhilosopherRevealProps) 
             />
           ))}
         </div>
+
+        {/* Share button */}
+        {dayNumber != null && (
+          <div
+            className="mt-6"
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? 'translateY(0)' : 'translateY(8px)',
+              transition: 'opacity 0.5s ease-out 0.8s, transform 0.5s ease-out 0.8s',
+            }}
+          >
+            <ShareResult matches={matches} dayNumber={dayNumber} />
+          </div>
+        )}
       </div>
     </div>
   )
