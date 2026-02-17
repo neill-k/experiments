@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { TagFilter } from '@/components/TagFilter'
-import { experiments, allTags } from '@/lib/experiments'
+import { experiments, allTags, tagCounts } from '@/lib/experiments'
 import { homepageJsonLd } from '@/lib/json-ld'
 
 const isToday = (dateStr: string) => {
@@ -85,7 +85,7 @@ export default async function Home({
 
         {/* Tag filter bar — client component for interactivity */}
         <Suspense>
-          <TagFilter allTags={allTags} />
+          <TagFilter allTags={allTags} tagCounts={tagCounts} totalCount={experiments.length} />
         </Suspense>
 
         <div className="mt-6 space-y-3">

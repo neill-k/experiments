@@ -73,3 +73,14 @@ export const experiments: Experiment[] = [
 export const allTags: string[] = Array.from(
   new Set(experiments.flatMap((e) => e.tags)),
 ).sort()
+
+/** Number of experiments per tag. */
+export const tagCounts: Record<string, number> = experiments.reduce(
+  (acc, e) => {
+    for (const tag of e.tags) {
+      acc[tag] = (acc[tag] || 0) + 1
+    }
+    return acc
+  },
+  {} as Record<string, number>,
+)
