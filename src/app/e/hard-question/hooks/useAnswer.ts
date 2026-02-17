@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import type { AnswerResponse, PerspectiveMatch } from '../lib/types'
+import type { AnswerResponse } from '../lib/types'
+import { fetchWithAuth } from '../lib/fetch-with-auth'
 
 export function useAnswer() {
   const [submitting, setSubmitting] = useState(false)
@@ -12,7 +13,7 @@ export function useAnswer() {
     setSubmitting(true)
     setError(null)
     try {
-      const res = await fetch('/api/hard-question/answer', {
+      const res = await fetchWithAuth('/api/hard-question/answer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question_id: questionId, answer_text: answerText }),

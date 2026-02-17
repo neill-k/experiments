@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { useQuestion } from './hooks/useQuestion'
 import { useAnswer } from './hooks/useAnswer'
+import { usePreviousResult } from './hooks/usePreviousResult'
 import { QuestionDisplay } from './components/QuestionDisplay'
 import { AnswerInput } from './components/AnswerInput'
 import { PhilosopherReveal } from './components/PhilosopherReveal'
@@ -20,6 +21,12 @@ export default function HardQuestionPage() {
   const { submitAnswer, submitting, result, error: answerError } = useAnswer()
   const [pageState, setPageState] = useState<PageState>('loading')
 
+  // Fetch previous results when user has already answered
+  const questionIdForPrevious =
+    todayData?.has_answered && todayData?.question ? todayData.question.id : null
+  const { data: previousResult, loading: previousLoading } =
+    usePreviousResult(questionIdForPrevious)
+
   // Determine page state from data
   useEffect(() => {
     if (questionLoading) {
@@ -32,20 +39,26 @@ export default function HardQuestionPage() {
       return
     }
 
+    // Fresh submission result takes priority
     if (result) {
       setPageState('revealed')
       return
     }
 
-    if (todayData.has_answered) {
-      // Already answered but we don't have result data — show question state
-      // (In a full app, we'd re-fetch the similarities)
-      setPageState('question')
+    // Already answered — show previous results once loaded
+    if (todayData.has_answered && previousResult) {
+      setPageState('revealed')
+      return
+    }
+
+    // Still loading previous results for a returning user
+    if (todayData.has_answered && previousLoading) {
+      setPageState('loading')
       return
     }
 
     setPageState('question')
-  }, [questionLoading, todayData, result])
+  }, [questionLoading, todayData, result, previousResult, previousLoading])
 
   async function handleSubmit(answerText: string) {
     if (!todayData?.question) return
@@ -57,6 +70,9 @@ export default function HardQuestionPage() {
       setPageState('question')
     }
   }
+
+  // The similarities to display — prefer fresh result, fall back to previous
+  const displaySimilarities = result?.similarities ?? previousResult?.similarities ?? []
 
   // Loading state
   if (pageState === 'loading') {
@@ -94,8 +110,9 @@ export default function HardQuestionPage() {
 
   const question = todayData!.question!
   const isAuthenticated = !!userId
-  const isRevealed = pageState === 'revealed' && result
+  const isRevealed = pageState === 'revealed' && displaySimilarities.length > 0
   const hasAnswered = todayData!.has_answered
+  const isReturningUser = hasAnswered && !result
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -136,11 +153,26 @@ export default function HardQuestionPage() {
         />
       )}
 
+      {/* Returning user note */}
+      {isRevealed && isReturningUser && (
+        <div className="px-4 pb-2">
+          <p
+            className="text-xs"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--muted)',
+            }}
+          >
+            You answered this one earlier. Here&apos;s how you matched:
+          </p>
+        </div>
+      )}
+
       {/* Philosopher reveal */}
       {isRevealed && (
         <>
           <PhilosopherReveal
-            matches={result.similarities}
+            matches={displaySimilarities}
             visible={true}
           />
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type { FingerprintResponse } from '../lib/types'
+import { fetchWithAuth } from '../lib/fetch-with-auth'
 
 export function useFingerprint() {
   const [data, setData] = useState<FingerprintResponse | null>(null)
@@ -11,7 +12,7 @@ export function useFingerprint() {
   useEffect(() => {
     async function fetchFingerprint() {
       try {
-        const res = await fetch('/api/hard-question/fingerprint')
+        const res = await fetchWithAuth('/api/hard-question/fingerprint')
         if (res.status === 401) {
           setData({ fingerprint: [], total_answers: 0 })
           return

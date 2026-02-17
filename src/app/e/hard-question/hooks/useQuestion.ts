@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type { TodayResponse } from '../lib/types'
+import { fetchWithAuth } from '../lib/fetch-with-auth'
 
 export function useQuestion() {
   const [data, setData] = useState<TodayResponse | null>(null)
@@ -11,7 +12,7 @@ export function useQuestion() {
   useEffect(() => {
     async function fetchQuestion() {
       try {
-        const res = await fetch('/api/hard-question/today')
+        const res = await fetchWithAuth('/api/hard-question/today')
         if (!res.ok) throw new Error('Failed to fetch question')
         const json = await res.json()
         setData(json)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { fetchWithAuth } from '../lib/fetch-with-auth'
 
 interface FavoriteButtonProps {
   questionId: string
@@ -18,7 +19,7 @@ export function FavoriteButton({ questionId, initialFavorited = false }: Favorit
     setFavorited(!prev)
 
     try {
-      const res = await fetch('/api/hard-question/favorite', {
+      const res = await fetchWithAuth('/api/hard-question/favorites', {
         method: favorited ? 'DELETE' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question_id: questionId }),
