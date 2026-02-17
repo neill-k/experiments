@@ -3,6 +3,7 @@ import { Instrument_Serif, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { AuthButtons } from "@/components/AuthButtons";
 import { NavDropdown } from "@/components/NavDropdown";
+import { CommandPalette } from "@/components/CommandPalette";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import Link from "next/link";
 import "./globals.css";
@@ -86,7 +87,10 @@ export default function RootLayout({
               </Link>
               <NavDropdown />
             </div>
-            <AuthButtons />
+            <div className="flex items-center gap-3">
+              <CommandPalette />
+              <AuthButtons />
+            </div>
           </div>
         </nav>
         <main id="main-content" className="pt-14">
