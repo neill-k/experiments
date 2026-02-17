@@ -229,7 +229,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-6xl gap-4 px-4 py-6 grid-cols-1 lg:grid-cols-2 overflow-hidden">
+      <div className="mx-auto grid max-w-6xl gap-4 px-4 py-6 grid-cols-1 lg:grid-cols-2 overflow-hidden">
         <section className="border border-[#2a2a2a] bg-[#08080a] p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -936,7 +936,7 @@ export default function Home() {
             details.
           </div>
         </section>
-      </main>
+      </div>
 
       <footer className="border-t border-[#2a2a2a] bg-[#08080a]">
         <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-xs text-zinc-600">

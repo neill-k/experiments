@@ -48,7 +48,7 @@ export default async function Home({
     : experiments
 
   return (
-    <main className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
+    <div className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto w-full max-w-3xl">
         <header>
           <h1 className="text-4xl sm:text-5xl tracking-tight text-white">
@@ -182,6 +182,6 @@ export default async function Home({
           </div>
         </footer>
       </div>
-    </main>
+    </div>
   )
 }

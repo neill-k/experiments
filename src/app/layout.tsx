@@ -59,7 +59,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a] bg-[#08080a]/80 backdrop-blur-md">
+        <nav aria-label="Site" className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a] bg-[#08080a]/80 backdrop-blur-md">
           <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
             <Link
               href="/"

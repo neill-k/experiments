@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function NotFound() {
   return (
-    <main className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16 flex items-center justify-center">
+    <div className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16 flex items-center justify-center">
       <div className="mx-auto w-full max-w-lg text-center">
         <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.3em] text-white/20">
           experiment not found
@@ -24,6 +24,6 @@ export default function NotFound() {
           Back to experiments
         </Link>
       </div>
-    </main>
+    </div>
   )
 }
