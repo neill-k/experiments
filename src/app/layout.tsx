@@ -3,6 +3,7 @@ import { Instrument_Serif, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { AuthButtons } from "@/components/AuthButtons";
 import { NavDropdown } from "@/components/NavDropdown";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import Link from "next/link";
 import "./globals.css";
 
@@ -91,6 +92,7 @@ export default function RootLayout({
         <main id="main-content" className="pt-14">
           {children}
         </main>
+        <ScrollToTop />
         <Analytics />
       </body>
     </html>
