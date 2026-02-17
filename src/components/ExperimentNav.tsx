@@ -1,19 +1,50 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { experiments, sourceUrl } from '@/lib/experiments'
 
 export function ExperimentNav() {
   const pathname = usePathname()
+  const router = useRouter()
   const currentSlug = pathname.split('/e/')[1]?.split('/')[0]
   const currentIndex = experiments.findIndex((e) => e.slug === currentSlug)
-
-  if (currentIndex === -1) return null
 
   const prev = currentIndex > 0 ? experiments[currentIndex - 1] : null
   const next =
     currentIndex < experiments.length - 1 ? experiments[currentIndex + 1] : null
+
+  // Keyboard shortcuts: ← previous, → next experiment
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      // Ignore when typing in an input/textarea/contenteditable
+      const tag = (e.target as HTMLElement)?.tagName
+      if (
+        tag === 'INPUT' ||
+        tag === 'TEXTAREA' ||
+        tag === 'SELECT' ||
+        (e.target as HTMLElement)?.isContentEditable
+      ) {
+        return
+      }
+      // Ignore if any modifier key is held (allow browser/OS shortcuts)
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return
+
+      if (e.key === 'ArrowLeft' && prev) {
+        e.preventDefault()
+        router.push(`/e/${prev.slug}`)
+      } else if (e.key === 'ArrowRight' && next) {
+        e.preventDefault()
+        router.push(`/e/${next.slug}`)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [prev, next, router])
+
+  if (currentIndex === -1) return null
 
   return (
     <nav
@@ -27,6 +58,9 @@ export function ExperimentNav() {
         >
           <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-white/25 group-hover:text-white/40 transition-colors">
             ← Previous
+            <kbd className="ml-1.5 hidden sm:inline-block border border-white/10 px-1 py-px text-[9px] text-white/20 group-hover:text-white/30 group-hover:border-white/20 transition-colors">
+              ←
+            </kbd>
           </span>
           <span className="font-[family-name:var(--font-display)] text-sm">
             {prev.icon && <span className="mr-1.5" aria-hidden="true">{prev.icon}</span>}
@@ -60,6 +94,9 @@ export function ExperimentNav() {
           className="group flex flex-col items-end gap-0.5 text-white/40 hover:text-white/80 transition-colors"
         >
           <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-white/25 group-hover:text-white/40 transition-colors">
+            <kbd className="mr-1.5 hidden sm:inline-block border border-white/10 px-1 py-px text-[9px] text-white/20 group-hover:text-white/30 group-hover:border-white/20 transition-colors">
+              →
+            </kbd>
             Next →
           </span>
           <span className="font-[family-name:var(--font-display)] text-sm">
