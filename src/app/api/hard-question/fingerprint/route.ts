@@ -3,18 +3,18 @@ import { supabaseAdmin, supabaseFromAccessToken } from '@/lib/supabase/server'
 
 export async function GET(req: NextRequest) {
   try {
-    // Auth required
+    // Auth optional - return empty fingerprint for anonymous users
     const authHeader = req.headers.get('authorization')
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    let userId: string | null = null
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7)
+      const userClient = supabaseFromAccessToken(token)
+      const { data: { user } } = await userClient.auth.getUser()
+      if (user) userId = user.id
     }
 
-    const token = authHeader.slice(7)
-    const userClient = supabaseFromAccessToken(token)
-    const { data: { user }, error: authErr } = await userClient.auth.getUser()
-
-    if (authErr || !user) {
-      return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 })
+    if (!userId) {
+      return NextResponse.json({ fingerprint: [], total_answers: 0 })
     }
 
     const admin = supabaseAdmin()
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     const { data: fingerprint, error: fpErr } = await admin
       .from('philosophical_fingerprints')
       .select('school, avg_score, sample_count')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .order('avg_score', { ascending: false })
 
     if (fpErr) {
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     const { count, error: countErr } = await admin
       .from('user_answers')
       .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
 
     if (countErr) {
       console.error('Error counting answers:', countErr)

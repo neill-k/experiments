@@ -210,21 +210,19 @@ export default function HardQuestionPage() {
           )}
 
           {/* Link to fingerprint */}
-          {isAuthenticated && (
-            <div className="px-4 py-6">
-              <Link
-                href="/e/hard-question/fingerprint"
-                className="inline-block text-sm transition-colors"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  color: 'var(--muted)',
-                  borderBottom: '1px solid var(--border)',
-                }}
-              >
-                View your philosophical fingerprint →
-              </Link>
-            </div>
-          )}
+          <div className="px-4 py-6">
+            <Link
+              href="/e/hard-question/fingerprint"
+              className="inline-block text-sm transition-colors"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--muted)',
+                borderBottom: '1px solid var(--border)',
+              }}
+            >
+              View your philosophical fingerprint →
+            </Link>
+          </div>
         </>
       )}
 

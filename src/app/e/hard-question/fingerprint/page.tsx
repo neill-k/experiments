@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { AuthButtons } from '@/components/AuthButtons'
@@ -7,10 +8,67 @@ import { useFingerprint } from '../hooks/useFingerprint'
 import { FingerprintChart } from '../components/FingerprintChart'
 import { SchoolTag } from '../components/SchoolTag'
 import { getSchoolLabel } from '../lib/school-colors'
+import type { PhilosophicalFingerprint, PhilosophySchool } from '../lib/types'
+
+/** Build a fingerprint from sessionStorage matches (anonymous users) */
+function useSessionFingerprint(): PhilosophicalFingerprint[] {
+  const [fingerprint, setFingerprint] = useState<PhilosophicalFingerprint[]>([])
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('hq_session_matches')
+      if (!raw) return
+      const matches: { school: string; similarity: number }[] = JSON.parse(raw)
+      if (!matches.length) return
+
+      // Aggregate by school
+      const bySchool = new Map<string, number[]>()
+      for (const m of matches) {
+        const arr = bySchool.get(m.school) || []
+        arr.push(m.similarity)
+        bySchool.set(m.school, arr)
+      }
+
+      const result: PhilosophicalFingerprint[] = []
+      for (const [school, scores] of bySchool) {
+        const avg = scores.reduce((a, b) => a + b, 0) / scores.length
+        result.push({
+          id: school,
+          user_id: 'session',
+          school: school as PhilosophySchool,
+          avg_score: avg,
+          sample_count: scores.length,
+          min_score: Math.min(...scores),
+          max_score: Math.max(...scores),
+          recent_avg: avg,
+        })
+      }
+      setFingerprint(result)
+    } catch {
+      // sessionStorage unavailable
+    }
+  }, [])
+
+  return fingerprint
+}
 
 export default function FingerprintPage() {
   const { userId, loading: authLoading } = useAuth()
   const { data, loading, error } = useFingerprint()
+  const sessionFingerprint = useSessionFingerprint()
+
+  // Determine which fingerprint to show
+  const fingerprint = useMemo(() => {
+    // Prefer server data if available and non-empty
+    if (data?.fingerprint && data.fingerprint.length > 0) {
+      return data.fingerprint
+    }
+    // Fall back to session-based fingerprint
+    return sessionFingerprint
+  }, [data, sessionFingerprint])
+
+  const totalAnswers = data?.total_answers ?? (sessionFingerprint.length > 0 ? 1 : 0)
+  const isSessionOnly = !data?.fingerprint?.length && sessionFingerprint.length > 0
 
   // Loading
   if (loading || authLoading) {
@@ -20,45 +78,14 @@ export default function FingerprintPage() {
           className="text-sm"
           style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
         >
-          Loading…
+          Loading...
         </p>
-      </div>
-    )
-  }
-
-  // Not logged in
-  if (!userId) {
-    return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4">
-        <h1
-          className="text-3xl"
-          style={{ fontFamily: 'var(--font-display)', color: 'var(--fg)' }}
-        >
-          Your Philosophical DNA
-        </h1>
-        <p
-          className="max-w-md text-center text-sm"
-          style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}
-        >
-          Sign in to see how your answers align with different schools of thought.
-        </p>
-        <AuthButtons />
-        <Link
-          href="/e/hard-question"
-          className="mt-4 text-xs transition-colors"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            color: 'var(--muted)',
-          }}
-        >
-          ← Back to today&apos;s question
-        </Link>
       </div>
     )
   }
 
   // Error
-  if (error) {
+  if (error && !sessionFingerprint.length) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-4">
         <p
@@ -70,9 +97,6 @@ export default function FingerprintPage() {
       </div>
     )
   }
-
-  const fingerprint = data?.fingerprint ?? []
-  const totalAnswers = data?.total_answers ?? 0
 
   // Sort by avg_score for top schools
   const sorted = [...fingerprint]
@@ -114,7 +138,9 @@ export default function FingerprintPage() {
           color: 'var(--muted)',
         }}
       >
-        Based on {totalAnswers} answer{totalAnswers !== 1 ? 's' : ''}
+        {totalAnswers > 0
+          ? `Based on ${totalAnswers} answer${totalAnswers !== 1 ? 's' : ''}`
+          : 'Answer questions to build your profile'}
       </p>
 
       {fingerprint.length === 0 ? (
@@ -143,6 +169,26 @@ export default function FingerprintPage() {
           <div className="mb-12">
             <FingerprintChart fingerprint={fingerprint} />
           </div>
+
+          {/* Session-only notice */}
+          {isSessionOnly && (
+            <div
+              className="mb-8 p-4"
+              style={{
+                backgroundColor: '#111114',
+                border: '1px solid var(--border)',
+              }}
+            >
+              <p
+                className="mb-2 text-sm"
+                style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}
+              >
+                This is based on your current session only. Sign in to save your answers
+                and build a fingerprint over time.
+              </p>
+              <AuthButtons />
+            </div>
+          )}
 
           {/* Top 3 schools */}
           <div className="mb-12">
@@ -203,7 +249,7 @@ export default function FingerprintPage() {
                         color: 'var(--muted)',
                       }}
                     >
-                      avg · {school.sample_count} question{school.sample_count !== 1 ? 's' : ''}
+                      avg · {school.sample_count} match{school.sample_count !== 1 ? 'es' : ''}
                     </span>
                   </div>
                 </div>
