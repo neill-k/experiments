@@ -57,7 +57,7 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
       }}
     >
       {/* Header: name + school */}
-      <div className="mb-3 flex items-center gap-3">
+      <div className="mb-3 flex flex-wrap items-center gap-2 sm:gap-3">
         <h3
           className="text-xl"
           style={{

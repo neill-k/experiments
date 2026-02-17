@@ -70,7 +70,7 @@ export function AnswerInput({ onSubmit, submitting, disabled, isAuthenticated }:
           <button
             onClick={handleSubmit}
             disabled={!text.trim() || submitting || disabled}
-            className="submit-btn ml-auto px-6 py-2.5 text-sm font-medium tracking-wide transition-all"
+            className="submit-btn ml-auto px-6 py-3 text-sm font-medium tracking-wide transition-all"
             style={{
               fontFamily: 'var(--font-mono)',
               color: 'var(--fg)',

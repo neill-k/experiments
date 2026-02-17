@@ -38,9 +38,9 @@ export function FavoriteButton({ questionId, initialFavorited = false }: Favorit
     <button
       onClick={toggle}
       disabled={loading}
-      className="favorite-btn p-1 transition-colors"
+      className="favorite-btn p-3 transition-colors"
       aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
-      style={{ color: favorited ? 'var(--fg)' : 'var(--muted)' }}
+      style={{ color: favorited ? 'var(--fg)' : 'var(--muted)', minWidth: '44px', minHeight: '44px' }}
     >
       <svg
         width="20"

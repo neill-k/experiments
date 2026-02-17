@@ -69,11 +69,10 @@ export function FingerprintChart({ fingerprint }: FingerprintChartProps) {
   })
 
   return (
-    <div className="fingerprint-chart flex justify-center">
+    <div className="fingerprint-chart flex justify-center overflow-hidden px-4">
       <svg
-        viewBox={`0 0 ${size} ${size}`}
+        viewBox={`-40 -40 ${size + 80} ${size + 80}`}
         className="w-full max-w-md"
-        style={{ overflow: 'visible' }}
       >
         {/* Grid rings */}
         {gridRings.map((points, i) => (

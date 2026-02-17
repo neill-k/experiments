@@ -118,14 +118,14 @@ export default function HardQuestionPage() {
     <div className="mx-auto max-w-4xl">
       {/* Question */}
       <div className="flex items-start">
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <QuestionDisplay
             questionText={question.question_text}
             dayNumber={todayData!.day_number}
           />
         </div>
         {isAuthenticated && (
-          <div className="pt-6 pr-4">
+          <div className="shrink-0 pt-6 pr-4">
             <FavoriteButton questionId={question.id} />
           </div>
         )}
