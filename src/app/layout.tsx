@@ -50,6 +50,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" style={{ colorScheme: "dark" }}>
+      <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Experiments — Neill Killgore"
+          href="/feed.xml"
+        />
+      </head>
       <body
         className={`${instrumentSerif.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
       >

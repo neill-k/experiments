@@ -168,6 +168,14 @@ export default async function Home({
             </div>
             <div className="flex items-center gap-4">
               <a
+                href="/feed.xml"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
+                title="RSS Feed"
+              >
+                RSS
+              </a>
+              <span className="text-white/10">·</span>
+              <a
                 href="https://github.com/neill-k/experiments"
                 target="_blank"
                 rel="noopener noreferrer"
