@@ -4,18 +4,14 @@ import { computeEmbedding } from '@/lib/openai'
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Authenticate user
+    // 1. Try to authenticate (optional - anonymous users can still get results)
+    let userId: string | null = null
     const authHeader = req.headers.get('authorization')
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-    }
-
-    const token = authHeader.slice(7)
-    const userClient = supabaseFromAccessToken(token)
-    const { data: { user }, error: authErr } = await userClient.auth.getUser()
-
-    if (authErr || !user) {
-      return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 })
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7)
+      const userClient = supabaseFromAccessToken(token)
+      const { data: { user } } = await userClient.auth.getUser()
+      if (user) userId = user.id
     }
 
     // 2. Parse request body
@@ -31,39 +27,46 @@ export async function POST(req: NextRequest) {
 
     const admin = supabaseAdmin()
 
-    // 3. Check if user already answered this question
-    const { data: existing } = await admin
-      .from('user_answers')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('question_id', question_id)
-      .maybeSingle()
+    // 3. If logged in, check for duplicate answer
+    if (userId) {
+      const { data: existing } = await admin
+        .from('user_answers')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('question_id', question_id)
+        .maybeSingle()
 
-    if (existing) {
-      return NextResponse.json(
-        { error: 'You have already answered this question' },
-        { status: 409 }
-      )
+      if (existing) {
+        return NextResponse.json(
+          { error: 'You have already answered this question' },
+          { status: 409 }
+        )
+      }
     }
 
     // 4. Compute embedding for the user's answer
     const embedding = await computeEmbedding(answer_text)
 
-    // 5. Insert user answer with embedding
-    const { data: answer, error: insertErr } = await admin
-      .from('user_answers')
-      .insert({
-        user_id: user.id,
-        question_id,
-        answer_text,
-        embedding: JSON.stringify(embedding),
-      })
-      .select('id')
-      .single()
+    // 5. If logged in, save the answer to the database
+    let answerId: string | null = null
+    if (userId) {
+      const { data: answer, error: insertErr } = await admin
+        .from('user_answers')
+        .insert({
+          user_id: userId,
+          question_id,
+          answer_text,
+          embedding: JSON.stringify(embedding),
+        })
+        .select('id')
+        .single()
 
-    if (insertErr || !answer) {
-      console.error('Error inserting answer:', insertErr)
-      return NextResponse.json({ error: 'Failed to save answer' }, { status: 500 })
+      if (insertErr || !answer) {
+        console.error('Error inserting answer:', insertErr)
+        // Non-fatal for the matching - continue without saving
+      } else {
+        answerId = answer.id
+      }
     }
 
     // 6. Match perspectives using the SQL function (question-specific)
@@ -100,32 +103,33 @@ export async function POST(req: NextRequest) {
       (perspectiveSources || []).map((p: { id: string; source: string | null }) => [p.id, p.source])
     )
 
-    // 8. Insert similarity scores and update fingerprints
+    // 8. Build similarity results + save scores/fingerprint if logged in
     const similarities = []
     for (const match of matches || []) {
-      // Insert similarity score
-      const { error: scoreErr } = await admin
-        .from('similarity_scores')
-        .insert({
-          user_answer_id: answer.id,
-          perspective_id: match.perspective_id,
-          score: match.similarity,
-          school: match.school,
+      // If logged in and answer was saved, persist scores and update fingerprint
+      if (userId && answerId) {
+        const { error: scoreErr } = await admin
+          .from('similarity_scores')
+          .insert({
+            user_answer_id: answerId,
+            perspective_id: match.perspective_id,
+            score: match.similarity,
+            school: match.school,
+          })
+
+        if (scoreErr) {
+          console.error('Error inserting similarity score:', scoreErr)
+        }
+
+        const { error: fpErr } = await admin.rpc('update_fingerprint', {
+          p_user_id: userId,
+          p_school: match.school,
+          p_new_score: match.similarity,
         })
 
-      if (scoreErr) {
-        console.error('Error inserting similarity score:', scoreErr)
-      }
-
-      // Update philosophical fingerprint
-      const { error: fpErr } = await admin.rpc('update_fingerprint', {
-        p_user_id: user.id,
-        p_school: match.school,
-        p_new_score: match.similarity,
-      })
-
-      if (fpErr) {
-        console.error('Error updating fingerprint:', fpErr)
+        if (fpErr) {
+          console.error('Error updating fingerprint:', fpErr)
+        }
       }
 
       similarities.push({
@@ -139,18 +143,20 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // 9. Increment questions_answered on user profile
-    const { data: profile } = await admin
-      .from('user_profiles')
-      .select('questions_answered')
-      .eq('id', user.id)
-      .single()
-
-    if (profile) {
-      await admin
+    // 9. Increment questions_answered on user profile (if logged in)
+    if (userId && answerId) {
+      const { data: profile } = await admin
         .from('user_profiles')
-        .update({ questions_answered: (profile.questions_answered || 0) + 1 })
-        .eq('id', user.id)
+        .select('questions_answered')
+        .eq('id', userId)
+        .single()
+
+      if (profile) {
+        await admin
+          .from('user_profiles')
+          .update({ questions_answered: (profile.questions_answered || 0) + 1 })
+          .eq('id', userId)
+      }
     }
 
     // 10. Build corpus match results
@@ -173,9 +179,10 @@ export async function POST(req: NextRequest) {
     }))
 
     return NextResponse.json({
-      answer_id: answer.id,
+      answer_id: answerId,
       similarities,
       corpus_matches: corpusResults,
+      saved: !!answerId,
     })
   } catch (err) {
     console.error('Unexpected error in /api/hard-question/answer:', err)
