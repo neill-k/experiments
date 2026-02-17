@@ -116,6 +116,24 @@ export default function HardQuestionPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
+      {/* Intro — only show before answering */}
+      {!isRevealed && !hasAnswered && (
+        <div className="px-4 pt-8 pb-2">
+          <p
+            className="max-w-2xl text-sm leading-relaxed"
+            style={{
+              fontFamily: 'var(--font-body)',
+              color: 'var(--muted)',
+            }}
+          >
+            One hard question a day. Write what you actually think — not what sounds smart.
+            Your answer is matched against real quotes from real philosophers using semantic
+            similarity. Over time, a philosophical fingerprint emerges: the schools of thought
+            your mind naturally gravitates toward.
+          </p>
+        </div>
+      )}
+
       {/* Question */}
       <div className="flex items-start">
         <div className="min-w-0 flex-1">
