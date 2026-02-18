@@ -31,6 +31,19 @@ export function sourceUrl(slug: string): string {
 
 export const experiments: Experiment[] = [
   {
+    slug: 'rule-bloom',
+    date: '2026-02-18',
+    title: 'Rule Bloom',
+    description:
+      'A dark, passive simulation where Rule 30 turbulence, sandpile criticality, and decay clocks continuously disturb each other.',
+    tags: ['simulation', 'creative', 'canvas', 'generative'],
+    icon: '🧪',
+    accent: 'rgba(152, 118, 255, 0.55)',
+    favorite: false,
+    tech: ['Canvas API', 'Cellular Automata', 'Sandpile Model', 'Typed Arrays'],
+    lastUpdated: '2026-02-18',
+  },
+  {
     slug: 'hard-question',
     date: '2026-02-17',
     title: 'The Hard Question',
