@@ -372,12 +372,25 @@ export function Comments({ slug }: { slug: string }) {
         <textarea
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && canPost && !busy) {
+              e.preventDefault()
+              post()
+            }
+          }}
           placeholder={userId ? 'Leave a comment…' : 'Sign in to comment…'}
           disabled={!userId || busy}
           className="min-h-[96px] w-full resize-y border border-[var(--border)] bg-black/30 p-3 text-sm font-[family-name:var(--font-body)] text-white/80 placeholder:text-white/30 outline-none focus:border-[var(--border-hover)]"
         />
         <div className="mt-2 flex items-center justify-between">
-          <div className="text-[11px] font-[family-name:var(--font-mono)] text-white/40">{draft.trim().length}/5000</div>
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] font-[family-name:var(--font-mono)] text-white/40">{draft.trim().length}/5000</span>
+            {draft.trim().length > 0 && userId && (
+              <span className="hidden sm:inline text-[10px] font-[family-name:var(--font-mono)] text-white/20">
+                {typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent ?? '') ? '⌘' : 'Ctrl'}+Enter to post
+              </span>
+            )}
+          </div>
           <button
             onClick={post}
             disabled={!canPost || busy}
