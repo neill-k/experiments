@@ -144,7 +144,7 @@ export default async function Home({
             <Link
               key={exp.slug}
               href={`/e/${exp.slug}`}
-              className="experiment-card block border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5 text-white/80 hover:text-white animate-fade-in-up"
+              className="experiment-card group block border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5 text-white/80 hover:text-white animate-fade-in-up"
               style={{
                 animationDelay: `${i * 80}ms`,
                 borderLeftColor: exp.accent ?? 'var(--border)',
@@ -198,6 +198,18 @@ export default async function Home({
                   </span>
                 ))}
               </div>
+              {exp.tech && exp.tech.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {exp.tech.map((t) => (
+                    <span
+                      key={t}
+                      className="border border-white/[0.06] bg-white/[0.02] px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] text-white/20 group-hover:text-white/30 group-hover:border-white/[0.1] transition-colors"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
             </Link>
           ))}
           {filtered.length === 0 && (

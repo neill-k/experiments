@@ -11,6 +11,7 @@ export function ExperimentNav() {
   const currentSlug = pathname.split('/e/')[1]?.split('/')[0]
   const currentIndex = experiments.findIndex((e) => e.slug === currentSlug)
 
+  const current = currentIndex >= 0 ? experiments[currentIndex] : null
   const prev = currentIndex > 0 ? experiments[currentIndex - 1] : null
   const next =
     currentIndex < experiments.length - 1 ? experiments[currentIndex + 1] : null
@@ -86,6 +87,18 @@ export function ExperimentNav() {
         >
           view source ↗
         </a>
+        {current?.tech && current.tech.length > 0 && (
+          <div className="mt-1 flex flex-wrap justify-center gap-1">
+            {current.tech.map((t) => (
+              <span
+                key={t}
+                className="border border-white/[0.06] bg-white/[0.02] px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] text-white/15"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {next ? (

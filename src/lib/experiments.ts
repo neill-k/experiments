@@ -18,6 +18,8 @@ export interface Experiment {
   accent?: string
   /** Neill's favorite experiments get featured in a special section. */
   favorite?: boolean
+  /** Key technologies used in this experiment (shown as subtle badges). */
+  tech?: string[]
 }
 
 /** Returns the GitHub URL for an experiment's source directory. */
@@ -36,6 +38,7 @@ export const experiments: Experiment[] = [
     icon: '🤔',
     accent: 'rgba(200, 160, 255, 0.5)',
     favorite: true,
+    tech: ['Supabase', 'pgvector', 'OpenAI Embeddings', 'Web Share API'],
   },
   {
     slug: 'ant-farm',
@@ -47,6 +50,7 @@ export const experiments: Experiment[] = [
     icon: '🐜',
     accent: 'rgba(180, 120, 80, 0.5)',
     favorite: false,
+    tech: ['Canvas API', 'Dirty-rect Rendering', 'Pheromone Simulation'],
   },
   {
     slug: 'the-blob',
@@ -58,6 +62,7 @@ export const experiments: Experiment[] = [
     icon: '🫧',
     accent: 'rgba(90, 220, 200, 0.5)',
     favorite: false,
+    tech: ['Canvas API', 'Soft-body Physics', 'Web Audio API'],
   },
   {
     slug: 'prompt-library',
@@ -68,6 +73,7 @@ export const experiments: Experiment[] = [
     tags: ['tools', 'llm'],
     icon: '📝',
     accent: 'rgba(255, 200, 80, 0.5)',
+    tech: ['localStorage', 'OpenAI API', 'Anthropic API', 'react-markdown'],
   },
   {
     slug: 'agent-spec-builder',
@@ -78,6 +84,7 @@ export const experiments: Experiment[] = [
     tags: ['agents', 'specs'],
     icon: '🤖',
     accent: 'rgba(90, 160, 255, 0.5)',
+    tech: ['JSZip', 'Markdown Generation', 'Spec Linting'],
   },
 ]
 
