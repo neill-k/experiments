@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import type { PerspectiveMatch } from '../lib/types'
 import { SchoolTag } from './SchoolTag'
+import { getSchoolDescription } from '../lib/school-colors'
 
 interface PhilosopherCardProps {
   match: PerspectiveMatch & { source?: string }
@@ -57,17 +58,31 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
       }}
     >
       {/* Header: name + school */}
-      <div className="mb-3 flex flex-wrap items-center gap-2 sm:gap-3">
-        <h3
-          className="text-xl"
-          style={{
-            fontFamily: 'var(--font-display)',
-            color: 'var(--fg)',
-          }}
-        >
-          {match.philosopher_name}
-        </h3>
-        <SchoolTag school={match.school} />
+      <div className="mb-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <h3
+            className="text-xl"
+            style={{
+              fontFamily: 'var(--font-display)',
+              color: 'var(--fg)',
+            }}
+          >
+            {match.philosopher_name}
+          </h3>
+          <SchoolTag school={match.school} />
+        </div>
+        {getSchoolDescription(match.school) && (
+          <p
+            className="mt-1 text-[11px]"
+            style={{
+              fontFamily: 'var(--font-body)',
+              color: 'var(--muted)',
+              opacity: 0.7,
+            }}
+          >
+            {getSchoolDescription(match.school)}
+          </p>
+        )}
       </div>
 
       {/* Perspective quote */}

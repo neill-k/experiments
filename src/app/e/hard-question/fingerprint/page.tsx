@@ -7,7 +7,7 @@ import { AuthButtons } from '@/components/AuthButtons'
 import { useFingerprint } from '../hooks/useFingerprint'
 import { FingerprintChart } from '../components/FingerprintChart'
 import { SchoolTag } from '../components/SchoolTag'
-import { getSchoolLabel } from '../lib/school-colors'
+import { getSchoolLabel, getSchoolDescription } from '../lib/school-colors'
 import type { PhilosophicalFingerprint, PhilosophySchool } from '../lib/types'
 
 /** Build a fingerprint from sessionStorage matches (anonymous users) */
@@ -232,6 +232,17 @@ export default function FingerprintPage() {
                     {getSchoolLabel(school.school)}
                   </h3>
                   <SchoolTag school={school.school} />
+                  {getSchoolDescription(school.school) && (
+                    <p
+                      className="mt-2 text-xs leading-relaxed"
+                      style={{
+                        fontFamily: 'var(--font-body)',
+                        color: 'var(--muted)',
+                      }}
+                    >
+                      {getSchoolDescription(school.school)}
+                    </p>
+                  )}
                   <div className="mt-3">
                     <span
                       className="text-2xl"
@@ -273,30 +284,44 @@ export default function FingerprintPage() {
                 {sorted.slice(3).map((school) => (
                   <div
                     key={school.school}
-                    className="flex items-center justify-between py-2"
+                    className="py-2"
                     style={{ borderBottom: '1px solid var(--border)' }}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="text-sm"
+                          style={{
+                            fontFamily: 'var(--font-body)',
+                            color: 'var(--fg)',
+                          }}
+                        >
+                          {getSchoolLabel(school.school)}
+                        </span>
+                        <SchoolTag school={school.school} />
+                      </div>
                       <span
                         className="text-sm"
                         style={{
-                          fontFamily: 'var(--font-body)',
-                          color: 'var(--fg)',
+                          fontFamily: 'var(--font-mono)',
+                          color: 'var(--muted)',
                         }}
                       >
-                        {getSchoolLabel(school.school)}
+                        {Math.round(school.avg_score * 100)}%
                       </span>
-                      <SchoolTag school={school.school} />
                     </div>
-                    <span
-                      className="text-sm"
-                      style={{
-                        fontFamily: 'var(--font-mono)',
-                        color: 'var(--muted)',
-                      }}
-                    >
-                      {Math.round(school.avg_score * 100)}%
-                    </span>
+                    {getSchoolDescription(school.school) && (
+                      <p
+                        className="mt-1 text-[11px] leading-relaxed"
+                        style={{
+                          fontFamily: 'var(--font-body)',
+                          color: 'var(--muted)',
+                          opacity: 0.7,
+                        }}
+                      >
+                        {getSchoolDescription(school.school)}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

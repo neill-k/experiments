@@ -38,6 +38,25 @@ export const schoolLabels: Record<PhilosophySchool, string> = {
   confucianism: 'Confucianism',
 }
 
+/** One-line descriptions of each philosophy school */
+export const schoolDescriptions: Record<PhilosophySchool, string> = {
+  stoicism: 'Focus on what you can control; accept what you cannot with equanimity.',
+  existentialism: 'Existence precedes essence. You define yourself through choices and action.',
+  utilitarianism: 'The right action is whatever produces the greatest good for the greatest number.',
+  deontology: 'Act according to moral rules and duty, regardless of consequences.',
+  absurdism: 'Life has no inherent meaning, but embrace it anyway with full awareness.',
+  pragmatism: 'Truth is what works in practice. Ideas earn their keep through real-world results.',
+  virtue_ethics: 'Cultivate character and habits of excellence; become the kind of person who acts well.',
+  nihilism: 'No objective meaning, morality, or truth exists. Start from zero.',
+  phenomenology: 'Return to lived experience itself. Describe consciousness as it actually appears.',
+  rationalism: 'Reason, not sensation, is the primary source of knowledge and truth.',
+  empiricism: 'All knowledge comes from sensory experience. Trust observation over abstraction.',
+  taoism: 'Flow with the natural way. The best action often looks like non-action.',
+  buddhist_philosophy: 'Suffering arises from attachment. Liberation comes through awareness and letting go.',
+  ubuntu: 'I am because we are. Personhood is realized through community and relationship.',
+  confucianism: 'Social harmony through ritual, respect, and the cultivation of moral character.',
+}
+
 /** Get the color for a school, with fallback */
 export function getSchoolColor(school: PhilosophySchool): string {
   return schoolColors[school] ?? '#888888'
@@ -46,4 +65,9 @@ export function getSchoolColor(school: PhilosophySchool): string {
 /** Get the label for a school, with fallback */
 export function getSchoolLabel(school: PhilosophySchool): string {
   return schoolLabels[school] ?? school.replace(/_/g, ' ')
+}
+
+/** Get the description for a school, with fallback */
+export function getSchoolDescription(school: PhilosophySchool): string {
+  return schoolDescriptions[school] ?? ''
 }
