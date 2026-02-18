@@ -254,7 +254,7 @@ export default function ArchivePage() {
                     >
                       {q.question_text}
                     </p>
-                    <div className="mt-2 flex items-center gap-3">
+                    <div className="mt-2 flex items-center gap-3 flex-wrap">
                       <span
                         className="text-[11px]"
                         style={{
@@ -287,6 +287,20 @@ export default function ArchivePage() {
                       >
                         {q.category}
                       </button>
+                      {q.difficulty && (
+                        <span
+                          className="px-1.5 py-0.5 text-[9px] uppercase tracking-widest"
+                          style={{
+                            fontFamily: 'var(--font-mono)',
+                            color: 'rgba(255, 255, 255, 0.35)',
+                            border: '1px solid rgba(255, 255, 255, 0.12)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                          }}
+                          title="Question difficulty"
+                        >
+                          {q.difficulty}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
