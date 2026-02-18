@@ -180,6 +180,11 @@ export default async function Home({
                         recent
                       </span>
                     )}
+                    {!isToday(exp.date) && !isRecent(exp.date) && exp.lastUpdated && isRecent(exp.lastUpdated) && (
+                      <span className="bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] font-medium text-emerald-400/70 uppercase tracking-wider">
+                        updated
+                      </span>
+                    )}
                   </div>
                   <div className="mt-1.5 text-sm font-[family-name:var(--font-body)] text-white/45">
                     {exp.description}
@@ -192,6 +197,11 @@ export default async function Home({
                   <div className="font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5">
                     {relativeDate(exp.date)}
                   </div>
+                  {exp.lastUpdated && exp.lastUpdated !== exp.date && (
+                    <div className="font-[family-name:var(--font-mono)] text-[10px] text-emerald-400/40 mt-1">
+                      ↻ {relativeDate(exp.lastUpdated)}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="mt-3 flex gap-2">

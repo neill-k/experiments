@@ -38,7 +38,7 @@ export function homepageJsonLd() {
 
 /** Schema.org CreativeWork for an individual experiment page. */
 export function experimentJsonLd(exp: Experiment) {
-  return {
+  const data: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'CreativeWork',
     name: exp.title,
@@ -57,4 +57,10 @@ export function experimentJsonLd(exp: Experiment) {
     },
     keywords: exp.tags.join(', '),
   }
+
+  if (exp.lastUpdated && exp.lastUpdated !== exp.date) {
+    data.dateModified = exp.lastUpdated
+  }
+
+  return data
 }

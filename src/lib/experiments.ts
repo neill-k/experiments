@@ -20,6 +20,8 @@ export interface Experiment {
   favorite?: boolean
   /** Key technologies used in this experiment (shown as subtle badges). */
   tech?: string[]
+  /** ISO date of the most recent meaningful update (omit if same as date). */
+  lastUpdated?: string
 }
 
 /** Returns the GitHub URL for an experiment's source directory. */
@@ -39,6 +41,7 @@ export const experiments: Experiment[] = [
     accent: 'rgba(200, 160, 255, 0.5)',
     favorite: true,
     tech: ['Supabase', 'pgvector', 'OpenAI Embeddings', 'Web Share API'],
+    lastUpdated: '2026-02-18',
   },
   {
     slug: 'ant-farm',
@@ -51,6 +54,7 @@ export const experiments: Experiment[] = [
     accent: 'rgba(180, 120, 80, 0.5)',
     favorite: false,
     tech: ['Canvas API', 'Dirty-rect Rendering', 'Pheromone Simulation'],
+    lastUpdated: '2026-02-16',
   },
   {
     slug: 'the-blob',
@@ -74,6 +78,7 @@ export const experiments: Experiment[] = [
     icon: '📝',
     accent: 'rgba(255, 200, 80, 0.5)',
     tech: ['localStorage', 'OpenAI API', 'Anthropic API', 'react-markdown'],
+    lastUpdated: '2026-02-15',
   },
   {
     slug: 'agent-spec-builder',
@@ -85,6 +90,7 @@ export const experiments: Experiment[] = [
     icon: '🤖',
     accent: 'rgba(90, 160, 255, 0.5)',
     tech: ['JSZip', 'Markdown Generation', 'Spec Linting'],
+    lastUpdated: '2026-02-15',
   },
 ]
 

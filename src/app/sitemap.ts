@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const experimentPages: MetadataRoute.Sitemap = experiments.map((exp) => ({
     url: `${baseUrl}/e/${exp.slug}`,
-    lastModified: new Date(exp.date),
+    lastModified: new Date(exp.lastUpdated ?? exp.date),
     changeFrequency: 'weekly',
     priority: 0.8,
   }))

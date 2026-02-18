@@ -32,8 +32,13 @@ export function GET() {
     })
     .join('\n')
 
-  const lastBuildDate = experiments.length > 0
-    ? new Date(experiments[0].date + 'T06:00:00Z').toUTCString()
+  const mostRecentDate = experiments.reduce((latest, exp) => {
+    const d = exp.lastUpdated ?? exp.date
+    return d > latest ? d : latest
+  }, experiments[0]?.date ?? '')
+
+  const lastBuildDate = mostRecentDate
+    ? new Date(mostRecentDate + 'T06:00:00Z').toUTCString()
     : new Date().toUTCString()
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
