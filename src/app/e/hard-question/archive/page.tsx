@@ -34,12 +34,13 @@ function formatDate(dateStr: string): string {
 }
 
 export default function ArchivePage() {
-  const { loading: authLoading } = useAuth()
+  const { userId, loading: authLoading } = useAuth()
   const [data, setData] = useState<ArchiveResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [showAnsweredOnly, setShowAnsweredOnly] = useState(false)
 
   // Extract unique categories from loaded questions
   const categories = useMemo(() => {
@@ -48,12 +49,16 @@ export default function ArchivePage() {
     return Array.from(cats).sort()
   }, [data])
 
-  // Filter questions by selected category (client-side within the current page)
+  // Filter questions by selected category and answered status (client-side within the current page)
   const filteredQuestions = useMemo(() => {
     if (!data?.questions) return []
-    if (!activeCategory) return data.questions
-    return data.questions.filter((q) => q.category === activeCategory)
-  }, [data, activeCategory])
+
+    return data.questions.filter((q) => {
+      if (activeCategory && q.category !== activeCategory) return false
+      if (showAnsweredOnly && !q.has_answered) return false
+      return true
+    })
+  }, [data, activeCategory, showAnsweredOnly])
 
   const fetchArchive = useCallback(async (p: number) => {
     setLoading(true)
@@ -82,9 +87,10 @@ export default function ArchivePage() {
     }
   }, [authLoading, fetchArchive])
 
-  // Reset category filter when changing pages (categories may differ per page)
+  // Reset filters when changing pages (categories and answered status may differ)
   function handlePageChange(p: number) {
     setActiveCategory(null)
+    setShowAnsweredOnly(false)
     fetchArchive(p)
   }
 
@@ -124,49 +130,70 @@ export default function ArchivePage() {
         {data ? `${data.total} past question${data.total !== 1 ? 's' : ''}` : 'Loading...'}
       </p>
 
-      {/* Category filter bar */}
-      {!loading && categories.length > 1 && (
-        <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
-          <button
-            onClick={() => setActiveCategory(null)}
-            className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              color: !activeCategory ? 'var(--fg)' : 'rgba(255, 255, 255, 0.25)',
-              border: `1px solid ${!activeCategory ? 'rgba(255, 255, 255, 0.2)' : 'var(--border)'}`,
-              backgroundColor: !activeCategory ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-            }}
-          >
-            All
-          </button>
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat
-            const count = data?.questions.filter((q) => q.category === cat).length ?? 0
-            return (
+      {/* Filters */}
+      {!loading && (categories.length > 1 || userId) && (
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          {categories.length > 1 && (
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
               <button
-                key={cat}
-                onClick={() => setActiveCategory(isActive ? null : cat)}
+                onClick={() => setActiveCategory(null)}
                 className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: isActive ? 'var(--fg)' : 'rgba(255, 255, 255, 0.25)',
-                  border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.2)' : 'var(--border)'}`,
-                  backgroundColor: isActive ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                  color: !activeCategory ? 'var(--fg)' : 'rgba(255, 255, 255, 0.25)',
+                  border: `1px solid ${!activeCategory ? 'rgba(255, 255, 255, 0.2)' : 'var(--border)'}`,
+                  backgroundColor: !activeCategory ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
                 }}
               >
-                {cat}
-                <span
-                  className="ml-1.5"
-                  style={{
-                    fontSize: '9px',
-                    opacity: 0.6,
-                  }}
-                >
-                  {count}
-                </span>
+                All
               </button>
-            )
-          })}
+              {categories.map((cat) => {
+                const isActive = activeCategory === cat
+                const count = data?.questions.filter((q) => q.category === cat).length ?? 0
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(isActive ? null : cat)}
+                    className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      color: isActive ? 'var(--fg)' : 'rgba(255, 255, 255, 0.25)',
+                      border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.2)' : 'var(--border)'}`,
+                      backgroundColor: isActive ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                    }}
+                  >
+                    {cat}
+                    <span
+                      className="ml-1.5"
+                      style={{
+                        fontSize: '9px',
+                        opacity: 0.6,
+                      }}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          {userId && (
+            <button
+              onClick={() => setShowAnsweredOnly((v) => !v)}
+              className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: showAnsweredOnly ? 'rgba(120, 200, 140, 0.85)' : 'rgba(255, 255, 255, 0.25)',
+                border: `1px solid ${showAnsweredOnly ? 'rgba(120, 200, 140, 0.5)' : 'var(--border)'}`,
+                backgroundColor: showAnsweredOnly ? 'rgba(120, 200, 140, 0.08)' : 'transparent',
+              }}
+              aria-pressed={showAnsweredOnly}
+              title="Show only questions you've answered"
+            >
+              Answered only
+            </button>
+          )}
         </div>
       )}
 
@@ -309,7 +336,7 @@ export default function ArchivePage() {
           </div>
 
           {/* Filtered count hint */}
-          {activeCategory && (
+          {(activeCategory || showAnsweredOnly) && (
             <p
               className="mt-3 text-[11px]"
               style={{
@@ -371,11 +398,16 @@ export default function ArchivePage() {
           >
             {activeCategory
               ? `No questions in "${activeCategory}" on this page.`
-              : 'No past questions yet. Come back tomorrow.'}
+              : showAnsweredOnly
+                ? 'No answered questions on this page yet.'
+                : 'No past questions yet. Come back tomorrow.'}
           </p>
-          {activeCategory && (
+          {(activeCategory || showAnsweredOnly) && (
             <button
-              onClick={() => setActiveCategory(null)}
+              onClick={() => {
+                setActiveCategory(null)
+                setShowAnsweredOnly(false)
+              }}
               className="mt-3 text-xs transition-colors"
               style={{
                 fontFamily: 'var(--font-mono)',
@@ -386,7 +418,7 @@ export default function ArchivePage() {
                 borderBottom: '1px solid var(--border)',
               }}
             >
-              Clear filter
+              Clear filters
             </button>
           )}
         </div>
