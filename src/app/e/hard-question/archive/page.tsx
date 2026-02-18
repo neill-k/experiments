@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
+import { ExperimentNav } from '@/components/ExperimentNav'
 import { fetchWithAuth } from '../lib/fetch-with-auth'
 
 interface ArchiveQuestion {
@@ -264,6 +265,11 @@ export default function ArchivePage() {
           </p>
         </div>
       )}
+
+      {/* Prev/Next experiment navigation */}
+      <div className="mt-12">
+        <ExperimentNav />
+      </div>
     </div>
   )
 }

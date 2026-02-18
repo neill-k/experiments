@@ -7,6 +7,7 @@ import { AuthButtons } from '@/components/AuthButtons'
 import { useFingerprint } from '../hooks/useFingerprint'
 import { FingerprintChart } from '../components/FingerprintChart'
 import { SchoolTag } from '../components/SchoolTag'
+import { ExperimentNav } from '@/components/ExperimentNav'
 import { getSchoolLabel, getSchoolDescription } from '../lib/school-colors'
 import type { PhilosophicalFingerprint, PhilosophySchool } from '../lib/types'
 
@@ -329,6 +330,11 @@ export default function FingerprintPage() {
           )}
         </>
       )}
+
+      {/* Prev/Next experiment navigation */}
+      <div className="mt-12">
+        <ExperimentNav />
+      </div>
     </div>
   )
 }

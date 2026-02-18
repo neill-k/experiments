@@ -19,5 +19,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     ...experimentPages,
+    // Hard Question subpages
+    {
+      url: `${baseUrl}/e/hard-question/fingerprint`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/e/hard-question/archive`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.6,
+    },
   ]
 }
