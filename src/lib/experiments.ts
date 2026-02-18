@@ -27,6 +27,17 @@ export function sourceUrl(slug: string): string {
 
 export const experiments: Experiment[] = [
   {
+    slug: 'wrong-answer',
+    date: '2026-02-18',
+    title: 'The Wrong Answer',
+    description:
+      'A quiz game that only accepts wrong answers. The more creatively wrong you are, the higher you score.',
+    tags: ['games', 'ai', 'humor', 'competitive'],
+    icon: '❌',
+    accent: 'rgba(255, 51, 51, 0.5)',
+    favorite: false,
+  },
+  {
     slug: 'hard-question',
     date: '2026-02-17',
     title: 'The Hard Question',
