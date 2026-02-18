@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { ExperimentNav } from '@/components/ExperimentNav'
@@ -39,6 +39,21 @@ export default function ArchivePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+
+  // Extract unique categories from loaded questions
+  const categories = useMemo(() => {
+    if (!data?.questions) return []
+    const cats = new Set(data.questions.map((q) => q.category).filter(Boolean))
+    return Array.from(cats).sort()
+  }, [data])
+
+  // Filter questions by selected category (client-side within the current page)
+  const filteredQuestions = useMemo(() => {
+    if (!data?.questions) return []
+    if (!activeCategory) return data.questions
+    return data.questions.filter((q) => q.category === activeCategory)
+  }, [data, activeCategory])
 
   const fetchArchive = useCallback(async (p: number) => {
     setLoading(true)
@@ -67,6 +82,12 @@ export default function ArchivePage() {
     }
   }, [authLoading, fetchArchive])
 
+  // Reset category filter when changing pages (categories may differ per page)
+  function handlePageChange(p: number) {
+    setActiveCategory(null)
+    fetchArchive(p)
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       {/* Back link */}
@@ -94,7 +115,7 @@ export default function ArchivePage() {
       </h1>
 
       <p
-        className="mb-10 text-sm"
+        className="mb-6 text-sm"
         style={{
           fontFamily: 'var(--font-mono)',
           color: 'var(--muted)',
@@ -102,6 +123,52 @@ export default function ArchivePage() {
       >
         {data ? `${data.total} past question${data.total !== 1 ? 's' : ''}` : 'Loading...'}
       </p>
+
+      {/* Category filter bar */}
+      {!loading && categories.length > 1 && (
+        <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+          <button
+            onClick={() => setActiveCategory(null)}
+            className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              color: !activeCategory ? 'var(--fg)' : 'rgba(255, 255, 255, 0.25)',
+              border: `1px solid ${!activeCategory ? 'rgba(255, 255, 255, 0.2)' : 'var(--border)'}`,
+              backgroundColor: !activeCategory ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+            }}
+          >
+            All
+          </button>
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat
+            const count = data?.questions.filter((q) => q.category === cat).length ?? 0
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(isActive ? null : cat)}
+                className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  color: isActive ? 'var(--fg)' : 'rgba(255, 255, 255, 0.25)',
+                  border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.2)' : 'var(--border)'}`,
+                  backgroundColor: isActive ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                }}
+              >
+                {cat}
+                <span
+                  className="ml-1.5"
+                  style={{
+                    fontSize: '9px',
+                    opacity: 0.6,
+                  }}
+                >
+                  {count}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {/* Error */}
       {error && (
@@ -141,10 +208,10 @@ export default function ArchivePage() {
       )}
 
       {/* Question list */}
-      {!loading && data && data.questions.length > 0 && (
+      {!loading && data && filteredQuestions.length > 0 && (
         <>
           <div className="space-y-2">
-            {data.questions.map((q) => (
+            {filteredQuestions.map((q) => (
               <div
                 key={q.id}
                 className="group p-4 transition-colors"
@@ -197,15 +264,29 @@ export default function ArchivePage() {
                       >
                         {formatDate(q.published_date)}
                       </span>
-                      <span
-                        className="text-[10px] uppercase tracking-widest"
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setActiveCategory(
+                            activeCategory === q.category ? null : q.category
+                          )
+                        }}
+                        className="text-[10px] uppercase tracking-widest transition-colors hover:text-white/40"
                         style={{
                           fontFamily: 'var(--font-mono)',
-                          color: 'rgba(255, 255, 255, 0.2)',
+                          color:
+                            activeCategory === q.category
+                              ? 'rgba(255, 255, 255, 0.5)'
+                              : 'rgba(255, 255, 255, 0.2)',
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          cursor: 'pointer',
                         }}
+                        title={`Filter by ${q.category}`}
                       >
                         {q.category}
-                      </span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -213,11 +294,24 @@ export default function ArchivePage() {
             ))}
           </div>
 
+          {/* Filtered count hint */}
+          {activeCategory && (
+            <p
+              className="mt-3 text-[11px]"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'rgba(255, 255, 255, 0.2)',
+              }}
+            >
+              Showing {filteredQuestions.length} of {data.questions.length} on this page
+            </p>
+          )}
+
           {/* Pagination */}
           {data.total_pages > 1 && (
             <div className="mt-8 flex items-center justify-between">
               <button
-                onClick={() => fetchArchive(page - 1)}
+                onClick={() => handlePageChange(page - 1)}
                 disabled={page <= 1}
                 className="text-xs transition-colors disabled:opacity-20"
                 style={{
@@ -238,7 +332,7 @@ export default function ArchivePage() {
                 {page} / {data.total_pages}
               </span>
               <button
-                onClick={() => fetchArchive(page + 1)}
+                onClick={() => handlePageChange(page + 1)}
                 disabled={page >= data.total_pages}
                 className="text-xs transition-colors disabled:opacity-20"
                 style={{
@@ -255,14 +349,32 @@ export default function ArchivePage() {
       )}
 
       {/* Empty state */}
-      {!loading && data && data.questions.length === 0 && (
+      {!loading && data && filteredQuestions.length === 0 && (
         <div className="py-12 text-center">
           <p
             className="text-sm"
             style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}
           >
-            No past questions yet. Come back tomorrow.
+            {activeCategory
+              ? `No questions in "${activeCategory}" on this page.`
+              : 'No past questions yet. Come back tomorrow.'}
           </p>
+          {activeCategory && (
+            <button
+              onClick={() => setActiveCategory(null)}
+              className="mt-3 text-xs transition-colors"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--muted)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                borderBottom: '1px solid var(--border)',
+              }}
+            >
+              Clear filter
+            </button>
+          )}
         </div>
       )}
 
