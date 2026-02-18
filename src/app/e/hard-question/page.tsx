@@ -130,11 +130,21 @@ export default function HardQuestionPage() {
               color: 'var(--muted)',
             }}
           >
-            One hard question a day. Write what you actually think - not what sounds smart.
+            One hard question a day. Write what you actually think, not what sounds smart.
             Your answer is matched against real quotes from real philosophers using semantic
             similarity. Over time, a philosophical fingerprint emerges: the schools of thought
             your mind naturally gravitates toward.
           </p>
+          <Link
+            href="/e/hard-question/archive"
+            className="mt-2 inline-block text-xs transition-colors"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              color: 'rgba(255, 255, 255, 0.25)',
+            }}
+          >
+            Browse past questions &rarr;
+          </Link>
         </div>
       )}
 
@@ -209,8 +219,8 @@ export default function HardQuestionPage() {
             </div>
           )}
 
-          {/* Link to fingerprint */}
-          <div className="px-4 py-6">
+          {/* Links to fingerprint and archive */}
+          <div className="flex flex-wrap gap-x-6 gap-y-2 px-4 py-6">
             <Link
               href="/e/hard-question/fingerprint"
               className="inline-block text-sm transition-colors"
@@ -221,6 +231,17 @@ export default function HardQuestionPage() {
               }}
             >
               View your philosophical fingerprint →
+            </Link>
+            <Link
+              href="/e/hard-question/archive"
+              className="inline-block text-sm transition-colors"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--muted)',
+                borderBottom: '1px solid var(--border)',
+              }}
+            >
+              Browse past questions →
             </Link>
           </div>
         </>
