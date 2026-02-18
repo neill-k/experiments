@@ -78,36 +78,87 @@ export default function HardQuestionPage() {
   // Corpus matches - only available on fresh submissions
   const displayCorpusMatches = result?.corpus_matches ?? []
 
-  // Loading state
+  // Loading state - skeleton that mirrors the question layout
   if (pageState === 'loading') {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p
-          className="text-sm"
-          style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
-        >
-          Loading…
-        </p>
+      <div className="mx-auto max-w-4xl px-4 pt-8">
+        {/* Intro skeleton */}
+        <div className="pb-2">
+          <div className="h-3 w-3/4 max-w-lg animate-pulse bg-white/[0.04]" />
+          <div className="mt-2 h-3 w-1/2 max-w-sm animate-pulse bg-white/[0.03]" />
+        </div>
+        {/* Question skeleton */}
+        <div className="mt-6 space-y-3">
+          <div className="h-2 w-16 animate-pulse bg-white/[0.05]" />
+          <div className="h-8 w-full max-w-xl animate-pulse bg-white/[0.04]" />
+          <div className="h-8 w-2/3 max-w-md animate-pulse bg-white/[0.03]" />
+        </div>
+        {/* Answer area skeleton */}
+        <div className="mt-8">
+          <div className="h-20 w-full animate-pulse bg-white/[0.02]" style={{ borderBottom: '1px solid var(--border)' }} />
+          <div className="mt-4 flex justify-end">
+            <div className="h-10 w-24 animate-pulse bg-white/[0.04]" />
+          </div>
+        </div>
       </div>
     )
   }
 
-  // No question state
+  // No question state - give users something useful instead of a dead-end
   if (pageState === 'no-question') {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4">
-        <h1
-          className="text-3xl"
-          style={{ fontFamily: 'var(--font-display)', color: 'var(--fg)' }}
-        >
-          No question today
-        </h1>
-        <p
-          className="text-sm"
-          style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}
-        >
-          Come back tomorrow for a new question.
-        </p>
+      <div className="mx-auto max-w-4xl">
+        <div className="flex min-h-[40vh] flex-col items-center justify-center gap-6 px-4 pt-12 pb-8">
+          <div className="text-center">
+            <h1
+              className="text-3xl"
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--fg)' }}
+            >
+              No question today
+            </h1>
+            <p
+              className="mt-3 text-sm max-w-md"
+              style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}
+            >
+              New questions appear daily. While you wait, explore the archive or
+              check your philosophical fingerprint.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-3 mt-2">
+            <Link
+              href="/e/hard-question/archive"
+              className="px-5 py-2.5 text-sm transition-colors"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--fg)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              Browse past questions
+            </Link>
+            {userId && (
+              <Link
+                href="/e/hard-question/fingerprint"
+                className="px-5 py-2.5 text-sm transition-colors"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--muted)',
+                  border: '1px solid var(--border)',
+                }}
+              >
+                Your fingerprint
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Comments still available */}
+        <div className="px-4 py-8" style={{ borderTop: '1px solid var(--border)' }}>
+          <Comments slug="hard-question" />
+        </div>
+
+        <ExperimentNav />
       </div>
     )
   }
