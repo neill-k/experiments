@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { TagFilter } from '@/components/TagFilter'
-import { experiments, allTags, tagCounts } from '@/lib/experiments'
+import { experiments, allTags, tagCounts, pipelineStats } from '@/lib/experiments'
 import { homepageJsonLd } from '@/lib/json-ld'
 
 const isToday = (dateStr: string) => {
@@ -91,9 +91,17 @@ export default async function Home({
               </p>
             </div>
           </details>
-          <p className="mt-3 text-[13px] font-[family-name:var(--font-mono)] text-white/30">
-            {experiments.length} prototypes shipped. Click to explore.
-          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+            <p className="text-[13px] font-[family-name:var(--font-mono)] text-white/30">
+              {experiments.length} prototypes shipped. Click to explore.
+            </p>
+            {pipelineStats.streak > 1 && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-[family-name:var(--font-mono)] text-emerald-400/60">
+                <span className="inline-block h-1.5 w-1.5 bg-emerald-400/60 animate-pulse" aria-hidden="true" />
+                {pipelineStats.streak}-day streak
+              </span>
+            )}
+          </div>
           <div className="mt-4 h-px w-16 bg-white/20" />
         </header>
 
@@ -228,6 +236,9 @@ export default async function Home({
               {experiments.length > 0 && (
                 <p className="font-[family-name:var(--font-mono)] text-[11px] text-white/20">
                   Last shipped {experiments[0].date}
+                  {pipelineStats.firstDate && (
+                    <> · Running since {pipelineStats.firstDate}</>
+                  )}
                 </p>
               )}
             </div>

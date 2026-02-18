@@ -103,3 +103,28 @@ export const tagCounts: Record<string, number> = experiments.reduce(
   },
   {} as Record<string, number>,
 )
+
+/**
+ * Pipeline stats derived from experiment dates.
+ */
+function computePipelineStats() {
+  const dates = [...new Set(experiments.map((e) => e.date))].sort().reverse()
+  if (dates.length === 0) return { streak: 0, totalDays: 0, firstDate: '' }
+
+  // Count consecutive days from the most recent experiment
+  let streak = 1
+  for (let i = 1; i < dates.length; i++) {
+    const prev = new Date(dates[i - 1] + 'T00:00:00Z')
+    const curr = new Date(dates[i] + 'T00:00:00Z')
+    const diffDays = (prev.getTime() - curr.getTime()) / (1000 * 60 * 60 * 24)
+    if (diffDays === 1) streak++
+    else break
+  }
+
+  const firstDate = dates[dates.length - 1]
+  const totalDays = dates.length
+
+  return { streak, totalDays, firstDate }
+}
+
+export const pipelineStats = computePipelineStats()
