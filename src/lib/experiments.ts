@@ -31,6 +31,18 @@ export function sourceUrl(slug: string): string {
 
 export const experiments: Experiment[] = [
   {
+    slug: 'particle-orchestra',
+    date: '2026-02-19',
+    title: 'Particle Orchestra',
+    description:
+      'Conduct a luminous particle stage with touch-driven synthesis and real-time audio-reactive motion.',
+    tags: ['creative', 'canvas', 'interactive', 'audio'],
+    icon: '🎛️',
+    accent: 'rgba(241, 94, 255, 0.55)',
+    favorite: true,
+    tech: ['Canvas API', 'Web Audio API', 'AnalyserNode', 'Pointer Events'],
+  },
+  {
     slug: 'rule-bloom',
     date: '2026-02-18',
     title: 'Rule Bloom',
