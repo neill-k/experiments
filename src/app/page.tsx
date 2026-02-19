@@ -117,6 +117,7 @@ export default async function Home({
                 <Link
                   key={exp.slug}
                   href={`/e/${exp.slug}`}
+                  aria-label={`Open ${exp.title}, published ${exp.date}`}
                   className="group block border border-[var(--border)] bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors animate-fade-in-up"
                   style={{
                     animationDelay: `${i * 60}ms`,
@@ -168,6 +169,7 @@ export default async function Home({
             <Link
               key={exp.slug}
               href={`/e/${exp.slug}`}
+              aria-label={`Open ${exp.title}, published ${exp.date}`}
               className="experiment-card group block border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5 text-white/80 hover:text-white animate-fade-in-up"
               style={{
                 animationDelay: `${i * 80}ms`,
