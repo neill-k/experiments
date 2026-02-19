@@ -10,8 +10,12 @@ function randomSeed(): number {
 }
 
 export function RuleBloomClient() {
-  const [seed, setSeed] = useState<number>(() => randomSeed())
+  const [seed, setSeed] = useState<number>(0)
   const [reducedMotion, setReducedMotion] = useState(false)
+
+  useEffect(() => {
+    setSeed(randomSeed())
+  }, [])
 
   const reseed = useCallback(() => {
     setSeed(randomSeed())
