@@ -202,6 +202,14 @@ export default function Home() {
               Turn an agent idea into an implementable Markdown spec (no backend  - 
               stays in your browser).
             </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-500">
+              <span className="border border-[#2a2a2a] px-2 py-0.5">1) Fill a few fields</span>
+              <span className="border border-[#2a2a2a] px-2 py-0.5">2) Get structured SPEC.md output</span>
+              <span className="border border-[#2a2a2a] px-2 py-0.5">3) Export pack + prompt tests</span>
+              <Link href="/e/agent-spec-builder/examples" className="underline underline-offset-2 hover:text-zinc-300">
+                Quick examples →
+              </Link>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">

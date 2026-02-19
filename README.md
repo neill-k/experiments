@@ -26,6 +26,14 @@ Improvement crons also run periodically to polish existing experiments (bug fixe
 | 📝 [Prompt Library](https://experiments.neillkillgore.com/e/prompt-library) | Organize, version, and test prompts for LLM applications |
 | 🤖 [Agent Spec Builder](https://experiments.neillkillgore.com/e/agent-spec-builder) | Turn agent ideas into implementable Markdown specs |
 
+## Agent Spec Builder (30-second overview)
+
+- **Input:** rough objective, tools, constraints, and metrics
+- **Output:** a structured, engineer-ready Markdown spec with lint + completeness scoring
+- **Ship:** export `SPEC.md`, `EVAL_PLAN.md`, `SECURITY_NOTES.md`, and a generated prompt test pack
+
+Quick demo flow: open the [examples](https://experiments.neillkillgore.com/e/agent-spec-builder/examples), load a preset, then export the pack in one click.
+
 ## Stack
 
 - **Framework:** Next.js 16 (App Router)
