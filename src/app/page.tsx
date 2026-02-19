@@ -148,9 +148,17 @@ export default async function Home({
         </Suspense>
 
         {activeTag && (
-          <p className="mt-4 text-[11px] font-[family-name:var(--font-mono)] text-white/25">
-            Showing {filtered.length} of {experiments.length} experiments for “{activeTag}”.
-          </p>
+          <div className="mt-4 flex items-center gap-3">
+            <p className="text-[11px] font-[family-name:var(--font-mono)] text-white/25">
+              Showing {filtered.length} of {experiments.length} experiments for “{activeTag}”.
+            </p>
+            <Link
+              href="/"
+              className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors"
+            >
+              Clear filter
+            </Link>
+          </div>
         )}
 
         <div className="mt-6 space-y-3">
