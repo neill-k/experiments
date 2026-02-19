@@ -43,9 +43,10 @@ export default async function Home({
   searchParams: Promise<{ tag?: string }>
 }) {
   const { tag: activeTag } = await searchParams
+  const normalizedActiveTag = activeTag?.toLowerCase()
 
-  const filtered = activeTag
-    ? experiments.filter((e) => e.tags.includes(activeTag))
+  const filtered = normalizedActiveTag
+    ? experiments.filter((e) => e.tags.includes(normalizedActiveTag))
     : experiments
 
   const favorites = experiments.filter((e) => e.favorite)
@@ -106,7 +107,7 @@ export default async function Home({
         </header>
 
         {/* Neill's Favorites */}
-        {!activeTag && favorites.length > 0 && (
+        {!normalizedActiveTag && favorites.length > 0 && (
           <section className="mt-10 mb-8">
             <h2 className="text-xs font-[family-name:var(--font-mono)] text-white/30 uppercase tracking-widest mb-4">
               Neill&apos;s Favorites
@@ -147,14 +148,14 @@ export default async function Home({
           <TagFilter allTags={allTags} tagCounts={tagCounts} totalCount={experiments.length} />
         </Suspense>
 
-        {activeTag && (
+        {normalizedActiveTag && (
           <div className="mt-4 flex items-center gap-3" role="status" aria-live="polite">
             <p className="text-[11px] font-[family-name:var(--font-mono)] text-white/25">
-              Showing {filtered.length} of {experiments.length} experiments for “{activeTag}”.
+              Showing {filtered.length} of {experiments.length} experiments for “{normalizedActiveTag}”.
             </p>
             <Link
               href="/"
-              aria-label={`Clear ${activeTag} filter and show all experiments`}
+              aria-label={`Clear ${normalizedActiveTag} filter and show all experiments`}
               className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors"
             >
               Clear filter
@@ -230,7 +231,7 @@ export default async function Home({
                   <span
                     key={tag}
                     className={`font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest transition-colors ${
-                      activeTag === tag ? 'text-white/60' : 'text-white/25'
+                      normalizedActiveTag === tag ? 'text-white/60' : 'text-white/25'
                     }`}
                   >
                     {tag}
@@ -254,11 +255,11 @@ export default async function Home({
           {filtered.length === 0 && (
             <div className="py-8 text-center">
               <p className="text-sm font-[family-name:var(--font-body)] text-white/30">
-                {activeTag
-                  ? <>No experiments match “{activeTag}” yet.</>
+                {normalizedActiveTag
+                  ? <>No experiments match “{normalizedActiveTag}” yet.</>
                   : 'No experiments match that tag yet.'}
               </p>
-              {activeTag && (
+              {normalizedActiveTag && (
                 <Link
                   href="/"
                   className="mt-2 inline-block text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors"
