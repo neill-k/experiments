@@ -245,9 +245,19 @@ export default async function Home({
             </Link>
           ))}
           {filtered.length === 0 && (
-            <p className="py-8 text-center text-sm font-[family-name:var(--font-body)] text-white/30">
-              No experiments match that tag yet.
-            </p>
+            <div className="py-8 text-center">
+              <p className="text-sm font-[family-name:var(--font-body)] text-white/30">
+                No experiments match that tag yet.
+              </p>
+              {activeTag && (
+                <Link
+                  href="/"
+                  className="mt-2 inline-block text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors"
+                >
+                  Show all experiments
+                </Link>
+              )}
+            </div>
           )}
         </div>
 
