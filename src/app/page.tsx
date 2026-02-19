@@ -300,7 +300,7 @@ export default async function Home({
               >
                 RSS
               </a>
-              <span className="text-white/10">·</span>
+              <span className="text-white/10" aria-hidden="true">·</span>
               <a
                 href="https://github.com/neill-k/experiments"
                 target="_blank"
@@ -309,7 +309,7 @@ export default async function Home({
               >
                 View source
               </a>
-              <span className="text-white/10">·</span>
+              <span className="text-white/10" aria-hidden="true">·</span>
               <a
                 href="https://openclaw.ai"
                 target="_blank"
