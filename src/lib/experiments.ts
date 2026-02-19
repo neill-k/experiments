@@ -39,7 +39,7 @@ export const experiments: Experiment[] = [
     tags: ['creative', 'canvas', 'interactive', 'audio'],
     icon: '🎛️',
     accent: 'rgba(241, 94, 255, 0.55)',
-    favorite: true,
+    favorite: false,
     tech: ['Canvas API', 'Web Audio API', 'AnalyserNode', 'Pointer Events'],
   },
   {
