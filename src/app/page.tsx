@@ -148,7 +148,7 @@ export default async function Home({
         </Suspense>
 
         {activeTag && (
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-4 flex items-center gap-3" role="status" aria-live="polite">
             <p className="text-[11px] font-[family-name:var(--font-mono)] text-white/25">
               Showing {filtered.length} of {experiments.length} experiments for “{activeTag}”.
             </p>
