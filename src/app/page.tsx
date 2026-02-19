@@ -154,6 +154,7 @@ export default async function Home({
             </p>
             <Link
               href="/"
+              aria-label={`Clear ${activeTag} filter and show all experiments`}
               className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors"
             >
               Clear filter
