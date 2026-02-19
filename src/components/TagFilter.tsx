@@ -35,6 +35,7 @@ export function TagFilter({
     <div className="mt-8 flex flex-wrap items-center gap-2">
       <button
         onClick={() => setTag(null)}
+        aria-pressed={activeTag === null}
         className={`group flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
           activeTag === null
             ? 'border-white/30 text-white/80 bg-white/[0.08]'
@@ -54,6 +55,7 @@ export function TagFilter({
         <button
           key={tag}
           onClick={() => setTag(activeTag === tag ? null : tag)}
+          aria-pressed={activeTag === tag}
           className={`group flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
             activeTag === tag
               ? 'border-white/30 text-white/80 bg-white/[0.08]'
