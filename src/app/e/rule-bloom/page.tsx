@@ -1,6 +1,13 @@
+import type { Metadata } from 'next'
 import { Comments } from '@/components/comments/Comments'
 import { ExperimentNav } from '@/components/ExperimentNav'
 import { RuleBloomClient } from './RuleBloomClient'
+
+export const metadata: Metadata = {
+  title: 'Rule Bloom',
+  description:
+    'A passive dark simulation coupling Rule 30 turbulence, sandpile cascades, and stochastic decay clocks.',
+}
 
 export default function RuleBloomPage() {
   return (

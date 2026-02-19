@@ -41,7 +41,7 @@ export const experiments: Experiment[] = [
     accent: 'rgba(152, 118, 255, 0.55)',
     favorite: false,
     tech: ['Canvas API', 'Cellular Automata', 'Sandpile Model', 'Typed Arrays'],
-    lastUpdated: '2026-02-18',
+    lastUpdated: '2026-02-19',
   },
   {
     slug: 'hard-question',

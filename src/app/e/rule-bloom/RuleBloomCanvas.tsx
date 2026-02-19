@@ -12,8 +12,10 @@ interface RuleBloomCanvasProps {
 interface HudState {
   fps: number
   tick: number
+  alive: number
   topples: number
   decay: number
+  injected: number
 }
 
 const MIN_RENDER_SCALE = 0.6
@@ -42,8 +44,10 @@ export function RuleBloomCanvas({ seed, reducedMotion = false }: RuleBloomCanvas
   const [hud, setHud] = useState<HudState>({
     fps: 0,
     tick: 0,
+    alive: 0,
     topples: 0,
     decay: 0,
+    injected: 0,
   })
 
   const params = useMemo(
@@ -130,8 +134,10 @@ export function RuleBloomCanvas({ seed, reducedMotion = false }: RuleBloomCanvas
             setHud({
               fps,
               tick: lastResult.stats.tick,
+              alive: lastResult.stats.aliveCount,
               topples: lastResult.stats.topples,
               decay: lastResult.stats.decayApplied,
+              injected: lastResult.stats.grainsAddedFromRule,
             })
             fpsCounterFrames = 0
             fpsCounterStart = ts
@@ -172,7 +178,8 @@ export function RuleBloomCanvas({ seed, reducedMotion = false }: RuleBloomCanvas
       <canvas ref={canvasRef} className="block h-full w-full" aria-label="Rule Bloom simulation canvas" />
 
       <div className="pointer-events-none absolute left-2 top-2 border border-white/15 bg-[#08080a]/80 px-2 py-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-white/70 sm:left-3 sm:top-3 sm:text-[11px]">
-        fps {hud.fps} · tick {hud.tick} · topple {hud.topples} · decay {hud.decay}
+        <div>fps {hud.fps} · tick {hud.tick} · alive {hud.alive}</div>
+        <div>topple {hud.topples} · decay {hud.decay} · inject {hud.injected}</div>
       </div>
     </div>
   )

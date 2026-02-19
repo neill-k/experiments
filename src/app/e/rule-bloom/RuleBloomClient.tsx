@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { RuleBloomCanvas } from './RuleBloomCanvas'
 import { RuleBloomControls } from './RuleBloomControls'
 import { RuleBloomNarrative } from './RuleBloomNarrative'
@@ -13,6 +13,10 @@ export function RuleBloomClient() {
   const [seed, setSeed] = useState<number>(() => randomSeed())
   const [reducedMotion, setReducedMotion] = useState(false)
 
+  const reseed = useCallback(() => {
+    setSeed(randomSeed())
+  }, [])
+
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
     const update = () => setReducedMotion(media.matches)
@@ -21,6 +25,26 @@ export function RuleBloomClient() {
     media.addEventListener('change', update)
     return () => media.removeEventListener('change', update)
   }, [])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.repeat) return
+      if (event.key.toLowerCase() !== 'r') return
+      if (event.metaKey || event.ctrlKey || event.altKey) return
+
+      const target = event.target as HTMLElement | null
+      const typingContext =
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.isContentEditable === true
+      if (typingContext) return
+
+      reseed()
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [reseed])
 
   return (
     <div className="mx-auto w-full max-w-[1600px] px-3 py-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6">
@@ -43,7 +67,7 @@ export function RuleBloomClient() {
           </div>
 
           <div className="border-t border-white/10 p-3 sm:p-4">
-            <RuleBloomControls onReseed={() => setSeed(randomSeed())} />
+            <RuleBloomControls onReseed={reseed} />
           </div>
         </section>
 
