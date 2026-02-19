@@ -247,7 +247,9 @@ export default async function Home({
           {filtered.length === 0 && (
             <div className="py-8 text-center">
               <p className="text-sm font-[family-name:var(--font-body)] text-white/30">
-                No experiments match that tag yet.
+                {activeTag
+                  ? <>No experiments match “{activeTag}” yet.</>
+                  : 'No experiments match that tag yet.'}
               </p>
               {activeTag && (
                 <Link
