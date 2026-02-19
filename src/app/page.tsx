@@ -147,6 +147,12 @@ export default async function Home({
           <TagFilter allTags={allTags} tagCounts={tagCounts} totalCount={experiments.length} />
         </Suspense>
 
+        {activeTag && (
+          <p className="mt-4 text-[11px] font-[family-name:var(--font-mono)] text-white/25">
+            Showing {filtered.length} of {experiments.length} experiments for “{activeTag}”.
+          </p>
+        )}
+
         <div className="mt-6 space-y-3">
           {filtered.map((exp, i) => (
             <Link
