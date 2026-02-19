@@ -24,7 +24,9 @@ export function TagFilter({
       } else {
         params.delete('tag')
       }
-      router.push(`/?${params.toString()}`, { scroll: false })
+
+      const query = params.toString()
+      router.push(query ? `/?${query}` : '/', { scroll: false })
     },
     [router, searchParams],
   )
