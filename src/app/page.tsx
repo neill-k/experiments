@@ -213,12 +213,16 @@ export default async function Home({
                   >
                     {exp.date}
                   </time>
-                  <span className="block font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5">
+                  <span
+                    title={`Published ${exp.date}`}
+                    className="block font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5"
+                  >
                     {relativeDate(exp.date)}
                   </span>
                   {exp.lastUpdated && exp.lastUpdated !== exp.date && (
                     <time
                       dateTime={exp.lastUpdated}
+                      title={`Updated ${exp.lastUpdated}`}
                       className="block font-[family-name:var(--font-mono)] text-[10px] text-emerald-400/40 mt-1"
                     >
                       ↻ {relativeDate(exp.lastUpdated)}
