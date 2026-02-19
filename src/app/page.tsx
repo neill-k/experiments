@@ -205,16 +205,22 @@ export default async function Home({
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="font-[family-name:var(--font-mono)] text-[11px] text-white/30">
+                  <time
+                    dateTime={exp.date}
+                    className="block font-[family-name:var(--font-mono)] text-[11px] text-white/30"
+                  >
                     {exp.date}
-                  </div>
-                  <div className="font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5">
+                  </time>
+                  <span className="block font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5">
                     {relativeDate(exp.date)}
-                  </div>
+                  </span>
                   {exp.lastUpdated && exp.lastUpdated !== exp.date && (
-                    <div className="font-[family-name:var(--font-mono)] text-[10px] text-emerald-400/40 mt-1">
+                    <time
+                      dateTime={exp.lastUpdated}
+                      className="block font-[family-name:var(--font-mono)] text-[10px] text-emerald-400/40 mt-1"
+                    >
                       ↻ {relativeDate(exp.lastUpdated)}
-                    </div>
+                    </time>
                   )}
                 </div>
               </div>
