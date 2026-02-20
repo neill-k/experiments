@@ -304,6 +304,7 @@ export default async function Home({
             <div className="flex items-center gap-4">
               <a
                 href="/feed.xml"
+                aria-label="Subscribe via RSS feed"
                 className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
                 title="RSS Feed"
               >
