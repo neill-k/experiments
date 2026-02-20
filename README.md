@@ -21,6 +21,7 @@ Improvement crons also run periodically to polish existing experiments (bug fixe
 
 | Experiment | Description |
 |---|---|
+| 🧩 [Fold Circuit](https://experiments.neillkillgore.com/e/fold-circuit) | Route power from source to sink, then adapt as one physical law mutates each solve |
 | 🧪 [Rule Bloom](https://experiments.neillkillgore.com/e/rule-bloom) | Coupled Rule 30 + sandpile + decay simulation in a dark passive canvas |
 | 🐜 [Ant Farm](https://experiments.neillkillgore.com/e/ant-farm) | A living ant colony simulation - dig tunnels, forage, build underground |
 | 🫧 [The Blob](https://experiments.neillkillgore.com/e/the-blob) | Bioluminescent entities that split, merge, hunt, flee, and glitch |
@@ -51,6 +52,7 @@ src/
 ├── app/
 │   ├── e/                    # Each experiment lives here
 │   │   ├── ant-farm/
+│   │   ├── fold-circuit/
 │   │   ├── rule-bloom/
 │   │   ├── the-blob/
 │   │   ├── prompt-library/

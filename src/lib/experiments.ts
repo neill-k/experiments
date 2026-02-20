@@ -31,6 +31,18 @@ export function sourceUrl(slug: string): string {
 
 export const experiments: Experiment[] = [
   {
+    slug: 'fold-circuit',
+    date: '2026-02-20',
+    title: 'Fold Circuit',
+    description:
+      'Route power from source to sink with minimal active cells, then adapt as one physical law mutates after each solve.',
+    tags: ['puzzle', 'simulation', 'systems', 'interactive'],
+    icon: '🧩',
+    accent: 'rgba(120, 196, 255, 0.52)',
+    favorite: false,
+    tech: ['Canvas API', 'Typed Arrays', 'Bounded Solver', 'Deterministic Replay'],
+  },
+  {
     slug: 'particle-orchestra',
     date: '2026-02-19',
     title: 'Particle Orchestra',
