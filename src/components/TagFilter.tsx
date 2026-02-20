@@ -15,6 +15,7 @@ export function TagFilter({
   const router = useRouter()
   const searchParams = useSearchParams()
   const activeTag = searchParams.get('tag')
+  const normalizedActiveTag = activeTag?.toLowerCase() ?? null
 
   const setTag = useCallback(
     (tag: string | null) => {
@@ -36,9 +37,9 @@ export function TagFilter({
       <button
         onClick={() => setTag(null)}
         aria-label={`Show all experiments (${totalCount})`}
-        aria-pressed={activeTag === null}
+        aria-pressed={normalizedActiveTag === null}
         className={`group flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
-          activeTag === null
+          normalizedActiveTag === null
             ? 'border-white/30 text-white/80 bg-white/[0.08]'
             : 'border-[var(--border)] text-white/30 hover:text-white/50 hover:border-[var(--border-hover)]'
         }`}
@@ -46,7 +47,7 @@ export function TagFilter({
         all
         <span
           className={`text-[9px] tabular-nums transition-colors ${
-            activeTag === null ? 'text-white/40' : 'text-white/15 group-hover:text-white/25'
+            normalizedActiveTag === null ? 'text-white/40' : 'text-white/15 group-hover:text-white/25'
           }`}
         >
           {totalCount}
@@ -55,15 +56,15 @@ export function TagFilter({
       {allTags.map((tag) => (
         <button
           key={tag}
-          onClick={() => setTag(activeTag === tag ? null : tag)}
+          onClick={() => setTag(normalizedActiveTag === tag ? null : tag)}
           aria-label={
-            activeTag === tag
+            normalizedActiveTag === tag
               ? `Clear ${tag} filter and show all experiments`
               : `Filter by ${tag} (${tagCounts[tag] ?? 0} experiments)`
           }
-          aria-pressed={activeTag === tag}
+          aria-pressed={normalizedActiveTag === tag}
           className={`group flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
-            activeTag === tag
+            normalizedActiveTag === tag
               ? 'border-white/30 text-white/80 bg-white/[0.08]'
               : 'border-[var(--border)] text-white/30 hover:text-white/50 hover:border-[var(--border-hover)]'
           }`}
@@ -71,7 +72,7 @@ export function TagFilter({
           {tag}
           <span
             className={`text-[9px] tabular-nums transition-colors ${
-              activeTag === tag ? 'text-white/40' : 'text-white/15 group-hover:text-white/25'
+              normalizedActiveTag === tag ? 'text-white/40' : 'text-white/15 group-hover:text-white/25'
             }`}
           >
             {tagCounts[tag] ?? 0}
