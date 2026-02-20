@@ -1,15 +1,20 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { createRuleBloomEngine, DEFAULT_RULE_BLOOM_PARAMS, type RuleBloomStepResult } from '@/lib/rule-bloom/engine'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createRuleBloomEngine, type RuleBloomStepResult } from '@/lib/rule-bloom/engine'
+import { buildRuleBloomParams, type RuleBloomRegime } from '@/lib/rule-bloom/profiles'
 import { RuleBloomRenderer } from '@/lib/rule-bloom/render'
 
 interface RuleBloomCanvasProps {
   seed: number
   reducedMotion?: boolean
+  regime: RuleBloomRegime
+  paused: boolean
+  stepSignal: number
+  onHudUpdate?: (hud: RuleBloomHudState) => void
 }
 
-interface HudState {
+export interface RuleBloomHudState {
   fps: number
   tick: number
   alive: number
@@ -21,50 +26,69 @@ interface HudState {
 const MIN_RENDER_SCALE = 0.6
 const MAX_RENDER_SCALE = 1
 
-export function RuleBloomCanvas({ seed, reducedMotion = false }: RuleBloomCanvasProps) {
+const EMPTY_HUD: RuleBloomHudState = {
+  fps: 0,
+  tick: 0,
+  alive: 0,
+  topples: 0,
+  decay: 0,
+  injected: 0,
+}
+
+export function RuleBloomCanvas({
+  seed,
+  reducedMotion = false,
+  regime,
+  paused,
+  stepSignal,
+  onHudUpdate,
+}: RuleBloomCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const rendererRef = useRef<RuleBloomRenderer | null>(null)
-  const engineRef = useRef(
-    createRuleBloomEngine({
-      ...DEFAULT_RULE_BLOOM_PARAMS,
-      width: 300,
-      seed,
-      maxTopplesPerStep: reducedMotion ? 1600 : 3200,
-      decayChecksPerStep: reducedMotion ? 220 : 420,
-      decayChance: reducedMotion ? 0.013 : 0.02,
-    }),
+  const params = useMemo(
+    () =>
+      buildRuleBloomParams({
+        width: 300,
+        seed,
+        reducedMotion,
+        regime,
+      }),
+    [seed, reducedMotion, regime],
   )
+
+  const engineRef = useRef(createRuleBloomEngine(params))
 
   const rafRef = useRef<number | null>(null)
   const resizeObserverRef = useRef<ResizeObserver | null>(null)
   const renderScaleRef = useRef(1)
-  const pausedRef = useRef(false)
+  const pausedRef = useRef(paused)
+  const pausedPropRef = useRef(paused)
   const runningRef = useRef(false)
+  const hudRef = useRef<RuleBloomHudState>(EMPTY_HUD)
 
-  const [hud, setHud] = useState<HudState>({
-    fps: 0,
-    tick: 0,
-    alive: 0,
-    topples: 0,
-    decay: 0,
-    injected: 0,
-  })
+  const [hud, setHud] = useState<RuleBloomHudState>(EMPTY_HUD)
 
-  const params = useMemo(
-    () => ({
-      ...DEFAULT_RULE_BLOOM_PARAMS,
-      width: 300,
-      seed,
-      maxTopplesPerStep: reducedMotion ? 1600 : 3200,
-      decayChecksPerStep: reducedMotion ? 220 : 420,
-      decayChance: reducedMotion ? 0.013 : 0.02,
-    }),
-    [seed, reducedMotion],
-  )
+  const publishHud = useCallback((nextHud: RuleBloomHudState) => {
+    hudRef.current = nextHud
+    setHud(nextHud)
+  }, [])
+
+  useEffect(() => {
+    pausedRef.current = paused
+    pausedPropRef.current = paused
+  }, [paused])
+
+  useEffect(() => {
+    if (!onHudUpdate) return
+    onHudUpdate(hud)
+  }, [hud, onHudUpdate])
 
   useEffect(() => {
     engineRef.current = createRuleBloomEngine(params)
-  }, [params])
+    publishHud(EMPTY_HUD)
+    const snapshot = engineRef.current.snapshot()
+    rendererRef.current?.render(snapshot)
+  }, [params, publishHud])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -87,12 +111,14 @@ export function RuleBloomCanvas({ seed, reducedMotion = false }: RuleBloomCanvas
     }
 
     resize()
+    renderer.render(engineRef.current.snapshot())
+
     const ro = new ResizeObserver(() => resize())
     ro.observe(canvas)
     resizeObserverRef.current = ro
 
     const onVisibility = () => {
-      pausedRef.current = document.hidden
+      pausedRef.current = document.hidden || pausedPropRef.current
     }
     document.addEventListener('visibilitychange', onVisibility)
 
@@ -131,7 +157,7 @@ export function RuleBloomCanvas({ seed, reducedMotion = false }: RuleBloomCanvas
           fpsCounterFrames += 1
           if (ts - fpsCounterStart >= 500) {
             const fps = Math.round((fpsCounterFrames * 1000) / (ts - fpsCounterStart))
-            setHud({
+            publishHud({
               fps,
               tick: lastResult.stats.tick,
               alive: lastResult.stats.aliveCount,
@@ -146,8 +172,8 @@ export function RuleBloomCanvas({ seed, reducedMotion = false }: RuleBloomCanvas
       }
 
       const frameMs = performance.now() - frameStart
-
       const currentScale = renderScaleRef.current
+
       if (frameMs > 24 && currentScale > MIN_RENDER_SCALE) {
         renderScaleRef.current = Math.max(MIN_RENDER_SCALE, currentScale - 0.06)
         resize()
@@ -171,15 +197,36 @@ export function RuleBloomCanvas({ seed, reducedMotion = false }: RuleBloomCanvas
       }
       rendererRef.current = null
     }
-  }, [params, reducedMotion])
+  }, [publishHud, reducedMotion])
+
+  useEffect(() => {
+    if (stepSignal === 0) return
+
+    const result = engineRef.current.step()
+    const snapshot = engineRef.current.snapshot()
+    rendererRef.current?.render(snapshot, result.stats)
+
+    publishHud({
+      fps: hudRef.current.fps,
+      tick: result.stats.tick,
+      alive: result.stats.aliveCount,
+      topples: result.stats.topples,
+      decay: result.stats.decayApplied,
+      injected: result.stats.grainsAddedFromRule,
+    })
+  }, [stepSignal, publishHud])
 
   return (
     <div className="relative h-full w-full border border-white/10 bg-black/20">
       <canvas ref={canvasRef} className="block h-full w-full" aria-label="Rule Bloom simulation canvas" />
 
-      <div className="pointer-events-none absolute left-2 top-2 border border-white/15 bg-[#08080a]/80 px-2 py-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-white/70 sm:left-3 sm:top-3 sm:text-[11px]">
-        <div>fps {hud.fps} · tick {hud.tick} · alive {hud.alive}</div>
-        <div>topple {hud.topples} · decay {hud.decay} · inject {hud.injected}</div>
+      <div className="pointer-events-none absolute left-2 top-2 border border-white/15 bg-[#08080a]/84 px-2 py-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-white/72 sm:left-3 sm:top-3 sm:text-[11px]">
+        <div>
+          {paused ? 'paused' : 'live'} · {regime} · fps {hud.fps} · tick {hud.tick}
+        </div>
+        <div>
+          alive {hud.alive} · topple {hud.topples} · decay {hud.decay} · inject {hud.injected}
+        </div>
       </div>
     </div>
   )

@@ -47,13 +47,13 @@ export const experiments: Experiment[] = [
     date: '2026-02-18',
     title: 'Rule Bloom',
     description:
-      'A dark, passive simulation where Rule 30 turbulence, sandpile criticality, and decay clocks continuously disturb each other.',
+      'A hard-edge coupled simulation where Rule 30 turbulence, sandpile criticality, and stochastic decay clocks continuously disturb each other.',
     tags: ['simulation', 'creative', 'canvas', 'generative'],
     icon: '🧪',
     accent: 'rgba(152, 118, 255, 0.55)',
     favorite: false,
     tech: ['Canvas API', 'Cellular Automata', 'Sandpile Model', 'Typed Arrays'],
-    lastUpdated: '2026-02-19',
+    lastUpdated: '2026-02-20',
   },
   {
     slug: 'hard-question',

@@ -1,17 +1,31 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RuleBloomCanvas } from './RuleBloomCanvas'
+import { RuleBloomCanvas, type RuleBloomHudState } from './RuleBloomCanvas'
 import { RuleBloomControls } from './RuleBloomControls'
 import { RuleBloomNarrative } from './RuleBloomNarrative'
+import { RULE_BLOOM_REGIMES, type RuleBloomRegime } from '@/lib/rule-bloom/profiles'
 
 function randomSeed(): number {
   return Math.floor(Math.random() * 0xffffffff)
 }
 
+const EMPTY_HUD: RuleBloomHudState = {
+  fps: 0,
+  tick: 0,
+  alive: 0,
+  topples: 0,
+  decay: 0,
+  injected: 0,
+}
+
 export function RuleBloomClient() {
   const [seed, setSeed] = useState<number>(0)
   const [reducedMotion, setReducedMotion] = useState(false)
+  const [regime, setRegime] = useState<RuleBloomRegime>('balanced')
+  const [paused, setPaused] = useState(false)
+  const [stepSignal, setStepSignal] = useState(0)
+  const [hud, setHud] = useState<RuleBloomHudState>(EMPTY_HUD)
 
   useEffect(() => {
     setSeed(randomSeed())
@@ -19,6 +33,11 @@ export function RuleBloomClient() {
 
   const reseed = useCallback(() => {
     setSeed(randomSeed())
+  }, [])
+
+  const handleStep = useCallback(() => {
+    setPaused(true)
+    setStepSignal((value) => value + 1)
   }, [])
 
   useEffect(() => {
@@ -33,7 +52,6 @@ export function RuleBloomClient() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.repeat) return
-      if (event.key.toLowerCase() !== 'r') return
       if (event.metaKey || event.ctrlKey || event.altKey) return
 
       const target = event.target as HTMLElement | null
@@ -43,7 +61,23 @@ export function RuleBloomClient() {
         target?.isContentEditable === true
       if (typingContext) return
 
-      reseed()
+      const key = event.key.toLowerCase()
+      if (key === 'r') {
+        reseed()
+        return
+      }
+
+      if (key === 'p' || event.key === ' ') {
+        event.preventDefault()
+        setPaused((value) => !value)
+        return
+      }
+
+      if (event.key === '.') {
+        event.preventDefault()
+        setPaused(true)
+        setStepSignal((value) => value + 1)
+      }
     }
 
     window.addEventListener('keydown', onKeyDown)
@@ -61,22 +95,37 @@ export function RuleBloomClient() {
                 Rule 30 × sandpile cascades × stochastic decay
               </p>
             </div>
-            <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-[#ebebeb]/65 sm:text-[11px]">
-              seed {seed}
+            <div className="text-right font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-[#ebebeb]/65 sm:text-[11px]">
+              <div>seed {seed}</div>
+              <div>{paused ? 'paused' : 'running'} · {RULE_BLOOM_REGIMES[regime].label}</div>
             </div>
           </header>
 
           <div className="min-h-0 flex-1 p-2 sm:p-3">
-            <RuleBloomCanvas seed={seed} reducedMotion={reducedMotion} />
+            <RuleBloomCanvas
+              seed={seed}
+              reducedMotion={reducedMotion}
+              regime={regime}
+              paused={paused}
+              stepSignal={stepSignal}
+              onHudUpdate={setHud}
+            />
           </div>
 
           <div className="border-t border-white/10 p-3 sm:p-4">
-            <RuleBloomControls onReseed={reseed} />
+            <RuleBloomControls
+              regime={regime}
+              paused={paused}
+              onRegimeChange={setRegime}
+              onTogglePause={() => setPaused((value) => !value)}
+              onStep={handleStep}
+              onReseed={reseed}
+            />
           </div>
         </section>
 
         <div className="order-2 lg:w-[min(520px,36vw)] lg:min-w-[360px]">
-          <RuleBloomNarrative reducedMotion={reducedMotion} />
+          <RuleBloomNarrative reducedMotion={reducedMotion} regime={regime} paused={paused} hud={hud} />
         </div>
       </div>
     </div>
