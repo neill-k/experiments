@@ -97,7 +97,10 @@ export default async function Home({
               {experiments.length} prototypes shipped. Click to explore.
             </p>
             {pipelineStats.streak > 1 && (
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-[family-name:var(--font-mono)] text-emerald-400/60">
+              <span
+                aria-label={`${pipelineStats.streak}-day shipping streak`}
+                className="inline-flex items-center gap-1.5 text-[11px] font-[family-name:var(--font-mono)] text-emerald-400/60"
+              >
                 <span className="inline-block h-1.5 w-1.5 bg-emerald-400/60 animate-pulse" aria-hidden="true" />
                 {pipelineStats.streak}-day streak
               </span>
