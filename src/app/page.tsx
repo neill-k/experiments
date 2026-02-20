@@ -215,12 +215,13 @@ export default async function Home({
                   >
                     {exp.date}
                   </time>
-                  <span
+                  <time
+                    dateTime={exp.date}
                     title={`Published ${exp.date}`}
                     className="block font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5"
                   >
                     {relativeDate(exp.date)}
-                  </span>
+                  </time>
                   {exp.lastUpdated && exp.lastUpdated !== exp.date && (
                     <time
                       dateTime={exp.lastUpdated}
