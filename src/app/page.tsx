@@ -157,7 +157,7 @@ export default async function Home({
             <Link
               href="/"
               aria-label={`Clear ${normalizedActiveTag} filter and show all experiments`}
-              className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors"
+              className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               Clear filter
             </Link>
@@ -269,7 +269,7 @@ export default async function Home({
                 <Link
                   href="/"
                   aria-label={`Clear ${normalizedActiveTag} filter and show all experiments`}
-                  className="mt-2 inline-block text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors"
+                  className="mt-2 inline-block text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 >
                   Show all experiments
                 </Link>
@@ -305,7 +305,7 @@ export default async function Home({
               <a
                 href="/feed.xml"
                 aria-label="Subscribe via RSS feed"
-                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 title="RSS Feed"
               >
                 RSS
@@ -316,7 +316,7 @@ export default async function Home({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="View source on GitHub (opens in new tab)"
-                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 View source
               </a>
@@ -326,7 +326,7 @@ export default async function Home({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Powered by OpenClaw (opens in new tab)"
-                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 Powered by OpenClaw
               </a>
