@@ -214,6 +214,8 @@ export default async function Home({
                 <div className="shrink-0 text-right">
                   <time
                     dateTime={exp.date}
+                    title={`Published ${exp.date}`}
+                    aria-label={`Published date ${exp.date}`}
                     className="block font-[family-name:var(--font-mono)] text-[11px] text-white/30"
                   >
                     {exp.date}
