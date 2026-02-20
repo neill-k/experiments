@@ -221,6 +221,7 @@ export default async function Home({
                   <time
                     dateTime={exp.date}
                     title={`Published ${exp.date}`}
+                    aria-label={`Published ${exp.date} (${relativeDate(exp.date)})`}
                     className="block font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5"
                   >
                     {relativeDate(exp.date)}
@@ -229,6 +230,7 @@ export default async function Home({
                     <time
                       dateTime={exp.lastUpdated}
                       title={`Updated ${exp.lastUpdated}`}
+                      aria-label={`Updated ${exp.lastUpdated} (${relativeDate(exp.lastUpdated)})`}
                       className="block font-[family-name:var(--font-mono)] text-[10px] text-emerald-400/40 mt-1"
                     >
                       ↻ {relativeDate(exp.lastUpdated)}
