@@ -15,14 +15,16 @@ export function replayMoves(puzzle: FoldCircuitPuzzle, moves: FoldCircuitMove[])
   const ordered = [...moves].sort((a, b) => a.tick - b.tick)
   for (let i = 0; i < ordered.length; i += 1) {
     const move = ordered[i]
+
+    if (move.action === 'clear') {
+      wires.fill(0)
+      continue
+    }
+
     if (move.index < 0 || move.index >= cellCount) continue
     if (!isEditableCell(puzzle.board, move.index)) continue
 
-    if (move.action === 'clear') {
-      wires[move.index] = 0
-    } else {
-      wires[move.index] = wires[move.index] === 1 ? 0 : 1
-    }
+    wires[move.index] = wires[move.index] === 1 ? 0 : 1
   }
 
   const simulation = runSimulation(puzzle.board, wires, puzzle.laws)
