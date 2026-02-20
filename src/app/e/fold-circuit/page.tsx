@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { Comments } from '@/components/comments/Comments'
 import { ExperimentNav } from '@/components/ExperimentNav'
-import { FoldCircuitClient } from './FoldCircuitClient'
 import './fold-circuit.css'
+
+const FoldCircuitClient = dynamic(() => import('./FoldCircuitClient').then((mod) => mod.FoldCircuitClient), {
+  ssr: false,
+})
 
 export const metadata: Metadata = {
   title: 'Fold Circuit',
