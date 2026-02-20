@@ -235,7 +235,8 @@ export default async function Home({
                       aria-label={`Updated ${exp.lastUpdated} (${relativeDate(exp.lastUpdated)})`}
                       className="block font-[family-name:var(--font-mono)] text-[10px] text-emerald-400/40 mt-1"
                     >
-                      ↻ {relativeDate(exp.lastUpdated)}
+                      <span aria-hidden="true">↻ </span>
+                      {relativeDate(exp.lastUpdated)}
                     </time>
                   )}
                 </div>
