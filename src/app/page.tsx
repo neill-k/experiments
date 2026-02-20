@@ -314,6 +314,7 @@ export default async function Home({
                 href="https://github.com/neill-k/experiments"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="View source on GitHub (opens in new tab)"
                 className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
               >
                 View source
@@ -323,6 +324,7 @@ export default async function Home({
                 href="https://openclaw.ai"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Powered by OpenClaw (opens in new tab)"
                 className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors"
               >
                 Powered by OpenClaw
