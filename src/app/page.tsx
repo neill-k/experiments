@@ -286,9 +286,17 @@ export default async function Home({
               </p>
               {experiments.length > 0 && (
                 <p className="font-[family-name:var(--font-mono)] text-[11px] text-white/20">
-                  Last shipped {experiments[0].date}
+                  Last shipped{' '}
+                  <time dateTime={experiments[0].date} title={`Last shipped ${experiments[0].date}`}>
+                    {experiments[0].date}
+                  </time>
                   {pipelineStats.firstDate && (
-                    <> · Running since {pipelineStats.firstDate}</>
+                    <>
+                      {' '}· Running since{' '}
+                      <time dateTime={pipelineStats.firstDate} title={`Running since ${pipelineStats.firstDate}`}>
+                        {pipelineStats.firstDate}
+                      </time>
+                    </>
                   )}
                 </p>
               )}
