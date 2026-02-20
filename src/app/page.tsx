@@ -70,7 +70,7 @@ export default async function Home({
             then see what it ships by sunrise.
           </p>
           <details className="mt-3 max-w-xl group">
-            <summary className="text-[11px] font-[family-name:var(--font-mono)] text-white/30 hover:text-white/50 cursor-pointer select-none transition-colors list-none [&::-webkit-details-marker]:hidden">
+            <summary className="text-[11px] font-[family-name:var(--font-mono)] text-white/30 hover:text-white/50 cursor-pointer select-none transition-colors list-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black [&::-webkit-details-marker]:hidden">
               <span className="inline-flex items-center gap-1.5">
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="transition-transform duration-150 group-open:rotate-90" aria-hidden="true">
                   <path d="M3.5 2L7 5L3.5 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
