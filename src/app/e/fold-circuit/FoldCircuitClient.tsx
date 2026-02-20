@@ -21,6 +21,8 @@ function randomRunSeed(): number {
   return Math.floor(Math.random() * 0xffffffff)
 }
 
+const HYDRATION_SAFE_SEED = 24022026
+
 interface RunState {
   progress: ProgressState
   puzzle: FoldCircuitPuzzle
@@ -49,7 +51,7 @@ function initRunState(seed: number): RunState {
 }
 
 export function FoldCircuitClient() {
-  const [state, setState] = useState<RunState>(() => initRunState(randomRunSeed()))
+  const [state, setState] = useState<RunState>(() => initRunState(HYDRATION_SAFE_SEED))
   const [selectedIndex, setSelectedIndex] = useState<number>(state.puzzle.board.sourceIndex)
   const [showOnboarding, setShowOnboarding] = useState(true)
   const [liveMessage, setLiveMessage] = useState('Fold Circuit loaded.')
@@ -59,6 +61,13 @@ export function FoldCircuitClient() {
 
   const tickCounterRef = useRef(0)
   const perfTrackerRef = useRef(new FoldCircuitPerfTracker())
+
+  useEffect(() => {
+    const seeded = initRunState(randomRunSeed())
+    tickCounterRef.current = 0
+    setSelectedIndex(seeded.puzzle.board.sourceIndex)
+    setState(seeded)
+  }, [])
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
