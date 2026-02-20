@@ -268,6 +268,7 @@ export default async function Home({
               {normalizedActiveTag && (
                 <Link
                   href="/"
+                  aria-label={`Clear ${normalizedActiveTag} filter and show all experiments`}
                   className="mt-2 inline-block text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors"
                 >
                   Show all experiments
