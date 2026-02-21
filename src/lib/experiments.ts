@@ -31,6 +31,18 @@ export function sourceUrl(slug: string): string {
 
 export const experiments: Experiment[] = [
   {
+    slug: 'gravity-inbox',
+    date: '2026-02-21',
+    title: 'Gravity Inbox',
+    description:
+      'Convert priorities into orbiting task orbs you can drag, flick, merge, and burn through a kinetic completion gate.',
+    tags: ['tools', 'canvas', 'interactive', 'productivity'],
+    icon: '🪐',
+    accent: 'rgba(122, 168, 255, 0.58)',
+    favorite: false,
+    tech: ['Canvas API', 'Pointer Events', '2D Physics', 'Reduced Motion'],
+  },
+  {
     slug: 'fold-circuit',
     date: '2026-02-20',
     title: 'Fold Circuit',
