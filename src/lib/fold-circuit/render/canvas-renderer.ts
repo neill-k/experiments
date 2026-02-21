@@ -30,8 +30,6 @@ export class FoldCircuitCanvasRenderer {
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.canvas.width = Math.max(1, Math.floor(width * dpr))
     this.canvas.height = Math.max(1, Math.floor(height * dpr))
-    this.canvas.style.width = `${Math.max(1, Math.floor(width))}px`
-    this.canvas.style.height = `${Math.max(1, Math.floor(height))}px`
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
   }
 

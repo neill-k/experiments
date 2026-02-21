@@ -70,17 +70,34 @@ export function FoldCircuitBoard({
     const renderer = new FoldCircuitCanvasRenderer(canvas)
     rendererRef.current = renderer
 
+    let lastWidth = 0
+    let lastHeight = 0
+    let raf = 0
+
     const resize = () => {
       const rect = host.getBoundingClientRect()
-      renderer.resize(rect.width, rect.height)
+      const width = Math.max(1, Math.round(rect.width))
+      const height = Math.max(1, Math.round(rect.height))
+
+      if (width === lastWidth && height === lastHeight) return
+
+      lastWidth = width
+      lastHeight = height
+      renderer.resize(width, height)
       renderer.render(renderStateRef.current)
     }
 
+    const scheduleResize = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(resize)
+    }
+
     resize()
-    const observer = new ResizeObserver(() => resize())
+    const observer = new ResizeObserver(() => scheduleResize())
     observer.observe(host)
 
     return () => {
+      cancelAnimationFrame(raf)
       observer.disconnect()
       rendererRef.current = null
     }
