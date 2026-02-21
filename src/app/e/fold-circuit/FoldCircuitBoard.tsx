@@ -37,6 +37,31 @@ export function FoldCircuitBoard({
   const hostRef = useRef<HTMLDivElement | null>(null)
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
+  const renderStateRef = useRef({
+    board: puzzle.board,
+    wires,
+    bestSignal,
+    hoverIndex,
+    selectedIndex,
+    solved,
+  })
+
+  useEffect(() => {
+    renderStateRef.current = {
+      board: puzzle.board,
+      wires,
+      bestSignal,
+      hoverIndex,
+      selectedIndex,
+      solved,
+    }
+
+    const renderer = rendererRef.current
+    if (!renderer) return
+
+    renderer.render(renderStateRef.current)
+  }, [bestSignal, hoverIndex, puzzle.board, selectedIndex, solved, wires])
+
   useEffect(() => {
     const canvas = canvasRef.current
     const host = hostRef.current
@@ -48,14 +73,7 @@ export function FoldCircuitBoard({
     const resize = () => {
       const rect = host.getBoundingClientRect()
       renderer.resize(rect.width, rect.height)
-      renderer.render({
-        board: puzzle.board,
-        wires,
-        bestSignal,
-        hoverIndex,
-        selectedIndex,
-        solved,
-      })
+      renderer.render(renderStateRef.current)
     }
 
     resize()
@@ -66,21 +84,7 @@ export function FoldCircuitBoard({
       observer.disconnect()
       rendererRef.current = null
     }
-  }, [bestSignal, hoverIndex, puzzle.board, selectedIndex, solved, wires])
-
-  useEffect(() => {
-    const renderer = rendererRef.current
-    if (!renderer) return
-
-    renderer.render({
-      board: puzzle.board,
-      wires,
-      bestSignal,
-      hoverIndex,
-      selectedIndex,
-      solved,
-    })
-  }, [bestSignal, hoverIndex, puzzle.board, selectedIndex, solved, wires])
+  }, [])
 
   const cells = useMemo(() => {
     return Array.from({ length: puzzle.board.width * puzzle.board.height }, (_, index) => index)
