@@ -13,6 +13,8 @@ import { experiments } from '@/lib/experiments'
 export function NavDropdown() {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const menuItemsRef = useRef<(HTMLAnchorElement | null)[]>([])
   const pathname = usePathname()
 
   // Close on outside click
@@ -28,15 +30,50 @@ export function NavDropdown() {
     }
   }, [open])
 
-  // Close on escape
+  // Keyboard navigation
   useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false)
+    if (!open) return
+
+    function handleKeyDown(e: KeyboardEvent) {
+      const items = menuItemsRef.current.filter(Boolean) as HTMLAnchorElement[]
+      const currentIndex = items.findIndex((item) => item === document.activeElement)
+
+      switch (e.key) {
+        case 'Escape':
+          e.preventDefault()
+          setOpen(false)
+          triggerRef.current?.focus()
+          break
+        case 'ArrowDown':
+          e.preventDefault()
+          if (currentIndex < items.length - 1) {
+            items[currentIndex + 1]?.focus()
+          } else {
+            items[0]?.focus()
+          }
+          break
+        case 'ArrowUp':
+          e.preventDefault()
+          if (currentIndex > 0) {
+            items[currentIndex - 1]?.focus()
+          } else {
+            items[items.length - 1]?.focus()
+          }
+          break
+        case 'Tab':
+          setOpen(false)
+          break
+      }
     }
-    if (open) {
-      document.addEventListener('keydown', handleKey)
-      return () => document.removeEventListener('keydown', handleKey)
-    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    // Focus first item when opened
+    requestAnimationFrame(() => {
+      const items = menuItemsRef.current.filter(Boolean) as HTMLAnchorElement[]
+      items[0]?.focus()
+    })
+
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [open])
 
   // Close when navigating
@@ -52,6 +89,7 @@ export function NavDropdown() {
   return (
     <div ref={ref} className="relative">
       <button
+        ref={triggerRef}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="true"
@@ -86,14 +124,15 @@ export function NavDropdown() {
             </span>
           </div>
           <div className="py-1">
-            {experiments.map((exp) => {
+            {experiments.map((exp, i) => {
               const isActive = exp.slug === activeSlug
               return (
                 <Link
                   key={exp.slug}
+                  ref={(el) => { menuItemsRef.current[i] = el }}
                   href={`/e/${exp.slug}`}
                   role="menuitem"
-                  className={`flex items-center gap-3 px-3 py-2.5 transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 transition-colors focus:bg-white/[0.06] focus:text-white outline-none ${
                     isActive
                       ? 'bg-white/[0.06] text-white'
                       : 'text-white/60 hover:bg-white/[0.04] hover:text-white/90'
@@ -121,9 +160,10 @@ export function NavDropdown() {
           </div>
           <div className="border-t border-[var(--border)] px-3 py-2">
             <Link
+              ref={(el) => { menuItemsRef.current[experiments.length] = el }}
               href="/"
               role="menuitem"
-              className="text-[11px] font-[family-name:var(--font-mono)] text-white/40 hover:text-white/70 transition-colors"
+              className="block w-full text-[11px] font-[family-name:var(--font-mono)] text-white/40 hover:text-white/70 focus:text-white transition-colors outline-none"
             >
               View all →
             </Link>
