@@ -1,33 +1,36 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import type { FingerprintResponse } from '../lib/types'
-import { fetchWithAuth } from '../lib/fetch-with-auth'
+import {
+  isHardQuestionApiError,
+  requestHardQuestionJson,
+} from '../lib/api-client'
+import { fingerprintResponseSchema } from '../lib/schemas'
 
 export function useFingerprint() {
-  const [data, setData] = useState<FingerprintResponse | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function fetchFingerprint() {
+  const query = useQuery({
+    queryKey: ['hard-question', 'fingerprint'],
+    queryFn: async (): Promise<FingerprintResponse> => {
       try {
-        const res = await fetchWithAuth('/api/hard-question/fingerprint')
-        if (res.status === 401) {
-          setData({ fingerprint: [], total_answers: 0 })
-          return
+        return await requestHardQuestionJson(
+          '/api/hard-question/fingerprint',
+          fingerprintResponseSchema
+        )
+      } catch (error) {
+        if (isHardQuestionApiError(error) && error.status === 401) {
+          return { fingerprint: [], total_answers: 0 }
         }
-        if (!res.ok) throw new Error('Failed to fetch fingerprint')
-        const json = await res.json()
-        setData(json)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error')
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchFingerprint()
-  }, [])
 
-  return { data, loading, error }
+        throw error
+      }
+    },
+  })
+
+  return {
+    data: query.data ?? null,
+    loading: query.isPending,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch: query.refetch,
+  }
 }

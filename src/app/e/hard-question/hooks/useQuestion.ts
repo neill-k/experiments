@@ -1,29 +1,26 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import type { TodayResponse } from '../lib/types'
-import { fetchWithAuth } from '../lib/fetch-with-auth'
+import { requestHardQuestionJson } from '../lib/api-client'
+import { todayResponseSchema } from '../lib/schemas'
 
-export function useQuestion() {
-  const [data, setData] = useState<TodayResponse | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+function buildTodayUrl(questionId?: string | null): string {
+  if (!questionId) return '/api/hard-question/today'
+  const params = new URLSearchParams({ question_id: questionId })
+  return `/api/hard-question/today?${params.toString()}`
+}
 
-  useEffect(() => {
-    async function fetchQuestion() {
-      try {
-        const res = await fetchWithAuth('/api/hard-question/today')
-        if (!res.ok) throw new Error('Failed to fetch question')
-        const json = await res.json()
-        setData(json)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error')
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchQuestion()
-  }, [])
+export function useQuestion(questionId?: string | null) {
+  const query = useQuery({
+    queryKey: ['hard-question', 'today', questionId ?? 'today'],
+    queryFn: () => requestHardQuestionJson(buildTodayUrl(questionId), todayResponseSchema),
+  })
 
-  return { data, loading, error, setData }
+  return {
+    data: (query.data ?? null) as TodayResponse | null,
+    loading: query.isPending,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch: query.refetch,
+  }
 }

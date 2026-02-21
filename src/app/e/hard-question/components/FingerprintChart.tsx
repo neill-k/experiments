@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import type { PhilosophicalFingerprint } from '../lib/types'
 import { getSchoolColor, getSchoolLabel } from '../lib/school-colors'
+import { HQ_HELPER_TEXT_SOFT } from '../lib/ui-colors'
 
 interface FingerprintChartProps {
   fingerprint: PhilosophicalFingerprint[]
@@ -27,7 +28,7 @@ export function FingerprintChart({ fingerprint }: FingerprintChartProps) {
           className="text-sm"
           style={{
             fontFamily: 'var(--font-mono)',
-            color: 'var(--muted)',
+            color: HQ_HELPER_TEXT_SOFT,
           }}
         >
           Answer more questions to see your chart (need at least 3 schools)

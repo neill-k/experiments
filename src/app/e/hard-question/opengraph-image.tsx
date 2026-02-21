@@ -10,7 +10,7 @@ export default async function Image() {
     icon: '🤔',
     title: 'The Hard Question',
     description:
-      'One genuinely hard question per day. Write your answer, discover which philosophers think like you.',
+      'One genuinely hard question per day. Compare your answer with philosopher passages using probabilistic semantic matching.',
     tags: ['philosophy', 'interactive', 'ai'],
   })
 }

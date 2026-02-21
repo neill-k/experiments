@@ -1,64 +1,62 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import type { PerspectiveMatch } from '../lib/types'
-import { fetchWithAuth } from '../lib/fetch-with-auth'
+import { useQuery } from '@tanstack/react-query'
+import type { CorpusMatch, PerspectiveMatch, SubscriptionTier } from '../lib/types'
+import {
+  isHardQuestionApiError,
+  requestHardQuestionJson,
+} from '../lib/api-client'
+import { perspectivesResponseSchema } from '../lib/schemas'
 
 interface PreviousResult {
   similarities: PerspectiveMatch[]
+  corpus_matches: CorpusMatch[]
+  tier: SubscriptionTier
 }
 
 /**
- * Fetches the user's previous philosopher-match results for a question
- * they have already answered. Uses the /api/hard-question/perspectives
- * endpoint which returns similarity scores for authenticated users.
+ * Fetches the user's previous reveal payload for a question they have already answered.
+ * Includes both perspective matches and corpus matches so returning users get the same
+ * reveal quality as fresh submissions.
  */
 export function usePreviousResult(questionId: string | null) {
-  const [data, setData] = useState<PreviousResult | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const query = useQuery({
+    queryKey: ['hard-question', 'previous-result', questionId],
+    enabled: !!questionId,
+    queryFn: async (): Promise<PreviousResult | null> => {
+      const params = new URLSearchParams({ question_id: questionId! })
 
-  useEffect(() => {
-    if (!questionId) return
-
-    async function fetchPrevious() {
-      setLoading(true)
-      setError(null)
       try {
-        const res = await fetchWithAuth(
-          `/api/hard-question/perspectives?question_id=${questionId}`
-        )
-        if (res.status === 401 || res.status === 403) {
-          // Not authenticated or hasn't answered - no previous result
-          return
-        }
-        if (!res.ok) throw new Error('Failed to fetch previous results')
-        const json = await res.json()
-
-        const similarities: PerspectiveMatch[] = (json.perspectives || []).map(
-          (p: any) => ({
-            perspective_id: p.perspective_id,
-            philosopher_name: p.philosopher_name,
-            school: p.school,
-            perspective_text: p.perspective_text ?? '',
-            summary: p.summary ?? null,
-            source: p.source ?? null,
-            similarity: p.similarity ?? 0,
-          })
+        const json = await requestHardQuestionJson(
+          `/api/hard-question/perspectives?${params.toString()}`,
+          perspectivesResponseSchema
         )
 
-        if (similarities.length > 0) {
-          setData({ similarities })
+        if (json.perspectives.length === 0) {
+          return null
         }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error')
-      } finally {
-        setLoading(false)
+
+        return {
+          similarities: json.perspectives,
+          corpus_matches: json.corpus_matches,
+          tier: json.tier,
+        }
+      } catch (error) {
+        if (
+          isHardQuestionApiError(error) &&
+          (error.status === 401 || error.status === 403)
+        ) {
+          return null
+        }
+
+        throw error
       }
-    }
+    },
+  })
 
-    fetchPrevious()
-  }, [questionId])
-
-  return { data, loading, error }
+  return {
+    data: query.data ?? null,
+    loading: query.isPending,
+    error: query.error instanceof Error ? query.error.message : null,
+  }
 }

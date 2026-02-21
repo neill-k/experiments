@@ -1,21 +1,21 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Your Philosophical DNA - The Hard Question',
+  title: 'Your Alignment Pattern - The Hard Question',
   description:
-    'See which schools of philosophy your answers align with most. A fingerprint built from your daily responses.',
+    'See which schools of philosophy your answers align with most over time. A probabilistic profile built from ranked responses.',
   openGraph: {
-    title: 'Your Philosophical DNA - The Hard Question',
+    title: 'Your Alignment Pattern - The Hard Question',
     description:
-      'See which schools of philosophy your answers align with most. A fingerprint built from your daily responses.',
+      'See which schools of philosophy your answers align with most over time. A probabilistic profile built from ranked responses.',
     url: 'https://experiments.neillkillgore.com/e/hard-question/fingerprint',
     siteName: 'Experiments',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Your Philosophical DNA - The Hard Question',
+    title: 'Your Alignment Pattern - The Hard Question',
     description:
-      'See which schools of philosophy your answers align with most.',
+      'See which schools of philosophy your answers align with most over time.',
   },
 }
 

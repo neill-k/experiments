@@ -1,75 +1,79 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
 import { AuthButtons } from '@/components/AuthButtons'
-import { useFingerprint } from '../hooks/useFingerprint'
+import { ExperimentNav } from '@/components/ExperimentNav'
+import { useAuth } from '@/hooks/useAuth'
 import { FingerprintChart } from '../components/FingerprintChart'
 import { SchoolTag } from '../components/SchoolTag'
-import { ExperimentNav } from '@/components/ExperimentNav'
-import { getSchoolLabel, getSchoolDescription } from '../lib/school-colors'
-import type { PhilosophicalFingerprint, PhilosophySchool } from '../lib/types'
+import { useFingerprint } from '../hooks/useFingerprint'
+import {
+  buildSessionFingerprint,
+  clearSessionFingerprintEntries,
+  getSessionFingerprintEntries,
+} from '../lib/session-fingerprint-store'
+import { getSchoolDescription, getSchoolLabel } from '../lib/school-colors'
+import { HQ_HELPER_TEXT, HQ_HELPER_TEXT_SOFT } from '../lib/ui-colors'
+import type { PhilosophicalFingerprint } from '../lib/types'
 
-/** Build a fingerprint from sessionStorage matches (anonymous users) */
-function useSessionFingerprint(): PhilosophicalFingerprint[] {
+function useSessionFingerprint() {
   const [fingerprint, setFingerprint] = useState<PhilosophicalFingerprint[]>([])
+  const [answerCount, setAnswerCount] = useState(0)
 
-  useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem('hq_session_matches')
-      if (!raw) return
-      const matches: { school: string; similarity: number }[] = JSON.parse(raw)
-      if (!matches.length) return
+  const refresh = useCallback(() => {
+    const nextFingerprint = buildSessionFingerprint()
+    const entries = getSessionFingerprintEntries()
+    const uniqueAnswerKeys = new Set(entries.map((entry) => entry.answer_key))
 
-      // Aggregate by school
-      const bySchool = new Map<string, number[]>()
-      for (const m of matches) {
-        const arr = bySchool.get(m.school) || []
-        arr.push(m.similarity)
-        bySchool.set(m.school, arr)
-      }
-
-      const result: PhilosophicalFingerprint[] = []
-      for (const [school, scores] of bySchool) {
-        const avg = scores.reduce((a, b) => a + b, 0) / scores.length
-        result.push({
-          id: school,
-          user_id: 'session',
-          school: school as PhilosophySchool,
-          avg_score: avg,
-          sample_count: scores.length,
-          min_score: Math.min(...scores),
-          max_score: Math.max(...scores),
-          recent_avg: avg,
-        })
-      }
-      setFingerprint(result)
-    } catch {
-      // sessionStorage unavailable
-    }
+    setFingerprint(nextFingerprint)
+    setAnswerCount(uniqueAnswerKeys.size)
   }, [])
 
-  return fingerprint
+  useEffect(() => {
+    refresh()
+  }, [refresh])
+
+  const clear = useCallback(() => {
+    clearSessionFingerprintEntries()
+    refresh()
+  }, [refresh])
+
+  return {
+    fingerprint,
+    answerCount,
+    refresh,
+    clear,
+  }
 }
 
 export default function FingerprintPage() {
-  const { userId, loading: authLoading } = useAuth()
+  const { loading: authLoading } = useAuth()
   const { data, loading, error } = useFingerprint()
-  const sessionFingerprint = useSessionFingerprint()
+  const session = useSessionFingerprint()
 
-  // Determine which fingerprint to show
+  // Determine which fingerprint to show.
   const fingerprint = useMemo(() => {
-    // Prefer server data if available and non-empty
     if (data?.fingerprint && data.fingerprint.length > 0) {
       return data.fingerprint
     }
-    // Fall back to session-based fingerprint
-    return sessionFingerprint
-  }, [data, sessionFingerprint])
 
-  const totalAnswers = data?.total_answers ?? (sessionFingerprint.length > 0 ? 1 : 0)
-  const isSessionOnly = !data?.fingerprint?.length && sessionFingerprint.length > 0
+    return session.fingerprint
+  }, [data, session.fingerprint])
+
+  const totalAnswers = data?.total_answers ?? session.answerCount
+  const isSessionOnly = !data?.fingerprint?.length && session.fingerprint.length > 0
+
+  const handleClearSessionFingerprint = useCallback(() => {
+    if (
+      typeof window !== 'undefined' &&
+      !window.confirm('Clear session-only fingerprint data from this browser?')
+    ) {
+      return
+    }
+
+    session.clear()
+  }, [session])
 
   // Loading
   if (loading || authLoading) {
@@ -77,7 +81,7 @@ export default function FingerprintPage() {
       <div className="flex min-h-[60vh] items-center justify-center">
         <p
           className="text-sm"
-          style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
+          style={{ fontFamily: 'var(--font-mono)', color: HQ_HELPER_TEXT_SOFT }}
         >
           Loading...
         </p>
@@ -86,12 +90,12 @@ export default function FingerprintPage() {
   }
 
   // Error
-  if (error && !sessionFingerprint.length) {
+  if (error && !session.fingerprint.length) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-4">
         <p
           className="text-sm"
-          style={{ fontFamily: 'var(--font-mono)', color: '#C47878' }}
+          style={{ fontFamily: 'var(--font-mono)', color: '#D08E8E' }}
         >
           {error}
         </p>
@@ -99,7 +103,7 @@ export default function FingerprintPage() {
     )
   }
 
-  // Sort by avg_score for top schools
+  // Sort by avg_score for top schools.
   const sorted = [...fingerprint]
     .filter((f) => f.sample_count > 0)
     .sort((a, b) => b.avg_score - a.avg_score)
@@ -114,10 +118,10 @@ export default function FingerprintPage() {
         className="mb-8 inline-block text-xs transition-colors"
         style={{
           fontFamily: 'var(--font-mono)',
-          color: 'var(--muted)',
+          color: HQ_HELPER_TEXT_SOFT,
         }}
       >
-        ← Back to today&apos;s question
+        ← Back to questions
       </Link>
 
       {/* Header */}
@@ -129,28 +133,38 @@ export default function FingerprintPage() {
           fontWeight: 400,
         }}
       >
-        Your Philosophical DNA
+        Your Alignment Pattern
       </h1>
+
+      <p
+        className="mb-3 text-sm"
+        style={{
+          fontFamily: 'var(--font-body)',
+          color: HQ_HELPER_TEXT,
+        }}
+      >
+        A running, probabilistic profile of which schools your answers align with most often.
+      </p>
 
       <p
         className="mb-12 text-sm"
         style={{
           fontFamily: 'var(--font-mono)',
-          color: 'var(--muted)',
+          color: HQ_HELPER_TEXT_SOFT,
         }}
       >
         {totalAnswers > 0
-          ? `Based on ${totalAnswers} answer${totalAnswers !== 1 ? 's' : ''}`
-          : 'Answer questions to build your profile'}
+          ? `Based on ${totalAnswers} ranked answer${totalAnswers !== 1 ? 's' : ''}`
+          : 'Answer ranked daily questions to build your profile'}
       </p>
 
       {fingerprint.length === 0 ? (
         <div className="py-12 text-center">
           <p
             className="text-sm"
-            style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}
+            style={{ fontFamily: 'var(--font-body)', color: HQ_HELPER_TEXT }}
           >
-            Answer some questions to build your philosophical fingerprint.
+            Answer some questions to build your philosophical alignment profile.
           </p>
           <Link
             href="/e/hard-question"
@@ -174,20 +188,35 @@ export default function FingerprintPage() {
           {/* Session-only notice */}
           {isSessionOnly && (
             <div
-              className="mb-8 p-4"
+              className="mb-8 border p-4"
               style={{
                 backgroundColor: '#111114',
-                border: '1px solid var(--border)',
+                borderColor: 'var(--border)',
               }}
             >
               <p
                 className="mb-2 text-sm"
-                style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}
+                style={{ fontFamily: 'var(--font-body)', color: HQ_HELPER_TEXT }}
               >
-                This is based on your current session only. Sign in to save your answers
-                and build a fingerprint over time.
+                This view uses session-only data from this browser. Sign in to preserve ranked
+                answers over time.
               </p>
-              <AuthButtons />
+
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <AuthButtons />
+                <button
+                  type="button"
+                  onClick={handleClearSessionFingerprint}
+                  className="px-3 py-1.5 text-xs transition-colors"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    color: HQ_HELPER_TEXT_SOFT,
+                    border: '1px solid var(--border)',
+                  }}
+                >
+                  Clear session fingerprint
+                </button>
+              </div>
             </div>
           )}
 
@@ -200,16 +229,16 @@ export default function FingerprintPage() {
                 color: 'var(--fg)',
               }}
             >
-              Your Top Schools
+              Top schools right now
             </h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {top3.map((school, i) => (
                 <div
                   key={school.school}
-                  className="p-5"
+                  className="border p-5"
                   style={{
                     backgroundColor: '#161619',
-                    border: '1px solid var(--border)',
+                    borderColor: 'var(--border)',
                   }}
                 >
                   <div className="mb-3 flex items-center gap-2">
@@ -217,7 +246,7 @@ export default function FingerprintPage() {
                       className="text-2xl font-light"
                       style={{
                         fontFamily: 'var(--font-mono)',
-                        color: 'var(--muted)',
+                        color: HQ_HELPER_TEXT_SOFT,
                       }}
                     >
                       #{i + 1}
@@ -238,7 +267,7 @@ export default function FingerprintPage() {
                       className="mt-2 text-xs leading-relaxed"
                       style={{
                         fontFamily: 'var(--font-body)',
-                        color: 'var(--muted)',
+                        color: HQ_HELPER_TEXT,
                       }}
                     >
                       {getSchoolDescription(school.school)}
@@ -258,7 +287,7 @@ export default function FingerprintPage() {
                       className="ml-2 text-xs"
                       style={{
                         fontFamily: 'var(--font-mono)',
-                        color: 'var(--muted)',
+                        color: HQ_HELPER_TEXT_SOFT,
                       }}
                     >
                       avg · {school.sample_count} match{school.sample_count !== 1 ? 'es' : ''}
@@ -279,7 +308,7 @@ export default function FingerprintPage() {
                   color: 'var(--fg)',
                 }}
               >
-                All Schools
+                All schools
               </h2>
               <div className="flex flex-col gap-2">
                 {sorted.slice(3).map((school) => (
@@ -305,7 +334,7 @@ export default function FingerprintPage() {
                         className="text-sm"
                         style={{
                           fontFamily: 'var(--font-mono)',
-                          color: 'var(--muted)',
+                          color: HQ_HELPER_TEXT_SOFT,
                         }}
                       >
                         {Math.round(school.avg_score * 100)}%
@@ -316,8 +345,7 @@ export default function FingerprintPage() {
                         className="mt-1 text-[11px] leading-relaxed"
                         style={{
                           fontFamily: 'var(--font-body)',
-                          color: 'var(--muted)',
-                          opacity: 0.7,
+                          color: HQ_HELPER_TEXT,
                         }}
                       >
                         {getSchoolDescription(school.school)}

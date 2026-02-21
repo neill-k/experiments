@@ -1,58 +1,102 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { AnswerResponse } from '../lib/types'
-import { fetchWithAuth } from '../lib/fetch-with-auth'
+import { requestHardQuestionJson } from '../lib/api-client'
+import { answerResponseSchema } from '../lib/schemas'
+import {
+  appendSessionFingerprintMatches,
+  buildSessionAnswerKey,
+} from '../lib/session-fingerprint-store'
 
-export function useAnswer() {
-  const [submitting, setSubmitting] = useState(false)
+interface SubmitAnswerOptions {
+  practiceMode?: boolean
+}
+
+interface UseAnswerOptions {
+  trackSessionFingerprint?: boolean
+}
+
+interface SubmitAnswerInput {
+  questionId: string
+  answerText: string
+  practiceMode: boolean
+}
+
+export function useAnswer(options?: UseAnswerOptions) {
+  const queryClient = useQueryClient()
   const [result, setResult] = useState<AnswerResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  async function submitAnswer(questionId: string, answerText: string) {
-    setSubmitting(true)
-    setError(null)
-    try {
-      const res = await fetchWithAuth('/api/hard-question/answer', {
+  const mutation = useMutation({
+    mutationFn: async ({ questionId, answerText, practiceMode }: SubmitAnswerInput) => {
+      return requestHardQuestionJson('/api/hard-question/answer', answerResponseSchema, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question_id: questionId, answer_text: answerText }),
+        body: JSON.stringify({
+          question_id: questionId,
+          answer_text: answerText,
+          practice_mode: practiceMode,
+        }),
       })
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error || `Error ${res.status}`)
-      }
-      const json: AnswerResponse = await res.json()
+    },
+    onSuccess: (json, variables) => {
       setResult(json)
+      setError(null)
 
-      // Stash match data in sessionStorage for anonymous fingerprint
-      try {
-        const existing = sessionStorage.getItem('hq_session_matches')
-        const matches: { school: string; similarity: number }[] = existing
-          ? JSON.parse(existing)
-          : []
-        for (const s of json.similarities) {
-          matches.push({ school: s.school, similarity: s.similarity })
-        }
-        if (json.corpus_matches) {
-          for (const c of json.corpus_matches) {
-            matches.push({ school: c.school, similarity: c.similarity })
-          }
-        }
-        sessionStorage.setItem('hq_session_matches', JSON.stringify(matches))
-      } catch {
-        // sessionStorage unavailable
+      if (options?.trackSessionFingerprint && json.ranked) {
+        const answerKey = json.answer_id ?? buildSessionAnswerKey(variables.questionId, variables.answerText)
+        appendSessionFingerprintMatches({
+          questionId: variables.questionId,
+          answerKey,
+          perspectiveMatches: json.similarities,
+          corpusMatches: json.corpus_matches,
+        })
       }
 
-      return json
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error'
-      setError(message)
-      return null
-    } finally {
-      setSubmitting(false)
-    }
-  }
+      queryClient.invalidateQueries({ queryKey: ['hard-question', 'today'] })
+      queryClient.invalidateQueries({ queryKey: ['hard-question', 'archive'] })
+      queryClient.invalidateQueries({ queryKey: ['hard-question', 'fingerprint'] })
+      queryClient.invalidateQueries({ queryKey: ['hard-question', 'practice'] })
+    },
+    onError: (mutationError) => {
+      setError(mutationError instanceof Error ? mutationError.message : 'Unknown error')
+    },
+  })
 
-  return { submitAnswer, submitting, result, error, setResult }
+  const submitAnswer = useCallback(
+    async (
+      questionId: string,
+      answerText: string,
+      submitOptions?: SubmitAnswerOptions
+    ) => {
+      setError(null)
+
+      try {
+        return await mutation.mutateAsync({
+          questionId,
+          answerText,
+          practiceMode: submitOptions?.practiceMode ?? false,
+        })
+      } catch {
+        return null
+      }
+    },
+    [mutation]
+  )
+
+  const clearResult = useCallback(() => {
+    setResult(null)
+    setError(null)
+  }, [])
+
+  return {
+    submitAnswer,
+    submitting: mutation.isPending,
+    result,
+    error,
+    setResult,
+    clearResult,
+  }
 }

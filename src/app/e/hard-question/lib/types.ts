@@ -19,6 +19,12 @@ export type PhilosophySchool =
 export type QuestionDifficulty = 'beginner' | 'intermediate' | 'advanced'
 export type SubscriptionTier = 'free' | 'paid'
 
+export interface PracticeStatus {
+  available: boolean
+  remaining: 0 | 1
+  used_question_id: string | null
+}
+
 export interface Question {
   id: string
   question_text: string
@@ -37,7 +43,7 @@ export interface PhilosopherPerspective {
   school: PhilosophySchool
   perspective_text: string
   summary: string | null
-  source?: string
+  source?: string | null
   sort_order: number
 }
 
@@ -75,19 +81,26 @@ export interface UserFavorite {
   created_at: string
 }
 
-/** API response: today's question */
+/** API response: today's question or a selected archive question */
 export interface TodayResponse {
   question: Question | null
   has_answered: boolean
   answer_id: string | null
   day_number: number
+  tier: SubscriptionTier
+  is_today: boolean
+  practice: PracticeStatus | null
 }
 
 /** API response: answer submission */
 export interface AnswerResponse {
-  answer_id: string
+  answer_id: string | null
   similarities: PerspectiveMatch[]
-  corpus_matches?: CorpusMatch[]
+  corpus_matches: CorpusMatch[]
+  saved: boolean
+  tier: SubscriptionTier
+  practice_mode: boolean
+  ranked: boolean
 }
 
 /** A corpus match from the full philosopher library */
@@ -108,14 +121,41 @@ export interface PerspectiveMatch {
   school: PhilosophySchool
   perspective_text: string
   summary: string | null
-  source?: string
+  source?: string | null
   similarity: number
+}
+
+/** API response: previous reveal payload for answered questions */
+export interface PreviousResultResponse {
+  perspectives: PerspectiveMatch[]
+  corpus_matches: CorpusMatch[]
+  tier: SubscriptionTier
+  total_count: number
 }
 
 /** API response: fingerprint data */
 export interface FingerprintResponse {
   fingerprint: PhilosophicalFingerprint[]
   total_answers: number
+}
+
+/** API response: archive listing */
+export interface ArchiveQuestion {
+  id: string
+  question_text: string
+  category: string
+  difficulty: string
+  published_date: string
+  has_answered: boolean
+}
+
+export interface ArchiveResponse {
+  questions: ArchiveQuestion[]
+  page: number
+  per_page: number
+  total: number
+  total_pages: number
+  practice: PracticeStatus | null
 }
 
 /** Seed data format for a question with perspectives */

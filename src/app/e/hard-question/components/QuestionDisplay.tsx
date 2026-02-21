@@ -1,5 +1,7 @@
 'use client'
 
+import { HQ_HELPER_TEXT_SOFT } from '../lib/ui-colors'
+
 interface QuestionDisplayProps {
   questionText: string
   dayNumber: number
@@ -13,7 +15,7 @@ export function QuestionDisplay({ questionText, dayNumber }: QuestionDisplayProp
         className="absolute top-6 right-4 text-xs tracking-wider"
         style={{
           fontFamily: 'var(--font-mono)',
-          color: 'var(--muted)',
+          color: HQ_HELPER_TEXT_SOFT,
         }}
       >
         Day {dayNumber}
@@ -45,6 +47,12 @@ export function QuestionDisplay({ questionText, dayNumber }: QuestionDisplayProp
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .question-fade-in {
+            animation: none;
           }
         }
       `}</style>

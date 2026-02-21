@@ -1,57 +1,32 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import type { CSSProperties } from 'react'
 import type { PerspectiveMatch } from '../lib/types'
+import { HQ_HELPER_TEXT, HQ_HELPER_TEXT_SOFT } from '../lib/ui-colors'
 import { SchoolTag } from './SchoolTag'
 import { getSchoolDescription } from '../lib/school-colors'
 
 interface PhilosopherCardProps {
-  match: PerspectiveMatch & { source?: string }
+  match: PerspectiveMatch & { source?: string | null }
   index: number
   isTopMatch: boolean
 }
 
 export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardProps) {
-  const [animatedPct, setAnimatedPct] = useState(0)
-  const [barWidth, setBarWidth] = useState(0)
-  const [visible, setVisible] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
-
   const targetPct = Math.round(match.similarity * 100)
+  const barScale = Math.max(0, Math.min(1, match.similarity)).toFixed(3)
 
-  // Trigger visibility after stagger delay
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), index * 150)
-    return () => clearTimeout(timer)
-  }, [index])
-
-  // Animate percentage counter and bar
-  useEffect(() => {
-    if (!visible) return
-    const duration = 800
-    const startTime = performance.now()
-
-    function animate(now: number) {
-      const elapsed = now - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setAnimatedPct(Math.round(eased * targetPct))
-      setBarWidth(eased * targetPct)
-      if (progress < 1) requestAnimationFrame(animate)
-    }
-
-    requestAnimationFrame(animate)
-  }, [visible, targetPct])
+  const animatedStyle = {
+    '--entry-delay': `${index * 120}ms`,
+    '--bar-delay': `${index * 120 + 180}ms`,
+    '--bar-scale': barScale,
+  } as CSSProperties
 
   return (
     <div
-      ref={cardRef}
       className="philosopher-card"
       style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(12px)',
-        transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+        ...animatedStyle,
         backgroundColor: '#161619',
         border: `1px solid ${isTopMatch ? 'var(--border-hover)' : 'var(--border)'}`,
         padding: '1.25rem 1.5rem',
@@ -76,8 +51,7 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
             className="mt-1 text-[11px]"
             style={{
               fontFamily: 'var(--font-body)',
-              color: 'var(--muted)',
-              opacity: 0.7,
+              color: HQ_HELPER_TEXT,
             }}
           >
             {getSchoolDescription(match.school)}
@@ -92,7 +66,7 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
           fontFamily: 'var(--font-body)',
           fontStyle: 'italic',
           color: 'var(--fg)',
-          opacity: 0.85,
+          opacity: 0.88,
           fontSize: '0.95rem',
         }}
       >
@@ -105,10 +79,10 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
           className="mb-4 text-xs"
           style={{
             fontFamily: 'var(--font-mono)',
-            color: 'var(--muted)',
+            color: HQ_HELPER_TEXT_SOFT,
           }}
         >
-          - {match.source}
+          — {match.source}
         </p>
       )}
 
@@ -119,10 +93,10 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
             className="text-xs"
             style={{
               fontFamily: 'var(--font-mono)',
-              color: 'var(--muted)',
+              color: HQ_HELPER_TEXT,
             }}
           >
-            Alignment
+            Alignment estimate
           </span>
           <span
             className="text-sm font-medium"
@@ -131,23 +105,59 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
               color: 'var(--fg)',
             }}
           >
-            {animatedPct}%
+            {targetPct}%
           </span>
         </div>
-        <div
-          className="h-1.5 w-full"
-          style={{ backgroundColor: 'var(--border)' }}
-        >
+        <div className="h-1.5 w-full" style={{ backgroundColor: 'var(--border)' }}>
           <div
-            className="h-full transition-none"
+            className="alignment-fill h-full"
             style={{
-              width: `${barWidth}%`,
               backgroundColor: 'var(--fg)',
               opacity: 0.7,
             }}
           />
         </div>
       </div>
+
+      <style jsx>{`
+        .philosopher-card {
+          opacity: 0;
+          transform: translateY(10px);
+          animation: card-enter 0.5s ease-out var(--entry-delay) forwards;
+        }
+
+        .alignment-fill {
+          transform-origin: left center;
+          transform: scaleX(0);
+          animation: fill-bar 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--bar-delay) forwards;
+        }
+
+        @keyframes card-enter {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fill-bar {
+          to {
+            transform: scaleX(var(--bar-scale));
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .philosopher-card {
+            animation: none;
+            opacity: 1;
+            transform: none;
+          }
+
+          .alignment-fill {
+            animation: none;
+            transform: scaleX(var(--bar-scale));
+          }
+        }
+      `}</style>
     </div>
   )
 }

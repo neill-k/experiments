@@ -1,16 +1,23 @@
 'use client'
 
 import type { PerspectiveMatch } from '../lib/types'
+import { HQ_HELPER_TEXT, HQ_HELPER_TEXT_SOFT } from '../lib/ui-colors'
 import { PhilosopherCard } from './PhilosopherCard'
 import { ShareResult } from './ShareResult'
 
 interface PhilosopherRevealProps {
-  matches: (PerspectiveMatch & { source?: string })[]
+  matches: (PerspectiveMatch & { source?: string | null })[]
   visible: boolean
   dayNumber?: number
+  practiceMode?: boolean
 }
 
-export function PhilosopherReveal({ matches, visible, dayNumber }: PhilosopherRevealProps) {
+export function PhilosopherReveal({
+  matches,
+  visible,
+  dayNumber,
+  practiceMode = false,
+}: PhilosopherRevealProps) {
   if (!visible || matches.length === 0) return null
 
   const topMatch = matches[0]
@@ -20,22 +27,27 @@ export function PhilosopherReveal({ matches, visible, dayNumber }: PhilosopherRe
       <div className="max-w-3xl">
         {/* Header */}
         <h2
-          className="reveal-header mb-8"
+          className="reveal-header"
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
+            fontSize: 'clamp(1.5rem, 4vw, 2.35rem)',
             color: 'var(--fg)',
             fontWeight: 400,
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(12px)',
-            transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
           }}
         >
-          You think like{' '}
-          <span style={{ color: 'var(--fg)', opacity: 1 }}>
-            {topMatch.philosopher_name}
-          </span>
+          Closest alignment: <span>{topMatch.philosopher_name}</span>
         </h2>
+
+        <p
+          className="mt-2 mb-7 text-sm leading-relaxed"
+          style={{
+            fontFamily: 'var(--font-body)',
+            color: HQ_HELPER_TEXT,
+          }}
+        >
+          This is a probabilistic semantic match, not an identity label.
+          {practiceMode ? ' Practice runs are unranked and excluded from long-term fingerprinting.' : ''}
+        </p>
 
         {/* Cards */}
         <div className="flex flex-col gap-4">
@@ -51,14 +63,7 @@ export function PhilosopherReveal({ matches, visible, dayNumber }: PhilosopherRe
 
         {/* Share button */}
         {dayNumber != null && (
-          <div
-            className="mt-6"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? 'translateY(0)' : 'translateY(8px)',
-              transition: 'opacity 0.5s ease-out 0.8s, transform 0.5s ease-out 0.8s',
-            }}
-          >
+          <div className="mt-6" style={{ color: HQ_HELPER_TEXT_SOFT }}>
             <ShareResult matches={matches} dayNumber={dayNumber} />
           </div>
         )}

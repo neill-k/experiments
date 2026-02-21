@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import type { CSSProperties } from 'react'
 import type { CorpusMatch } from '../lib/types'
+import { HQ_HELPER_TEXT, HQ_HELPER_TEXT_SOFT } from '../lib/ui-colors'
 import { SchoolTag } from './SchoolTag'
 
 interface CorpusRevealProps {
@@ -10,46 +11,26 @@ interface CorpusRevealProps {
 }
 
 function CorpusCard({ match, index }: { match: CorpusMatch; index: number }) {
-  const [visible, setVisible] = useState(false)
-  const [animatedPct, setAnimatedPct] = useState(0)
-  const [barWidth, setBarWidth] = useState(0)
-
   const targetPct = Math.round(match.similarity * 100)
+  const barScale = Math.max(0, Math.min(1, match.similarity)).toFixed(3)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), index * 150 + 300)
-    return () => clearTimeout(timer)
-  }, [index])
+  const animationStyle = {
+    '--entry-delay': `${index * 120 + 180}ms`,
+    '--bar-delay': `${index * 120 + 360}ms`,
+    '--bar-scale': barScale,
+  } as CSSProperties
 
-  useEffect(() => {
-    if (!visible) return
-    const duration = 800
-    const startTime = performance.now()
-
-    function animate(now: number) {
-      const elapsed = now - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setAnimatedPct(Math.round(eased * targetPct))
-      setBarWidth(eased * targetPct)
-      if (progress < 1) requestAnimationFrame(animate)
-    }
-
-    requestAnimationFrame(animate)
-  }, [visible, targetPct])
-
-  // Truncate passage for display (show first ~200 chars)
+  // Truncate passage for display.
   const truncated =
     match.passage_text.length > 300
-      ? match.passage_text.slice(0, 280).replace(/\s+\S*$/, '') + '...'
+      ? `${match.passage_text.slice(0, 280).replace(/\s+\S*$/, '')}...`
       : match.passage_text
 
   return (
     <div
+      className="corpus-card"
       style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(12px)',
-        transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+        ...animationStyle,
         backgroundColor: '#111114',
         border: '1px solid var(--border)',
         padding: '1rem 1.25rem',
@@ -76,7 +57,7 @@ function CorpusCard({ match, index }: { match: CorpusMatch; index: number }) {
           fontFamily: 'var(--font-body)',
           fontStyle: 'italic',
           color: 'var(--fg)',
-          opacity: 0.8,
+          opacity: 0.84,
           fontSize: '0.875rem',
         }}
       >
@@ -88,7 +69,7 @@ function CorpusCard({ match, index }: { match: CorpusMatch; index: number }) {
         className="mb-3 text-xs"
         style={{
           fontFamily: 'var(--font-mono)',
-          color: 'var(--muted)',
+          color: HQ_HELPER_TEXT_SOFT,
         }}
       >
         {match.work}
@@ -100,28 +81,67 @@ function CorpusCard({ match, index }: { match: CorpusMatch; index: number }) {
         <div className="mb-1 flex items-center justify-between">
           <span
             className="text-xs"
-            style={{ fontFamily: 'var(--font-mono)', color: 'var(--muted)' }}
+            style={{ fontFamily: 'var(--font-mono)', color: HQ_HELPER_TEXT }}
           >
-            Resonance
+            Resonance estimate
           </span>
           <span
             className="text-xs font-medium"
             style={{ fontFamily: 'var(--font-mono)', color: 'var(--fg)' }}
           >
-            {animatedPct}%
+            {targetPct}%
           </span>
         </div>
         <div className="h-1 w-full" style={{ backgroundColor: 'var(--border)' }}>
           <div
-            className="h-full transition-none"
+            className="corpus-fill h-full"
             style={{
-              width: `${barWidth}%`,
               backgroundColor: 'var(--fg)',
-              opacity: 0.5,
+              opacity: 0.55,
             }}
           />
         </div>
       </div>
+
+      <style jsx>{`
+        .corpus-card {
+          opacity: 0;
+          transform: translateY(10px);
+          animation: card-enter 0.5s ease-out var(--entry-delay) forwards;
+        }
+
+        .corpus-fill {
+          transform-origin: left center;
+          transform: scaleX(0);
+          animation: fill-bar 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--bar-delay) forwards;
+        }
+
+        @keyframes card-enter {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fill-bar {
+          to {
+            transform: scaleX(var(--bar-scale));
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .corpus-card {
+            animation: none;
+            opacity: 1;
+            transform: none;
+          }
+
+          .corpus-fill {
+            animation: none;
+            transform: scaleX(var(--bar-scale));
+          }
+        }
+      `}</style>
     </div>
   )
 }
@@ -136,19 +156,12 @@ export function CorpusReveal({ matches, visible }: CorpusRevealProps) {
     <div className="px-4 py-6">
       <div className="max-w-3xl">
         {/* Section header */}
-        <div
-          className="mb-6"
-          style={{
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(12px)',
-            transition: 'opacity 0.6s ease-out 0.2s, transform 0.6s ease-out 0.2s',
-          }}
-        >
+        <div className="mb-6">
           <h3
             className="mb-1 text-xs uppercase tracking-widest"
             style={{
               fontFamily: 'var(--font-mono)',
-              color: 'var(--muted)',
+              color: HQ_HELPER_TEXT_SOFT,
               letterSpacing: '0.15em',
             }}
           >
@@ -158,10 +171,10 @@ export function CorpusReveal({ matches, visible }: CorpusRevealProps) {
             className="text-sm"
             style={{
               fontFamily: 'var(--font-body)',
-              color: 'var(--muted)',
+              color: HQ_HELPER_TEXT,
             }}
           >
-            Your answer matched these passages across 5,000+ excerpts from 20 philosophers.
+            Additional probabilistic resonance across 5,000+ passages from 20 philosophers.
           </p>
         </div>
 

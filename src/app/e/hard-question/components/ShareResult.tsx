@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import type { PerspectiveMatch } from '../lib/types'
+import { HQ_HELPER_TEXT_SOFT } from '../lib/ui-colors'
 
 interface ShareResultProps {
   matches: PerspectiveMatch[]
@@ -14,7 +15,7 @@ export function ShareResult({ matches, dayNumber }: ShareResultProps) {
   const topMatch = matches[0]
   if (!topMatch) return null
 
-  const shareText = `Day ${dayNumber} - I think like ${topMatch.philosopher_name} (${Math.round(topMatch.similarity * 100)}% alignment). What about you?`
+  const shareText = `Day ${dayNumber} — my answer aligned most with ${topMatch.philosopher_name} (${Math.round(topMatch.similarity * 100)}% semantic match). What did you get?`
   const shareUrl = 'https://experiments.neillkillgore.com/e/hard-question'
 
   const handleShare = useCallback(async () => {
@@ -49,7 +50,7 @@ export function ShareResult({ matches, dayNumber }: ShareResultProps) {
       className="share-result-btn inline-flex items-center gap-2 px-4 py-2 text-xs tracking-wide transition-all"
       style={{
         fontFamily: 'var(--font-mono)',
-        color: copied ? 'var(--fg)' : 'var(--muted)',
+        color: copied ? 'var(--fg)' : HQ_HELPER_TEXT_SOFT,
         backgroundColor: 'transparent',
         border: `1px solid ${copied ? 'var(--border-hover)' : 'var(--border)'}`,
       }}

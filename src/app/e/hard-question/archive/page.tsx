@@ -1,30 +1,15 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
 import { ExperimentNav } from '@/components/ExperimentNav'
-import { fetchWithAuth } from '../lib/fetch-with-auth'
-
-interface ArchiveQuestion {
-  id: string
-  question_text: string
-  category: string
-  difficulty: string
-  published_date: string
-  has_answered: boolean
-}
-
-interface ArchiveResponse {
-  questions: ArchiveQuestion[]
-  page: number
-  per_page: number
-  total: number
-  total_pages: number
-}
+import { useAuth } from '@/hooks/useAuth'
+import { useArchive } from '../hooks/useArchive'
+import { getSessionPracticeStatus } from '../lib/session-fingerprint-store'
+import { HQ_HELPER_TEXT, HQ_HELPER_TEXT_SOFT, HQ_HELPER_TEXT_SUBTLE } from '../lib/ui-colors'
 
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr + 'T00:00:00Z')
+  const date = new Date(`${dateStr}T00:00:00Z`)
   return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -35,21 +20,25 @@ function formatDate(dateStr: string): string {
 
 export default function ArchivePage() {
   const { userId, loading: authLoading } = useAuth()
-  const [data, setData] = useState<ArchiveResponse | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [showAnsweredOnly, setShowAnsweredOnly] = useState(false)
+  const [sessionPractice, setSessionPractice] = useState(() => getSessionPracticeStatus())
 
-  // Extract unique categories from loaded questions
+  const { data, loading, error } = useArchive(page, 20)
+
+  useEffect(() => {
+    setSessionPractice(getSessionPracticeStatus())
+  }, [page])
+
+  // Extract unique categories from loaded questions.
   const categories = useMemo(() => {
     if (!data?.questions) return []
     const cats = new Set(data.questions.map((q) => q.category).filter(Boolean))
     return Array.from(cats).sort()
   }, [data])
 
-  // Filter questions by selected category and answered status (client-side within the current page)
+  // Filter questions by selected category and answered status (client-side within current page).
   const filteredQuestions = useMemo(() => {
     if (!data?.questions) return []
 
@@ -60,38 +49,18 @@ export default function ArchivePage() {
     })
   }, [data, activeCategory, showAnsweredOnly])
 
-  const fetchArchive = useCallback(async (p: number) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetchWithAuth(
-        `/api/hard-question/archive?page=${p}&per_page=20`
-      )
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error || 'Failed to load archive')
-      }
-      const json: ArchiveResponse = await res.json()
-      setData(json)
-      setPage(p)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const practiceAvailable = userId
+    ? (data?.practice?.available ?? true)
+    : sessionPractice.available
 
-  useEffect(() => {
-    if (!authLoading) {
-      fetchArchive(1)
-    }
-  }, [authLoading, fetchArchive])
+  const practiceUsedQuestionId = userId
+    ? (data?.practice?.used_question_id ?? null)
+    : sessionPractice.used_question_id
 
-  // Reset filters when changing pages (categories and answered status may differ)
-  function handlePageChange(p: number) {
+  function handlePageChange(nextPage: number) {
     setActiveCategory(null)
     setShowAnsweredOnly(false)
-    fetchArchive(p)
+    setPage(nextPage)
   }
 
   return (
@@ -102,10 +71,10 @@ export default function ArchivePage() {
         className="mb-8 inline-block text-xs transition-colors"
         style={{
           fontFamily: 'var(--font-mono)',
-          color: 'var(--muted)',
+          color: HQ_HELPER_TEXT_SOFT,
         }}
       >
-        &larr; Back to today&apos;s question
+        &larr; Back to questions
       </Link>
 
       {/* Header */}
@@ -121,17 +90,31 @@ export default function ArchivePage() {
       </h1>
 
       <p
-        className="mb-6 text-sm"
+        className="mb-2 text-sm"
         style={{
           fontFamily: 'var(--font-mono)',
-          color: 'var(--muted)',
+          color: HQ_HELPER_TEXT,
         }}
       >
         {data ? `${data.total} past question${data.total !== 1 ? 's' : ''}` : 'Loading...'}
       </p>
 
+      <p
+        className="mb-6 text-xs leading-relaxed"
+        style={{
+          fontFamily: 'var(--font-body)',
+          color: practiceAvailable ? HQ_HELPER_TEXT_SOFT : HQ_HELPER_TEXT,
+        }}
+      >
+        {practiceAvailable
+          ? 'Practice Mode unlocks one extra unranked archive question per day.'
+          : practiceUsedQuestionId
+            ? 'Practice Mode already used today. Ranked history is still reviewable.'
+            : 'Practice Mode already used in this session. Come back tomorrow for another run.'}
+      </p>
+
       {/* Filters */}
-      {!loading && (categories.length > 1 || userId) && (
+      {!loading && !authLoading && (categories.length > 1 || userId) && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
           {categories.length > 1 && (
             <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
@@ -140,9 +123,9 @@ export default function ArchivePage() {
                 className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: !activeCategory ? 'var(--fg)' : 'rgba(255, 255, 255, 0.25)',
-                  border: `1px solid ${!activeCategory ? 'rgba(255, 255, 255, 0.2)' : 'var(--border)'}`,
-                  backgroundColor: !activeCategory ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                  color: !activeCategory ? 'var(--fg)' : HQ_HELPER_TEXT_SUBTLE,
+                  border: `1px solid ${!activeCategory ? 'rgba(255, 255, 255, 0.28)' : 'var(--border)'}`,
+                  backgroundColor: !activeCategory ? 'rgba(255, 255, 255, 0.06)' : 'transparent',
                 }}
               >
                 All
@@ -157,9 +140,9 @@ export default function ArchivePage() {
                     className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
                     style={{
                       fontFamily: 'var(--font-mono)',
-                      color: isActive ? 'var(--fg)' : 'rgba(255, 255, 255, 0.25)',
-                      border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.2)' : 'var(--border)'}`,
-                      backgroundColor: isActive ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                      color: isActive ? 'var(--fg)' : HQ_HELPER_TEXT_SUBTLE,
+                      border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.28)' : 'var(--border)'}`,
+                      backgroundColor: isActive ? 'rgba(255, 255, 255, 0.06)' : 'transparent',
                     }}
                   >
                     {cat}
@@ -167,7 +150,7 @@ export default function ArchivePage() {
                       className="ml-1.5"
                       style={{
                         fontSize: '9px',
-                        opacity: 0.6,
+                        color: HQ_HELPER_TEXT_SUBTLE,
                       }}
                     >
                       {count}
@@ -184,9 +167,9 @@ export default function ArchivePage() {
               className="px-2.5 py-1 text-[10px] uppercase tracking-widest transition-colors"
               style={{
                 fontFamily: 'var(--font-mono)',
-                color: showAnsweredOnly ? 'rgba(120, 200, 140, 0.85)' : 'rgba(255, 255, 255, 0.25)',
-                border: `1px solid ${showAnsweredOnly ? 'rgba(120, 200, 140, 0.5)' : 'var(--border)'}`,
-                backgroundColor: showAnsweredOnly ? 'rgba(120, 200, 140, 0.08)' : 'transparent',
+                color: showAnsweredOnly ? 'rgba(155, 224, 170, 0.95)' : HQ_HELPER_TEXT_SUBTLE,
+                border: `1px solid ${showAnsweredOnly ? 'rgba(155, 224, 170, 0.5)' : 'var(--border)'}`,
+                backgroundColor: showAnsweredOnly ? 'rgba(120, 200, 140, 0.1)' : 'transparent',
               }}
               aria-pressed={showAnsweredOnly}
               title="Show only questions you've answered"
@@ -202,7 +185,7 @@ export default function ArchivePage() {
         <div className="mb-6">
           <p
             className="text-sm"
-            style={{ fontFamily: 'var(--font-mono)', color: '#C47878' }}
+            style={{ fontFamily: 'var(--font-mono)', color: '#D08E8E' }}
           >
             {error}
           </p>
@@ -210,7 +193,7 @@ export default function ArchivePage() {
       )}
 
       {/* Loading skeleton */}
-      {loading && (
+      {(loading || authLoading) && (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <div
@@ -223,11 +206,11 @@ export default function ArchivePage() {
             >
               <div
                 className="mb-2 h-5 w-3/4"
-                style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
               />
               <div
                 className="h-3 w-1/4"
-                style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
               />
             </div>
           ))}
@@ -235,104 +218,151 @@ export default function ArchivePage() {
       )}
 
       {/* Question list */}
-      {!loading && data && filteredQuestions.length > 0 && (
+      {!loading && !authLoading && data && filteredQuestions.length > 0 && (
         <>
           <div className="space-y-2">
-            {filteredQuestions.map((q) => (
-              <div
-                key={q.id}
-                className="group p-4 transition-colors"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid var(--border)',
-                }}
-              >
-                <div className="flex items-start gap-3">
-                  {/* Answered indicator */}
-                  <div className="mt-1 shrink-0">
-                    {q.has_answered ? (
-                      <span
-                        title="You answered this one"
-                        className="inline-block h-2 w-2"
-                        style={{
-                          backgroundColor: 'rgba(120, 200, 140, 0.7)',
-                          borderRadius: '1px',
-                        }}
-                      />
-                    ) : (
-                      <span
-                        className="inline-block h-2 w-2"
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                          borderRadius: '1px',
-                        }}
-                      />
-                    )}
-                  </div>
+            {filteredQuestions.map((q) => {
+              const practiceLocked = !q.has_answered && !practiceAvailable
+              const ctaHref = q.has_answered
+                ? `/e/hard-question?question=${q.id}`
+                : `/e/hard-question?question=${q.id}&mode=practice`
 
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className="text-sm leading-snug"
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        color: 'var(--fg)',
-                        fontSize: '1rem',
-                      }}
-                    >
-                      {q.question_text}
-                    </p>
-                    <div className="mt-2 flex items-center gap-3 flex-wrap">
-                      <span
-                        className="text-[11px]"
-                        style={{
-                          fontFamily: 'var(--font-mono)',
-                          color: 'var(--muted)',
-                        }}
-                      >
-                        {formatDate(q.published_date)}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setActiveCategory(
-                            activeCategory === q.category ? null : q.category
-                          )
-                        }}
-                        className="text-[10px] uppercase tracking-widest transition-colors hover:text-white/40"
-                        style={{
-                          fontFamily: 'var(--font-mono)',
-                          color:
-                            activeCategory === q.category
-                              ? 'rgba(255, 255, 255, 0.5)'
-                              : 'rgba(255, 255, 255, 0.2)',
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          cursor: 'pointer',
-                        }}
-                        title={`Filter by ${q.category}`}
-                      >
-                        {q.category}
-                      </button>
-                      {q.difficulty && (
+              return (
+                <div
+                  key={q.id}
+                  className="group border p-4"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    borderColor: 'var(--border)',
+                  }}
+                >
+                  <div className="flex items-start gap-3">
+                    {/* Answered indicator */}
+                    <div className="mt-1 shrink-0">
+                      {q.has_answered ? (
                         <span
-                          className="px-1.5 py-0.5 text-[9px] uppercase tracking-widest"
+                          title="You answered this one"
+                          className="inline-block h-2 w-2"
+                          style={{
+                            backgroundColor: 'rgba(120, 200, 140, 0.78)',
+                          }}
+                        />
+                      ) : (
+                        <span
+                          className="inline-block h-2 w-2"
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.16)',
+                          }}
+                        />
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className="text-sm leading-snug"
+                        style={{
+                          fontFamily: 'var(--font-display)',
+                          color: 'var(--fg)',
+                          fontSize: '1rem',
+                        }}
+                      >
+                        {q.question_text}
+                      </p>
+                      <div className="mt-2 flex flex-wrap items-center gap-3">
+                        <span
+                          className="text-[11px]"
                           style={{
                             fontFamily: 'var(--font-mono)',
-                            color: 'rgba(255, 255, 255, 0.35)',
-                            border: '1px solid rgba(255, 255, 255, 0.12)',
-                            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                            color: HQ_HELPER_TEXT_SOFT,
                           }}
-                          title="Question difficulty"
                         >
-                          {q.difficulty}
+                          {formatDate(q.published_date)}
                         </span>
-                      )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setActiveCategory(
+                              activeCategory === q.category ? null : q.category
+                            )
+                          }}
+                          className="text-[10px] uppercase tracking-widest transition-colors hover:text-white/80"
+                          style={{
+                            fontFamily: 'var(--font-mono)',
+                            color:
+                              activeCategory === q.category
+                                ? HQ_HELPER_TEXT
+                                : HQ_HELPER_TEXT_SUBTLE,
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            cursor: 'pointer',
+                          }}
+                          title={`Filter by ${q.category}`}
+                        >
+                          {q.category}
+                        </button>
+                        {q.difficulty && (
+                          <span
+                            className="border px-1.5 py-0.5 text-[9px] uppercase tracking-widest"
+                            style={{
+                              fontFamily: 'var(--font-mono)',
+                              color: HQ_HELPER_TEXT_SUBTLE,
+                              borderColor: 'rgba(255, 255, 255, 0.2)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                            }}
+                            title="Question difficulty"
+                          >
+                            {q.difficulty}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {q.has_answered ? (
+                          <Link
+                            href={ctaHref}
+                            className="border px-3 py-1.5 text-[11px] uppercase tracking-widest transition-colors"
+                            style={{
+                              fontFamily: 'var(--font-mono)',
+                              color: 'var(--fg)',
+                              borderColor: 'var(--border)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                            }}
+                          >
+                            Review your reveal
+                          </Link>
+                        ) : practiceLocked ? (
+                          <span
+                            className="border px-3 py-1.5 text-[11px] uppercase tracking-widest"
+                            style={{
+                              fontFamily: 'var(--font-mono)',
+                              color: HQ_HELPER_TEXT_SUBTLE,
+                              borderColor: 'var(--border)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                            }}
+                          >
+                            Practice used today
+                          </span>
+                        ) : (
+                          <Link
+                            href={ctaHref}
+                            className="border px-3 py-1.5 text-[11px] uppercase tracking-widest transition-colors"
+                            style={{
+                              fontFamily: 'var(--font-mono)',
+                              color: 'var(--fg)',
+                              borderColor: 'var(--border-hover)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                            }}
+                          >
+                            Play in Practice Mode
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* Filtered count hint */}
@@ -341,7 +371,7 @@ export default function ArchivePage() {
               className="mt-3 text-[11px]"
               style={{
                 fontFamily: 'var(--font-mono)',
-                color: 'rgba(255, 255, 255, 0.2)',
+                color: HQ_HELPER_TEXT_SUBTLE,
               }}
             >
               Showing {filteredQuestions.length} of {data.questions.length} on this page
@@ -354,10 +384,10 @@ export default function ArchivePage() {
               <button
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page <= 1}
-                className="text-xs transition-colors disabled:opacity-20"
+                className="text-xs transition-colors disabled:opacity-35"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: 'var(--muted)',
+                  color: HQ_HELPER_TEXT_SOFT,
                   cursor: page <= 1 ? 'default' : 'pointer',
                 }}
               >
@@ -367,7 +397,7 @@ export default function ArchivePage() {
                 className="text-[11px]"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: 'rgba(255, 255, 255, 0.2)',
+                  color: HQ_HELPER_TEXT_SUBTLE,
                 }}
               >
                 {page} / {data.total_pages}
@@ -375,10 +405,10 @@ export default function ArchivePage() {
               <button
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page >= data.total_pages}
-                className="text-xs transition-colors disabled:opacity-20"
+                className="text-xs transition-colors disabled:opacity-35"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  color: 'var(--muted)',
+                  color: HQ_HELPER_TEXT_SOFT,
                   cursor: page >= data.total_pages ? 'default' : 'pointer',
                 }}
               >
@@ -390,11 +420,11 @@ export default function ArchivePage() {
       )}
 
       {/* Empty state */}
-      {!loading && data && filteredQuestions.length === 0 && (
+      {!loading && !authLoading && data && filteredQuestions.length === 0 && (
         <div className="py-12 text-center">
           <p
             className="text-sm"
-            style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}
+            style={{ fontFamily: 'var(--font-body)', color: HQ_HELPER_TEXT }}
           >
             {activeCategory
               ? `No questions in "${activeCategory}" on this page.`
@@ -411,7 +441,7 @@ export default function ArchivePage() {
               className="mt-3 text-xs transition-colors"
               style={{
                 fontFamily: 'var(--font-mono)',
-                color: 'var(--muted)',
+                color: HQ_HELPER_TEXT_SOFT,
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
