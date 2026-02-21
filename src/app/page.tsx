@@ -124,7 +124,7 @@ export default async function Home({
                   key={exp.slug}
                   href={`/e/${exp.slug}`}
                   aria-label={`Open ${exp.title}, published ${exp.date}`}
-                  className="group block border border-[var(--border)] bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors animate-fade-in-up"
+                  className="group block border border-[var(--border)] bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors animate-fade-in-up focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                   style={{
                     animationDelay: `${i * 60}ms`,
                     borderTopColor: exp.accent ?? 'var(--border)',
@@ -176,7 +176,7 @@ export default async function Home({
               key={exp.slug}
               href={`/e/${exp.slug}`}
               aria-label={`Open ${exp.title}, published ${exp.date}`}
-              className="experiment-card group block border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5 text-white/80 hover:text-white animate-fade-in-up"
+              className="experiment-card group block border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5 text-white/80 hover:text-white animate-fade-in-up focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               style={{
                 animationDelay: `${i * 80}ms`,
                 borderLeftColor: exp.accent ?? 'var(--border)',
