@@ -121,7 +121,7 @@ export function NavDropdown() {
           </div>
           <div className="border-t border-[var(--border)] px-3 py-2">
             <Link
-              href="/auto-builds"
+              href="/e/auto-builds"
               role="menuitem"
               className="text-[11px] font-[family-name:var(--font-mono)] text-white/40 hover:text-white/70 transition-colors"
             >

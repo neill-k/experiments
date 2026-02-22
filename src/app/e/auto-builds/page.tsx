@@ -82,7 +82,7 @@ export default async function AutoBuildsPage({
               Showing {filtered.length} of {experiments.length} experiments for “{normalizedActiveTag}”.
             </p>
             <Link
-              href="/auto-builds"
+              href="/e/auto-builds"
               aria-label={`Clear ${normalizedActiveTag} filter and show all experiments`}
               className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
@@ -200,7 +200,7 @@ export default async function AutoBuildsPage({
               </p>
               {normalizedActiveTag && (
                 <Link
-                  href="/auto-builds"
+                  href="/e/auto-builds"
                   aria-label={`Clear ${normalizedActiveTag} filter and show all experiments`}
                   className="mt-2 inline-block text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 >

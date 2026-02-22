@@ -71,7 +71,7 @@ export default function Home() {
             Looking for the full nightly run history?
           </p>
           <Link
-            href="/auto-builds"
+            href="/e/auto-builds"
             className="mt-2 inline-block font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-wider text-white/50 hover:text-white/80 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
             Open auto-build archive →
