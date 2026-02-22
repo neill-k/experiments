@@ -53,14 +53,14 @@ export default async function AutoBuildsPage({
       <div className="mx-auto w-full max-w-3xl">
         <header>
           <h1 className="text-4xl sm:text-5xl tracking-tight text-white">
-            Auto-build archive
+            Auto-builds
           </h1>
           <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-white/60 leading-relaxed max-w-xl">
-            Full list of experiments shipped during the nightly auto-build run.
+            All experiments shipped by the nightly build pipeline.
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
             <p className="text-[13px] font-[family-name:var(--font-mono)] text-white/30">
-              {experiments.length} archived experiments.
+              {experiments.length} experiments.
             </p>
             <Link
               href="/"

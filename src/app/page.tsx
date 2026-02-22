@@ -18,7 +18,7 @@ export default function Home() {
             Experiments
           </h1>
           <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-white/60 leading-relaxed max-w-xl">
-            A curated home for experiments and prototypes. The full auto-build run is now archived.
+            A collection of experiments and prototypes.
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
             <p className="text-[13px] font-[family-name:var(--font-mono)] text-white/30">
@@ -66,15 +66,24 @@ export default function Home() {
           </section>
         )}
 
-        <section className="mt-8 border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5">
-          <p className="text-sm font-[family-name:var(--font-body)] text-white/50">
-            Looking for the full nightly run history?
-          </p>
+        <section className="mt-8">
           <Link
             href="/e/auto-builds"
-            className="mt-2 inline-block font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-wider text-white/50 hover:text-white/80 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            className="group block border border-[var(--border)] bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            style={{
+              borderLeftColor: 'rgba(255, 255, 255, 0.12)',
+              borderLeftWidth: '3px',
+            }}
           >
-            Open auto-build archive →
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg leading-none" aria-hidden="true">🤖</span>
+              <span className="text-sm font-[family-name:var(--font-display)] text-white/90 group-hover:text-white transition-colors">
+                Auto-builds
+              </span>
+            </div>
+            <p className="text-xs font-[family-name:var(--font-body)] text-white/40 leading-relaxed">
+              The full list of nightly experiments — tagged and date-sorted.
+            </p>
           </Link>
         </section>
 
