@@ -403,6 +403,7 @@ export default function Home() {
                     >
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                         <input
+                          aria-label={`Tool ${idx + 1} name`}
                           value={tc.name}
                           onChange={(e) => {
                             const updated = [...input.toolContracts];
@@ -414,6 +415,7 @@ export default function Home() {
                         />
                         <button
                           type="button"
+                          aria-label={`Remove tool ${idx + 1}`}
                           className="text-xs text-red-500 hover:text-red-400"
                           onClick={() => {
                             const updated = input.toolContracts.filter(
@@ -427,6 +429,7 @@ export default function Home() {
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
                         <input
+                          aria-label={`Tool ${idx + 1} purpose`}
                           value={tc.purpose}
                           onChange={(e) => {
                             const updated = [...input.toolContracts];
@@ -437,6 +440,7 @@ export default function Home() {
                           className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <input
+                          aria-label={`Tool ${idx + 1} authentication`}
                           value={tc.auth}
                           onChange={(e) => {
                             const updated = [...input.toolContracts];
@@ -447,6 +451,7 @@ export default function Home() {
                           className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <input
+                          aria-label={`Tool ${idx + 1} rate limit`}
                           value={tc.rateLimit}
                           onChange={(e) => {
                             const updated = [...input.toolContracts];
@@ -456,7 +461,7 @@ export default function Home() {
                           placeholder="Rate limit (e.g., 100 req/min)"
                           className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
-                        <div className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
                           <input
                             type="checkbox"
                             checked={tc.idempotent}
@@ -468,10 +473,11 @@ export default function Home() {
                             className="h-4 w-4"
                           />
                           <span className="text-xs text-zinc-400">Idempotent</span>
-                        </div>
+                        </label>
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
                         <textarea
+                          aria-label={`Tool ${idx + 1} inputs`}
                           value={tc.inputs}
                           onChange={(e) => {
                             const updated = [...input.toolContracts];
@@ -483,6 +489,7 @@ export default function Home() {
                           className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <textarea
+                          aria-label={`Tool ${idx + 1} outputs`}
                           value={tc.outputs}
                           onChange={(e) => {
                             const updated = [...input.toolContracts];
@@ -496,6 +503,7 @@ export default function Home() {
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
                         <textarea
+                          aria-label={`Tool ${idx + 1} failure modes`}
                           value={tc.failureModes}
                           onChange={(e) => {
                             const updated = [...input.toolContracts];
@@ -507,6 +515,7 @@ export default function Home() {
                           className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <textarea
+                          aria-label={`Tool ${idx + 1} PII handling`}
                           value={tc.piiHandling}
                           onChange={(e) => {
                             const updated = [...input.toolContracts];
@@ -712,6 +721,7 @@ export default function Home() {
                             #{idx + 1}
                           </span>
                           <select
+                            aria-label={`Case ${idx + 1} category`}
                             value={ec.category}
                             onChange={(e) => {
                               const updated = [...input.evalCases];
@@ -732,6 +742,7 @@ export default function Home() {
                         </div>
                         <button
                           type="button"
+                          aria-label={`Remove case ${idx + 1}`}
                           className="text-xs text-red-500 hover:text-red-400 shrink-0"
                           onClick={() => {
                             const updated = input.evalCases.filter((_, i) => i !== idx);
@@ -743,6 +754,7 @@ export default function Home() {
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
                         <input
+                          aria-label={`Case ${idx + 1} scenario`}
                           value={ec.scenario}
                           onChange={(e) => {
                             const updated = [...input.evalCases];
@@ -753,6 +765,7 @@ export default function Home() {
                           className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <input
+                          aria-label={`Case ${idx + 1} input`}
                           value={ec.input}
                           onChange={(e) => {
                             const updated = [...input.evalCases];
@@ -765,6 +778,7 @@ export default function Home() {
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
                         <input
+                          aria-label={`Case ${idx + 1} expected behavior`}
                           value={ec.expectedBehavior}
                           onChange={(e) => {
                             const updated = [...input.evalCases];
@@ -775,6 +789,7 @@ export default function Home() {
                           className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
                         />
                         <input
+                          aria-label={`Case ${idx + 1} pass criteria`}
                           value={ec.passCriteria}
                           onChange={(e) => {
                             const updated = [...input.evalCases];
