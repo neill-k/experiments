@@ -74,10 +74,10 @@ export function ExperimentNav() {
 
       <div className="flex flex-col items-center gap-1.5">
         <Link
-          href="/"
+          href="/auto-builds"
           className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-white/20 hover:text-white/50 transition-colors"
         >
-          All experiments
+          Auto-build archive
         </Link>
         <a
           href={sourceUrl(currentSlug)}
