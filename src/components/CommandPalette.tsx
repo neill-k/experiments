@@ -99,6 +99,13 @@ export function CommandPalette() {
     }
   }
 
+  const activeId =
+    selectedIndex === filtered.length
+      ? 'option-all'
+      : filtered[selectedIndex]
+      ? `option-${filtered[selectedIndex].slug}`
+      : undefined
+
   return (
     <>
       {/* Trigger hint in the nav bar */}
@@ -149,6 +156,11 @@ export function CommandPalette() {
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            aria-controls="command-palette-results"
+            aria-activedescendant={activeId}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -163,7 +175,11 @@ export function CommandPalette() {
         </div>
 
         {/* Results */}
-        <div className="max-h-[40vh] overflow-y-auto py-1">
+        <div
+          id="command-palette-results"
+          role="listbox"
+          className="max-h-[40vh] overflow-y-auto py-1"
+        >
           {filtered.length === 0 && (
             <div className="px-4 py-6 text-center text-sm font-[family-name:var(--font-body)] text-white/30">
               No experiments match &ldquo;{query}&rdquo;
@@ -172,6 +188,9 @@ export function CommandPalette() {
           {filtered.map((exp, i) => (
             <button
               key={exp.slug}
+              id={`option-${exp.slug}`}
+              role="option"
+              aria-selected={i === selectedIndex}
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
@@ -207,6 +226,9 @@ export function CommandPalette() {
 
           {/* "All experiments" option */}
           <button
+            id="option-all"
+            role="option"
+            aria-selected={selectedIndex === filtered.length}
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
