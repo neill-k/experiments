@@ -27,16 +27,17 @@ export function CommandPalette() {
       })
     : experiments
 
-  // Reset selection when query or open state changes
+  // Scroll selected item into view
   useEffect(() => {
-    setSelectedIndex(0)
-  }, [query])
+    const selectedElement = document.getElementById(`option-${selectedIndex}`)
+    if (selectedElement) {
+      selectedElement.scrollIntoView({ block: 'nearest' })
+    }
+  }, [selectedIndex])
 
   // Focus input when opened
   useEffect(() => {
     if (open) {
-      setQuery('')
-      setSelectedIndex(0)
       // Small delay to ensure the element is mounted
       requestAnimationFrame(() => {
         inputRef.current?.focus()
@@ -44,17 +45,29 @@ export function CommandPalette() {
     }
   }, [open])
 
+  const openPalette = useCallback(() => {
+    setOpen(true)
+    setQuery('')
+    setSelectedIndex(0)
+  }, [])
+
   // Global keyboard shortcut: Cmd+K / Ctrl+K
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
-        setOpen((prev) => !prev)
+        if (open) {
+          setOpen(false)
+        } else {
+          setOpen(true)
+          setQuery('')
+          setSelectedIndex(0)
+        }
       }
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  }, [open])
 
   // Lock body scroll when open
   useEffect(() => {
@@ -103,7 +116,7 @@ export function CommandPalette() {
     <>
       {/* Trigger hint in the nav bar */}
       <button
-        onClick={() => setOpen(true)}
+        onClick={openPalette}
         className="hidden sm:inline-flex items-center gap-1 border border-white/10 px-2 py-0.5 text-[10px] font-[family-name:var(--font-mono)] text-white/20 cursor-pointer hover:text-white/40 hover:border-white/20 transition-colors"
         title="Search experiments"
         aria-label="Search experiments (Cmd+K)"
@@ -149,8 +162,16 @@ export function CommandPalette() {
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={true}
+            aria-controls="experiment-list"
+            aria-activedescendant={`option-${selectedIndex}`}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setSelectedIndex(0)
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Search experiments..."
             className="flex-1 bg-transparent text-sm font-[family-name:var(--font-body)] text-white/90 placeholder:text-white/25 outline-none"
@@ -163,7 +184,11 @@ export function CommandPalette() {
         </div>
 
         {/* Results */}
-        <div className="max-h-[40vh] overflow-y-auto py-1">
+        <div
+          id="experiment-list"
+          role="listbox"
+          className="max-h-[40vh] overflow-y-auto py-1"
+        >
           {filtered.length === 0 && (
             <div className="px-4 py-6 text-center text-sm font-[family-name:var(--font-body)] text-white/30">
               No experiments match &ldquo;{query}&rdquo;
@@ -172,6 +197,9 @@ export function CommandPalette() {
           {filtered.map((exp, i) => (
             <button
               key={exp.slug}
+              id={`option-${i}`}
+              role="option"
+              aria-selected={i === selectedIndex}
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
@@ -207,6 +235,9 @@ export function CommandPalette() {
 
           {/* "All experiments" option */}
           <button
+            id={`option-${filtered.length}`}
+            role="option"
+            aria-selected={selectedIndex === filtered.length}
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
