@@ -325,7 +325,20 @@ export function Comments({ slug }: { slug: string }) {
       ) : null}
 
       <div className="mt-4 space-y-3" aria-live="polite" aria-relevant="additions">
-        {comments.length === 0 ? (
+        {(!experimentId || (refreshing && comments.length === 0)) ? (
+          // Loading skeleton
+          <div className="space-y-3 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="border border-[var(--border)] bg-white/[0.02] p-3">
+                <div className="flex justify-between gap-3">
+                  <div className="h-3 w-24 bg-white/[0.05]" />
+                  <div className="h-3 w-32 bg-white/[0.05]" />
+                </div>
+                <div className="mt-2 h-4 w-3/4 bg-white/[0.05]" />
+              </div>
+            ))}
+          </div>
+        ) : comments.length === 0 ? (
           <div className="text-xs font-[family-name:var(--font-body)] text-white/50">No comments yet.</div>
         ) : (
           <>
@@ -347,6 +360,7 @@ export function Comments({ slug }: { slug: string }) {
                         disabled={deleting === c.id}
                         className="text-white/40 hover:text-red-400 disabled:opacity-40"
                         title="Delete comment"
+                        aria-label="Delete comment"
                       >
                         {deleting === c.id ? '...' : '×'}
                       </button>
@@ -369,7 +383,9 @@ export function Comments({ slug }: { slug: string }) {
       </div>
 
       <div className="mt-4">
+        <label htmlFor="comment-body" className="sr-only">Leave a comment</label>
         <textarea
+          id="comment-body"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
