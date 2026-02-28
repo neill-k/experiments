@@ -10,6 +10,7 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
     <div className="px-3 py-2 border-b" style={{ borderColor: 'var(--border)' }}>
       <input
         type="text"
+        aria-label="Search prompts"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Search\u2026"
