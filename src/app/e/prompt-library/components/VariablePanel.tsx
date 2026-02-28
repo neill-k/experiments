@@ -27,12 +27,14 @@ export function VariablePanel({ variables, values, onChange }: VariablePanelProp
           {variables.map((v) => (
             <div key={v}>
               <label
+                htmlFor={`variable-${v}`}
                 className="text-[11px] block mb-1"
                 style={{ fontFamily: 'var(--font-mono)', color: 'var(--border-hover)' }}
               >
                 {v}
               </label>
               <input
+                id={`variable-${v}`}
                 type="text"
                 value={values[v] || ''}
                 onChange={(e) => onChange({ ...values, [v]: e.target.value })}

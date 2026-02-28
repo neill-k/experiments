@@ -27,6 +27,7 @@ export function NewPromptModal({ onClose, onCreate }: NewPromptModalProps) {
         </h2>
         <input
           type="text"
+          aria-label="Prompt name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => {
