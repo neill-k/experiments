@@ -31,6 +31,18 @@ export function sourceUrl(slug: string): string {
 
 export const experiments: Experiment[] = [
   {
+    slug: 'ono',
+    date: '2026-02-28',
+    title: 'O(no)',
+    description:
+      'Competitive programming where scoring rewards inefficiency, over-engineering, and computational horror. Solutions that work. We\'re so sorry.',
+    tags: ['tools', 'interactive', 'ai'],
+    icon: '⚠️',
+    accent: 'rgba(245, 166, 35, 0.55)',
+    favorite: true,
+    tech: ['Vercel Sandbox', 'Supabase', 'GitHub API', 'Python'],
+  },
+  {
     slug: 'gravity-inbox',
     date: '2026-02-21',
     title: 'Gravity Inbox',
