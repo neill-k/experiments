@@ -165,8 +165,9 @@ export function AccountContent() {
         <div className="mt-4 border border-[var(--border)] bg-black/30 p-3">
           <div className="flex flex-wrap items-end gap-3">
             <div className="min-w-[160px] flex-1">
-              <label className="block text-[11px] font-[family-name:var(--font-body)] text-white/50">Agent name (optional)</label>
+              <label htmlFor="agent-name" className="block text-[11px] font-[family-name:var(--font-body)] text-white/50">Agent name (optional)</label>
               <input
+                id="agent-name"
                 type="text"
                 value={agentLabel}
                 onChange={(e) => setAgentLabel(e.target.value)}

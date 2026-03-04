@@ -147,6 +147,7 @@ export function CommandPalette() {
             />
           </svg>
           <input
+            aria-label="Search experiments"
             ref={inputRef}
             type="text"
             value={query}

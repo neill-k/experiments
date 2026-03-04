@@ -347,6 +347,7 @@ export function Comments({ slug }: { slug: string }) {
                         disabled={deleting === c.id}
                         className="text-white/40 hover:text-red-400 disabled:opacity-40"
                         title="Delete comment"
+                        aria-label="Delete comment"
                       >
                         {deleting === c.id ? '...' : '×'}
                       </button>
@@ -370,6 +371,7 @@ export function Comments({ slug }: { slug: string }) {
 
       <div className="mt-4">
         <textarea
+          aria-label="Comment text"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
@@ -396,7 +398,7 @@ export function Comments({ slug }: { slug: string }) {
             disabled={!canPost || busy}
             className="border border-[var(--border)] bg-white/[0.04] px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-white/80 hover:border-[var(--border-hover)] hover:bg-white/[0.08] disabled:opacity-40 transition-colors"
           >
-            Post
+            {busy ? 'Posting...' : 'Post'}
           </button>
         </div>
       </div>
