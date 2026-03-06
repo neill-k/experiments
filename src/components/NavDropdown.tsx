@@ -57,6 +57,7 @@ export function NavDropdown() {
         aria-haspopup="true"
         className="flex items-center gap-1 text-white/50 hover:text-white/80 transition-colors"
         title="Jump to experiment"
+        aria-label="Toggle experiment navigation menu"
       >
         <svg
           width="12"
