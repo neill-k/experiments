@@ -272,7 +272,7 @@ export default function Home() {
           </div>
 
           {/* Spec Quality Meter */}
-          <div className="mt-4 border border-[var(--border)] bg-white p-3">
+          <div className="mt-4 rounded-lg border border-[var(--border)] bg-white p-3">
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium text-[var(--fg)]">
                 Spec completeness
@@ -545,7 +545,7 @@ export default function Home() {
               hint="Think: compliance, security, rate limits, cost caps, and human-in-the-loop requirements."
             />
 
-            <div className="mt-1 border border-[var(--border)] bg-white p-3">
+            <div className="mt-1 rounded-lg border border-[var(--border)] bg-white p-3">
               <div className="text-sm font-medium text-[var(--fg)]">
                 Cost / latency budget (optional)
               </div>
@@ -900,7 +900,7 @@ export default function Home() {
             </div>
           ) : null}
 
-          <div className="mt-4 border border-[var(--border)] bg-white p-3">
+          <div className="mt-4 rounded-lg border border-[var(--border)] bg-white p-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-sm font-medium text-[var(--fg)]">Spec lint</div>
               <div className="text-xs text-[var(--fg)]/50">
