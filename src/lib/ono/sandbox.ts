@@ -69,7 +69,7 @@ if fn is None:
     sys.exit(1)
 
 # Test cases
-test_cases = ${JSON.stringify(testCases)}
+test_cases = json.loads(${JSON.stringify(JSON.stringify(testCases))})
 
 results = []
 total_time = 0
