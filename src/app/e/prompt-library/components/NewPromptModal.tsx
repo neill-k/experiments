@@ -11,9 +11,9 @@ export function NewPromptModal({ onClose, onCreate }: NewPromptModalProps) {
   const [name, setName] = useState('');
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/12 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className="p-5 md:p-6 w-full max-w-sm border"
+        className="p-5 md:p-6 w-full max-w-sm border rounded-xl shadow-lg"
         style={{
           backgroundColor: 'var(--bg)',
           borderColor: 'var(--border)',
@@ -35,7 +35,7 @@ export function NewPromptModal({ onClose, onCreate }: NewPromptModalProps) {
             }
           }}
           placeholder="Prompt name&#x2026;"
-          className="w-full px-4 py-3 bg-transparent border mb-4 outline-none min-h-[44px] text-sm transition-colors"
+          className="w-full rounded-lg px-4 py-3 bg-transparent border mb-4 outline-none min-h-[44px] text-sm transition-colors"
           style={{
             borderColor: 'var(--border)',
             fontFamily: 'var(--font-body)',
@@ -52,7 +52,7 @@ export function NewPromptModal({ onClose, onCreate }: NewPromptModalProps) {
         <div className="flex gap-px">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 border text-xs transition-colors min-h-[44px] flex items-center justify-center"
+            className="flex-1 rounded-lg px-4 py-3 border text-xs transition-colors min-h-[44px] flex items-center justify-center"
             style={{
               borderColor: 'var(--border)',
               fontFamily: 'var(--font-mono)',
@@ -72,7 +72,7 @@ export function NewPromptModal({ onClose, onCreate }: NewPromptModalProps) {
           <button
             onClick={() => name && onCreate(name)}
             disabled={!name}
-            className="flex-1 px-4 py-3 border text-xs transition-colors min-h-[44px] flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg px-4 py-3 border text-xs transition-colors min-h-[44px] flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
             style={{
               borderColor: 'var(--border)',
               fontFamily: 'var(--font-mono)',

@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 
 export default function GravityInboxPage() {
   return (
-    <main className="min-h-dvh bg-[#07070a] text-[#efeff4]">
+    <main className="min-h-dvh bg-[var(--bg)] text-[var(--fg)]">
       <GravityInboxClient />
 
       <div className="mx-auto w-full max-w-[1600px] px-3 pb-8 sm:px-4 lg:px-6">
-        <div className="border-t border-white/10 pt-6">
+        <div className="border-t border-[var(--border)] pt-6">
           <Comments slug="gravity-inbox" />
         </div>
       </div>

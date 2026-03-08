@@ -27,7 +27,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#08080a",
+  themeColor: "#faf9f7",
 }
 
 export const metadata: Metadata = {
@@ -57,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" style={{ colorScheme: "dark" }}>
+    <html lang="en" style={{ colorScheme: "light" }}>
       <head>
         <link
           rel="alternate"
@@ -75,12 +75,12 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <nav aria-label="Site" className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a] bg-[#08080a]/80 backdrop-blur-md">
+        <nav aria-label="Site" className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-md">
           <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
             <div className="flex items-center gap-1.5">
               <Link
                 href="/"
-                className="font-[family-name:var(--font-display)] text-lg text-white/90 hover:text-white transition-colors"
+                className="font-[family-name:var(--font-display)] text-lg text-[var(--fg)] hover:text-[var(--fg)] transition-colors"
               >
                 Experiments
               </Link>

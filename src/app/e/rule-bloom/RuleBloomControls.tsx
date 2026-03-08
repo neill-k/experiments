@@ -22,14 +22,14 @@ export function RuleBloomControls({
   onReseed,
 }: RuleBloomControlsProps) {
   return (
-    <div className="space-y-3 border border-white/20 bg-[#08080a] p-3 sm:p-4">
+    <div className="space-y-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3 sm:p-4">
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={onTogglePause}
           title={paused ? 'Resume simulation (keyboard: P or Space)' : 'Pause simulation (keyboard: P or Space)'}
           aria-keyshortcuts="P Space"
-          className="min-h-[44px] border border-white/30 px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[#ebebeb] transition-colors hover:bg-white/10"
+          className="min-h-[44px] rounded-lg border border-[var(--border)] px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--fg)] transition-colors hover:bg-[var(--fg)]/8"
         >
           {paused ? 'Resume' : 'Pause'}
         </button>
@@ -39,7 +39,7 @@ export function RuleBloomControls({
           onClick={onStep}
           title="Step one tick (keyboard: .)"
           aria-keyshortcuts="."
-          className="min-h-[44px] border border-white/30 px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[#ebebeb] transition-colors hover:bg-white/10"
+          className="min-h-[44px] rounded-lg border border-[var(--border)] px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--fg)] transition-colors hover:bg-[var(--fg)]/8"
         >
           Step
         </button>
@@ -49,14 +49,14 @@ export function RuleBloomControls({
           onClick={onReseed}
           title="Reseed simulation (keyboard: R)"
           aria-keyshortcuts="R"
-          className="min-h-[44px] border border-white/30 px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[#ebebeb] transition-colors hover:bg-white/10"
+          className="min-h-[44px] rounded-lg border border-[var(--border)] px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--fg)] transition-colors hover:bg-[var(--fg)]/8"
         >
           Reseed
         </button>
       </div>
 
-      <div className="space-y-2 border border-white/15 p-2 sm:p-3">
-        <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-[#ebebeb]/65">
+      <div className="space-y-2 rounded-lg border border-[var(--border)] p-2 sm:p-3">
+        <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-[var(--fg)]/65">
           Regime presets
         </p>
 
@@ -71,14 +71,14 @@ export function RuleBloomControls({
                 type="button"
                 onClick={() => onRegimeChange(option)}
                 aria-pressed={active}
-                className={`min-h-[44px] border px-3 py-2 text-left transition-colors ${
+                className={`min-h-[44px] rounded-lg border px-3 py-2 text-left transition-colors ${
                   active
-                    ? 'border-[#ebebeb]/85 bg-white/10 text-[#ebebeb]'
-                    : 'border-white/20 text-[#ebebeb]/80 hover:bg-white/5'
+                    ? 'border-[var(--fg)]/85 bg-[var(--fg)]/8 text-[var(--fg)]'
+                    : 'border-[var(--border)] text-[var(--fg)]/80 hover:bg-[var(--fg)]/5'
                 }`}
               >
                 <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em]">{preset.label}</div>
-                <div className="mt-1 font-[family-name:var(--font-mono)] text-[10px] leading-4 text-[#ebebeb]/60">
+                <div className="mt-1 font-[family-name:var(--font-mono)] text-[10px] leading-4 text-[var(--fg)]/60">
                   {preset.description}
                 </div>
               </button>
@@ -87,7 +87,7 @@ export function RuleBloomControls({
         </div>
       </div>
 
-      <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-[#ebebeb]/55">
+      <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-[var(--fg)]/55">
         Keyboard, R reseed, P or Space pause, . single step
       </p>
     </div>

@@ -36,7 +36,7 @@ export function PromptList({
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="md:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
+          className="md:hidden fixed inset-0 z-30 bg-black/12 backdrop-blur-sm"
           onClick={onCloseSidebar}
         />
       )}
@@ -124,7 +124,7 @@ export function PromptList({
         <div className="p-3 border-t space-y-1.5" style={{ borderColor: 'var(--border)' }}>
           <button
             onClick={onNewPrompt}
-            className="w-full px-3 py-2.5 border text-xs tracking-wide uppercase transition-colors min-h-[44px] flex items-center justify-center"
+            className="w-full rounded-lg px-3 py-2.5 border text-xs tracking-wide uppercase transition-colors min-h-[44px] flex items-center justify-center"
             style={{
               borderColor: 'var(--border)',
               fontFamily: 'var(--font-body)',
@@ -141,7 +141,7 @@ export function PromptList({
           </button>
           <button
             onClick={onImport}
-            className="w-full px-3 py-2.5 text-xs transition-colors min-h-[44px] flex items-center justify-center"
+            className="w-full rounded-lg px-3 py-2.5 text-xs transition-colors min-h-[44px] flex items-center justify-center"
             style={{
               fontFamily: 'var(--font-body)',
               color: 'var(--muted)',

@@ -27,8 +27,9 @@ export function PhilosopherCard({ match, index, isTopMatch }: PhilosopherCardPro
       className="philosopher-card"
       style={{
         ...animatedStyle,
-        backgroundColor: '#161619',
+        backgroundColor: 'white',
         border: `1px solid ${isTopMatch ? 'var(--border-hover)' : 'var(--border)'}`,
+        borderRadius: '0.5rem',
         padding: '1.25rem 1.5rem',
       }}
     >

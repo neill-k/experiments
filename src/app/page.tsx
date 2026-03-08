@@ -14,24 +14,24 @@ export default function Home() {
       <div className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto w-full max-w-3xl">
         <header>
-          <h1 className="text-4xl sm:text-5xl tracking-tight text-white">
+          <h1 className="text-4xl sm:text-5xl tracking-tight text-[var(--fg)]">
             Experiments
           </h1>
-          <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-white/60 leading-relaxed max-w-xl">
+          <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/50 leading-relaxed max-w-xl">
             A collection of experiments and prototypes.
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <p className="text-[13px] font-[family-name:var(--font-mono)] text-white/30">
+            <p className="text-[13px] font-[family-name:var(--font-mono)] text-[var(--fg)]/30">
               {experiments.length} total experiments.
             </p>
           </div>
-          <div className="mt-4 h-px w-16 bg-white/20" />
+          <div className="mt-4 h-px w-16 bg-[var(--fg)]/10" />
         </header>
 
         {/* Neill's Favorites */}
         {favorites.length > 0 && (
           <section className="mt-10 mb-8">
-            <h2 className="text-xs font-[family-name:var(--font-mono)] text-white/30 uppercase tracking-widest mb-4">
+            <h2 className="text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/30 uppercase tracking-widest mb-4">
               Neill&apos;s Favorites
             </h2>
             <div className={`grid gap-3 ${favorites.length === 1 ? 'grid-cols-1 max-w-sm' : favorites.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}`}>
@@ -40,7 +40,7 @@ export default function Home() {
                   key={exp.slug}
                   href={`/e/${exp.slug}`}
                   aria-label={`Open ${exp.title}, published ${exp.date}`}
-                  className="group block border border-[var(--border)] bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors animate-fade-in-up focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                  className="group block rounded-lg border border-[var(--border)] bg-white/60 p-4 hover:bg-white/80 hover:shadow-sm transition-all animate-fade-in-up focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fg)]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
                   style={{
                     animationDelay: `${i * 60}ms`,
                     borderTopColor: exp.accent ?? 'var(--border)',
@@ -53,11 +53,11 @@ export default function Home() {
                         {exp.icon}
                       </span>
                     )}
-                    <span className="text-sm font-[family-name:var(--font-display)] text-white/90 group-hover:text-white transition-colors">
+                    <span className="text-sm font-[family-name:var(--font-display)] text-[var(--fg)]/80 group-hover:text-[var(--fg)] transition-colors">
                       {exp.title}
                     </span>
                   </div>
-                  <p className="text-xs font-[family-name:var(--font-body)] text-white/40 leading-relaxed line-clamp-2">
+                  <p className="text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/40 leading-relaxed line-clamp-2">
                     {exp.description}
                   </p>
                 </Link>
@@ -69,19 +69,19 @@ export default function Home() {
         <section className="mt-8">
           <Link
             href="/e/auto-builds"
-            className="group block border border-[var(--border)] bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            className="group block rounded-lg border border-[var(--border)] bg-white/60 p-4 hover:bg-white/80 hover:shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fg)]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
             style={{
-              borderLeftColor: 'rgba(255, 255, 255, 0.12)',
+              borderLeftColor: 'rgba(0, 0, 0, 0.08)',
               borderLeftWidth: '3px',
             }}
           >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-lg leading-none" aria-hidden="true">🤖</span>
-              <span className="text-sm font-[family-name:var(--font-display)] text-white/90 group-hover:text-white transition-colors">
+              <span className="text-sm font-[family-name:var(--font-display)] text-[var(--fg)]/80 group-hover:text-[var(--fg)] transition-colors">
                 Auto-builds
               </span>
             </div>
-            <p className="text-xs font-[family-name:var(--font-body)] text-white/40 leading-relaxed">
+            <p className="text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/40 leading-relaxed">
               The full list of nightly experiments — tagged and date-sorted.
             </p>
           </Link>
@@ -90,7 +90,7 @@ export default function Home() {
         <footer className="mt-16 border-t border-[var(--border)] pt-6 pb-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-1.5">
-              <p className="font-[family-name:var(--font-mono)] text-[11px] text-white/25">
+              <p className="font-[family-name:var(--font-mono)] text-[11px] text-[var(--fg)]/25">
                 Curated collection of experiments
               </p>
             </div>
@@ -98,28 +98,28 @@ export default function Home() {
               <a
                 href="/feed.xml"
                 aria-label="Subscribe via RSS feed"
-                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-[var(--fg)]/25 hover:text-[var(--fg)]/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fg)]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
                 title="RSS Feed"
               >
                 RSS
               </a>
-              <span className="text-white/10" aria-hidden="true">·</span>
+              <span className="text-[var(--fg)]/10" aria-hidden="true">·</span>
               <a
                 href="https://github.com/neill-k/experiments"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="View source on GitHub (opens in new tab)"
-                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-[var(--fg)]/25 hover:text-[var(--fg)]/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fg)]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
               >
                 View source
               </a>
-              <span className="text-white/10" aria-hidden="true">·</span>
+              <span className="text-[var(--fg)]/10" aria-hidden="true">·</span>
               <a
                 href="https://openclaw.ai"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Powered by OpenClaw (opens in new tab)"
-                className="font-[family-name:var(--font-mono)] text-[11px] text-white/25 hover:text-white/50 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="font-[family-name:var(--font-mono)] text-[11px] text-[var(--fg)]/25 hover:text-[var(--fg)]/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fg)]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
               >
                 Powered by OpenClaw
               </a>

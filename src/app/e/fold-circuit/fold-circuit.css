@@ -2,7 +2,7 @@
   max-width: 1600px;
   margin: 0 auto;
   padding: 0.75rem;
-  color: #ebebeb;
+  color: var(--fg);
 }
 
 .fold-circuit-topbar {
@@ -14,9 +14,10 @@
   gap: 0.75rem;
   align-items: flex-start;
   padding: 0.65rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(8, 8, 10, 0.94);
-  backdrop-filter: blur(4px);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
 }
 
 .fold-circuit-title {
@@ -33,7 +34,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   font-size: 0.62rem;
-  color: rgba(235, 235, 235, 0.68);
+  color: rgba(44, 44, 44, 0.55);
   line-height: 1.35;
 }
 
@@ -45,7 +46,7 @@
   font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(235, 235, 235, 0.82);
+  color: rgba(44, 44, 44, 0.72);
 }
 
 .fold-circuit-layout {
@@ -56,8 +57,9 @@
 }
 
 .fold-circuit-main {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: #08080a;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: white;
   display: flex;
   flex-direction: column;
   min-height: 62dvh;
@@ -72,8 +74,9 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: #07070a;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: #faf9f7;
 }
 
 .fold-circuit-canvas {
@@ -99,7 +102,7 @@
 }
 
 .fold-circuit-cell-hit:focus-visible {
-  outline: 2px solid #f0f0f5;
+  outline: 2px solid var(--fg);
   outline-offset: -2px;
 }
 
@@ -111,8 +114,9 @@
   margin-top: auto;
   position: sticky;
   bottom: 0;
-  background: rgba(8, 8, 10, 0.96);
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--border);
   padding: 0.5rem;
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
@@ -125,9 +129,10 @@
 
 .fold-circuit-button {
   min-height: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.03);
-  color: #ebebeb;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: white;
+  color: var(--fg);
   font-family: var(--font-mono), monospace;
   text-transform: uppercase;
   letter-spacing: 0.11em;
@@ -140,8 +145,9 @@
 }
 
 .fold-circuit-panel {
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: #0a0a11;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: white;
   padding: 0.65rem;
 }
 
@@ -164,7 +170,7 @@
 
 .fold-circuit-law-list {
   margin-top: 0.6rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--border);
   padding-top: 0.5rem;
   display: grid;
   gap: 0.28rem;
@@ -172,12 +178,12 @@
   font-size: 0.62rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(235, 235, 235, 0.74);
+  color: rgba(44, 44, 44, 0.60);
 }
 
 .fold-circuit-score {
   margin-top: 0.6rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--border);
   padding-top: 0.5rem;
 }
 
@@ -186,7 +192,7 @@
   font-size: 0.64rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(235, 235, 235, 0.62);
+  color: rgba(44, 44, 44, 0.50);
 }
 
 .fold-circuit-list {
@@ -195,7 +201,7 @@
   font-family: var(--font-mono), monospace;
   font-size: 0.68rem;
   line-height: 1.5;
-  color: rgba(235, 235, 235, 0.86);
+  color: rgba(44, 44, 44, 0.75);
 }
 
 @media (min-width: 1024px) {

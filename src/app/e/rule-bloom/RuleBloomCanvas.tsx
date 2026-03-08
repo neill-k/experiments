@@ -217,10 +217,10 @@ export function RuleBloomCanvas({
   }, [stepSignal, publishHud])
 
   return (
-    <div className="relative h-full w-full border border-white/10 bg-black/20">
+    <div className="relative h-full w-full rounded-lg border border-[var(--border)] bg-white/60">
       <canvas ref={canvasRef} className="block h-full w-full" aria-label="Rule Bloom simulation canvas" />
 
-      <div className="pointer-events-none absolute left-2 top-2 border border-white/15 bg-[#08080a]/84 px-2 py-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-white/72 sm:left-3 sm:top-3 sm:text-[11px]">
+      <div className="pointer-events-none absolute left-2 top-2 rounded-lg border border-[var(--border)] bg-white/84 px-2 py-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] text-[var(--fg)]/72 sm:left-3 sm:top-3 sm:text-[11px]">
         <div>
           {paused ? 'paused' : 'live'} · {regime} · fps {hud.fps} · tick {hud.tick}
         </div>

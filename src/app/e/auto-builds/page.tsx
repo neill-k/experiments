@@ -52,24 +52,24 @@ export default async function AutoBuildsPage({
     <div className="min-h-dvh px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto w-full max-w-3xl">
         <header>
-          <h1 className="text-4xl sm:text-5xl tracking-tight text-white">
+          <h1 className="text-4xl sm:text-5xl tracking-tight text-[var(--fg)]">
             Auto-builds
           </h1>
-          <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-white/60 leading-relaxed max-w-xl">
+          <p className="mt-4 text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/50 leading-relaxed max-w-xl">
             All experiments shipped by the nightly build pipeline.
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <p className="text-[13px] font-[family-name:var(--font-mono)] text-white/30">
+            <p className="text-[13px] font-[family-name:var(--font-mono)] text-[var(--fg)]/30">
               {experiments.length} experiments.
             </p>
             <Link
               href="/"
-              className="text-[11px] font-[family-name:var(--font-mono)] text-white/40 hover:text-white/70 transition-colors"
+              className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--fg)]/35 hover:text-[var(--fg)]/60 transition-colors"
             >
               Back to main page
             </Link>
           </div>
-          <div className="mt-4 h-px w-16 bg-white/20" />
+          <div className="mt-4 h-px w-16 bg-[var(--fg)]/10" />
         </header>
 
         <Suspense>
@@ -78,13 +78,13 @@ export default async function AutoBuildsPage({
 
         {normalizedActiveTag && (
           <div className="mt-4 flex items-center gap-3" role="status" aria-live="polite">
-            <p className="text-[11px] font-[family-name:var(--font-mono)] text-white/25">
-              Showing {filtered.length} of {experiments.length} experiments for “{normalizedActiveTag}”.
+            <p className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--fg)]/25">
+              Showing {filtered.length} of {experiments.length} experiments for &ldquo;{normalizedActiveTag}&rdquo;.
             </p>
             <Link
               href="/e/auto-builds"
               aria-label={`Clear ${normalizedActiveTag} filter and show all experiments`}
-              className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--fg)]/30 hover:text-[var(--fg)]/55 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fg)]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
             >
               Clear filter
             </Link>
@@ -97,7 +97,7 @@ export default async function AutoBuildsPage({
               key={exp.slug}
               href={`/e/${exp.slug}`}
               aria-label={`Open ${exp.title}, published ${exp.date}`}
-              className="experiment-card group block border border-[var(--border)] bg-white/[0.02] p-4 sm:p-5 text-white/80 hover:text-white animate-fade-in-up focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              className="experiment-card group block rounded-lg border border-[var(--border)] bg-white/60 p-4 sm:p-5 text-[var(--fg)]/80 hover:text-[var(--fg)] hover:bg-white/80 hover:shadow-sm animate-fade-in-up focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fg)]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
               style={{
                 animationDelay: `${i * 80}ms`,
                 borderLeftColor: exp.accent ?? 'var(--border)',
@@ -112,26 +112,26 @@ export default async function AutoBuildsPage({
                         {exp.icon}
                       </span>
                     )}
-                    <span className="text-base font-[family-name:var(--font-display)] text-white/90">
+                    <span className="text-base font-[family-name:var(--font-display)] text-[var(--fg)]/85">
                       {exp.title}
                     </span>
                     {isToday(exp.date) && (
-                      <span className="bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] font-medium text-emerald-400 uppercase tracking-wider">
+                      <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] font-medium text-emerald-700 uppercase tracking-wider">
                         new
                       </span>
                     )}
                     {!isToday(exp.date) && isRecent(exp.date) && (
-                      <span className="bg-blue-500/15 px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] font-medium text-blue-400 uppercase tracking-wider">
+                      <span className="rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] font-medium text-blue-700 uppercase tracking-wider">
                         recent
                       </span>
                     )}
                     {!isToday(exp.date) && !isRecent(exp.date) && exp.lastUpdated && isRecent(exp.lastUpdated) && (
-                      <span className="bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] font-medium text-emerald-400/70 uppercase tracking-wider">
+                      <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] font-medium text-emerald-600 uppercase tracking-wider">
                         updated
                       </span>
                     )}
                   </div>
-                  <div className="mt-1.5 text-sm font-[family-name:var(--font-body)] text-white/45">
+                  <div className="mt-1.5 text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/45">
                     {exp.description}
                   </div>
                 </div>
@@ -140,7 +140,7 @@ export default async function AutoBuildsPage({
                     dateTime={exp.date}
                     title={`Published ${exp.date}`}
                     aria-label={`Published date ${exp.date}`}
-                    className="block font-[family-name:var(--font-mono)] text-[11px] text-white/30"
+                    className="block font-[family-name:var(--font-mono)] text-[11px] text-[var(--fg)]/25"
                   >
                     {exp.date}
                   </time>
@@ -148,7 +148,7 @@ export default async function AutoBuildsPage({
                     dateTime={exp.date}
                     title={`Published ${exp.date}`}
                     aria-label={`Published ${exp.date} (${relativeDate(exp.date)})`}
-                    className="block font-[family-name:var(--font-mono)] text-[10px] text-white/20 mt-0.5"
+                    className="block font-[family-name:var(--font-mono)] text-[10px] text-[var(--fg)]/18 mt-0.5"
                   >
                     {relativeDate(exp.date)}
                   </time>
@@ -157,7 +157,7 @@ export default async function AutoBuildsPage({
                       dateTime={exp.lastUpdated}
                       title={`Updated ${exp.lastUpdated}`}
                       aria-label={`Updated ${exp.lastUpdated} (${relativeDate(exp.lastUpdated)})`}
-                      className="block font-[family-name:var(--font-mono)] text-[10px] text-emerald-400/40 mt-1"
+                      className="block font-[family-name:var(--font-mono)] text-[10px] text-emerald-600/50 mt-1"
                     >
                       <span aria-hidden="true">↻ </span>
                       {relativeDate(exp.lastUpdated)}
@@ -170,7 +170,7 @@ export default async function AutoBuildsPage({
                   <span
                     key={tag}
                     className={`font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest transition-colors ${
-                      normalizedActiveTag === tag ? 'text-white/60' : 'text-white/25'
+                      normalizedActiveTag === tag ? 'text-[var(--fg)]/55' : 'text-[var(--fg)]/20'
                     }`}
                   >
                     {tag}
@@ -182,7 +182,7 @@ export default async function AutoBuildsPage({
                   {exp.tech.map((t) => (
                     <span
                       key={t}
-                      className="border border-white/[0.06] bg-white/[0.02] px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] text-white/20 group-hover:text-white/30 group-hover:border-white/[0.1] transition-colors"
+                      className="rounded border border-[var(--border)] bg-white/60 px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] text-[var(--fg)]/20 group-hover:text-[var(--fg)]/30 group-hover:border-[var(--border-hover)] transition-colors"
                     >
                       {t}
                     </span>
@@ -193,16 +193,16 @@ export default async function AutoBuildsPage({
           ))}
           {filtered.length === 0 && (
             <div className="py-8 text-center">
-              <p className="text-sm font-[family-name:var(--font-body)] text-white/30">
+              <p className="text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/30">
                 {normalizedActiveTag
-                  ? <>No experiments match “{normalizedActiveTag}” yet.</>
+                  ? <>No experiments match &ldquo;{normalizedActiveTag}&rdquo; yet.</>
                   : 'No experiments match that tag yet.'}
               </p>
               {normalizedActiveTag && (
                 <Link
                   href="/e/auto-builds"
                   aria-label={`Clear ${normalizedActiveTag} filter and show all experiments`}
-                  className="mt-2 inline-block text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/35 hover:text-white/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                  className="mt-2 inline-block text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--fg)]/30 hover:text-[var(--fg)]/55 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fg)]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
                 >
                   Show all experiments
                 </Link>

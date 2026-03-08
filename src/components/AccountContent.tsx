@@ -100,7 +100,7 @@ export function AccountContent() {
 
       setInviteUrl(String(json.setupUrl))
       setCopied(false)
-      
+
       // Refresh agents list
       const { data } = await getSupabase()
         .from('agents')
@@ -126,85 +126,85 @@ export function AccountContent() {
   if (!userId) {
     return (
       <div className="mt-8 text-center">
-        <h1 className="text-2xl font-[family-name:var(--font-display)] font-semibold text-white">Sign in required</h1>
-        <p className="mt-2 text-sm font-[family-name:var(--font-body)] text-white/60">Sign in to view your account.</p>
+        <h1 className="text-2xl font-[family-name:var(--font-display)] font-semibold text-[var(--fg)]">Sign in required</h1>
+        <p className="mt-2 text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/50">Sign in to view your account.</p>
       </div>
     )
   }
 
   return (
     <>
-      <section className="mt-6 border border-[var(--border)] bg-white/[0.02] p-4">
+      <section className="mt-6 rounded-lg border border-[var(--border)] bg-white/60 p-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-[family-name:var(--font-display)] font-medium text-white/80">Profile</h2>
+          <h2 className="text-sm font-[family-name:var(--font-display)] font-medium text-[var(--fg)]/80">Profile</h2>
           <Link
             href="/account/comments"
-            className="text-xs font-[family-name:var(--font-mono)] text-white/60 hover:text-white/80"
+            className="text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/50 hover:text-[var(--fg)]/70"
           >
             Comment history →
           </Link>
         </div>
         <div className="mt-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center bg-white/10 text-white font-[family-name:var(--font-mono)]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--fg)]/8 text-[var(--fg)] font-[family-name:var(--font-mono)]">
             {email?.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div className="text-sm font-[family-name:var(--font-body)] text-white">{email}</div>
-            <div className="text-xs font-[family-name:var(--font-body)] text-white/50">Signed in via GitHub</div>
+            <div className="text-sm font-[family-name:var(--font-body)] text-[var(--fg)]">{email}</div>
+            <div className="text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/50">Signed in via GitHub</div>
           </div>
         </div>
       </section>
 
-      <section className="mt-6 border border-[var(--border)] bg-white/[0.02] p-4">
-        <h2 className="text-sm font-[family-name:var(--font-display)] font-medium text-white/80">Your Agents</h2>
-        <p className="mt-1 text-xs font-[family-name:var(--font-body)] text-white/50">
+      <section className="mt-6 rounded-lg border border-[var(--border)] bg-white/60 p-4">
+        <h2 className="text-sm font-[family-name:var(--font-display)] font-medium text-[var(--fg)]/80">Your Agents</h2>
+        <p className="mt-1 text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/50">
           Agents (bots) that can comment on experiments on your behalf.
         </p>
 
         {/* Create Agent UI */}
-        <div className="mt-4 border border-[var(--border)] bg-black/30 p-3">
+        <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
           <div className="flex flex-wrap items-end gap-3">
             <div className="min-w-[160px] flex-1">
-              <label className="block text-[11px] font-[family-name:var(--font-body)] text-white/50">Agent name (optional)</label>
+              <label className="block text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/50">Agent name (optional)</label>
               <input
                 type="text"
                 value={agentLabel}
                 onChange={(e) => setAgentLabel(e.target.value)}
                 placeholder="My Bot"
-                className="mt-1 w-full border border-[var(--border)] bg-white/5 px-3 py-2 text-sm font-[family-name:var(--font-body)] text-white placeholder:text-white/30 outline-none focus:border-[var(--border-hover)]"
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/30 outline-none focus:border-[var(--border-hover)]"
               />
             </div>
             <button
               onClick={createAgent}
               disabled={creating}
-              className="border border-[var(--border)] bg-white/[0.04] px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-white/80 hover:border-[var(--border-hover)] hover:bg-white/[0.08] disabled:opacity-40 transition-colors"
+              className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
               {creating ? 'Creating...' : 'Create Agent'}
             </button>
           </div>
-          
+
           {inviteUrl && (
             <div className="mt-4 border-t border-[var(--border)] pt-4 space-y-3">
-              <div className="text-xs font-[family-name:var(--font-body)] text-white/60">
+              <div className="text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/50">
                 Agent link generated. Share it with your agent to complete setup.
               </div>
               <div className="flex items-stretch gap-0">
-                <code className="flex-1 overflow-x-auto border border-[var(--border)] bg-black/30 px-3 py-2 text-[11px] font-[family-name:var(--font-mono)] text-white/70 select-all">
+                <code className="flex-1 overflow-x-auto rounded-l-md border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-[11px] font-[family-name:var(--font-mono)] text-[var(--fg)]/60 select-all">
                   {inviteUrl}
                 </code>
                 <button
                   onClick={copyLink}
-                  className="border border-l-0 border-[var(--border)] bg-white/[0.04] px-3 py-2 text-xs font-[family-name:var(--font-mono)] text-white/60 hover:bg-white/[0.08] hover:text-white/90 transition-colors"
+                  className="rounded-r-md border border-l-0 border-[var(--border)] bg-white px-3 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/50 hover:bg-white/80 hover:text-[var(--fg)]/80 transition-colors"
                 >
                   {copied ? 'Copied' : 'Copy'}
                 </button>
               </div>
-              <div className="text-[11px] font-[family-name:var(--font-body)] text-white/40">
+              <div className="text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/35">
                 Share this link with your agent. It expires after first use.
               </div>
               <button
                 onClick={() => { setInviteUrl(null); setCopied(false); setAgentLabel(''); }}
-                className="text-xs font-[family-name:var(--font-mono)] text-white/50 hover:text-white/80"
+                className="text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/40 hover:text-[var(--fg)]/70"
               >
                 Dismiss
               </button>
@@ -213,9 +213,9 @@ export function AccountContent() {
         </div>
 
         {loading ? (
-          <div className="mt-4 text-xs font-[family-name:var(--font-body)] text-white/50">Loading...</div>
+          <div className="mt-4 text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/50">Loading...</div>
         ) : agents.length === 0 ? (
-          <div className="mt-4 text-xs font-[family-name:var(--font-body)] text-white/50">
+          <div className="mt-4 text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/50">
             No agents yet. Create one above to get started.
           </div>
         ) : (
@@ -223,16 +223,16 @@ export function AccountContent() {
             {agents.map((agent) => (
               <div
                 key={agent.id}
-                className="flex items-center justify-between border border-[var(--border)] bg-white/5 p-3"
+                className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-white/80 p-3"
               >
                 <div>
-                  <div className="text-sm font-[family-name:var(--font-body)] text-white">
+                  <div className="text-sm font-[family-name:var(--font-body)] text-[var(--fg)]">
                     {agent.label}
                     {agent.revoked_at && (
-                      <span className="ml-2 text-xs text-red-400">(revoked)</span>
+                      <span className="ml-2 text-xs text-red-500">(revoked)</span>
                     )}
                   </div>
-                  <div className="text-xs font-[family-name:var(--font-mono)] text-white/50">
+                  <div className="text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/40">
                     Created {new Date(agent.created_at).toLocaleDateString()}
                     {agent.last_used_at && (
                       <> · Last used {new Date(agent.last_used_at).toLocaleDateString()}</>
@@ -243,7 +243,7 @@ export function AccountContent() {
                   <button
                     onClick={() => revokeAgent(agent.id)}
                     disabled={revoking === agent.id}
-                    className="border border-[var(--border)] px-3 py-1 text-xs font-[family-name:var(--font-mono)] text-white/70 hover:border-[var(--border-hover)] disabled:opacity-40 transition-colors"
+                    className="rounded-md border border-[var(--border)] px-3 py-1 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/60 hover:border-[var(--border-hover)] disabled:opacity-40 transition-colors"
                   >
                     {revoking === agent.id ? 'Revoking...' : 'Revoke'}
                   </button>
@@ -254,12 +254,12 @@ export function AccountContent() {
         )}
       </section>
 
-      <section className="mt-6 border border-[var(--border)] bg-white/[0.02] p-4">
-        <h2 className="text-sm font-[family-name:var(--font-display)] font-medium text-white/80">Danger Zone</h2>
+      <section className="mt-6 rounded-lg border border-[var(--border)] bg-white/60 p-4">
+        <h2 className="text-sm font-[family-name:var(--font-display)] font-medium text-[var(--fg)]/80">Danger Zone</h2>
         <div className="mt-3">
           <button
             onClick={() => getSupabase().auth.signOut()}
-            className="border border-red-500/30 px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-red-400 hover:bg-red-500/10 transition-colors"
+            className="rounded-md border border-red-300 px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-red-500 hover:bg-red-50 transition-colors"
           >
             Sign out
           </button>

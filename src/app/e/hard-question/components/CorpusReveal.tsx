@@ -31,8 +31,9 @@ function CorpusCard({ match, index }: { match: CorpusMatch; index: number }) {
       className="corpus-card"
       style={{
         ...animationStyle,
-        backgroundColor: '#111114',
+        backgroundColor: 'white',
         border: '1px solid var(--border)',
+        borderRadius: '0.5rem',
         padding: '1rem 1.25rem',
       }}
     >
