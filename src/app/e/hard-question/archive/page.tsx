@@ -124,8 +124,8 @@ export default function ArchivePage() {
                 style={{
                   fontFamily: 'var(--font-mono)',
                   color: !activeCategory ? 'var(--fg)' : HQ_HELPER_TEXT_SUBTLE,
-                  border: `1px solid ${!activeCategory ? 'rgba(255, 255, 255, 0.28)' : 'var(--border)'}`,
-                  backgroundColor: !activeCategory ? 'rgba(255, 255, 255, 0.06)' : 'transparent',
+                  border: `1px solid ${!activeCategory ? 'var(--border-hover)' : 'var(--border)'}`,
+                  backgroundColor: !activeCategory ? 'rgba(44, 44, 44, 0.06)' : 'transparent',
                 }}
               >
                 All
@@ -141,8 +141,8 @@ export default function ArchivePage() {
                     style={{
                       fontFamily: 'var(--font-mono)',
                       color: isActive ? 'var(--fg)' : HQ_HELPER_TEXT_SUBTLE,
-                      border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.28)' : 'var(--border)'}`,
-                      backgroundColor: isActive ? 'rgba(255, 255, 255, 0.06)' : 'transparent',
+                      border: `1px solid ${isActive ? 'var(--border-hover)' : 'var(--border)'}`,
+                      backgroundColor: isActive ? 'rgba(44, 44, 44, 0.06)' : 'transparent',
                     }}
                   >
                     {cat}
@@ -200,17 +200,17 @@ export default function ArchivePage() {
               key={i}
               className="animate-pulse p-4"
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                backgroundColor: 'rgba(44, 44, 44, 0.03)',
                 border: '1px solid var(--border)',
               }}
             >
               <div
-                className="mb-2 h-5 w-3/4"
-                style={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                className="mb-2 h-5 w-3/4 rounded-lg"
+                style={{ backgroundColor: 'rgba(44, 44, 44, 0.08)' }}
               />
               <div
-                className="h-3 w-1/4"
-                style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                className="h-3 w-1/4 rounded-lg"
+                style={{ backgroundColor: 'rgba(44, 44, 44, 0.05)' }}
               />
             </div>
           ))}
@@ -230,9 +230,9 @@ export default function ArchivePage() {
               return (
                 <div
                   key={q.id}
-                  className="group border p-4"
+                  className="group rounded-lg border p-4"
                   style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    backgroundColor: 'rgba(44, 44, 44, 0.03)',
                     borderColor: 'var(--border)',
                   }}
                 >
@@ -251,7 +251,7 @@ export default function ArchivePage() {
                         <span
                           className="inline-block h-2 w-2"
                           style={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.16)',
+                            backgroundColor: 'rgba(44, 44, 44, 0.16)',
                           }}
                         />
                       )}
@@ -285,7 +285,7 @@ export default function ArchivePage() {
                               activeCategory === q.category ? null : q.category
                             )
                           }}
-                          className="text-[10px] uppercase tracking-widest transition-colors hover:text-white/80"
+                          className="text-[10px] uppercase tracking-widest transition-colors hover:text-[var(--fg)]/80"
                           style={{
                             fontFamily: 'var(--font-mono)',
                             color:
@@ -307,8 +307,8 @@ export default function ArchivePage() {
                             style={{
                               fontFamily: 'var(--font-mono)',
                               color: HQ_HELPER_TEXT_SUBTLE,
-                              borderColor: 'rgba(255, 255, 255, 0.2)',
-                              backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                              borderColor: 'var(--border)',
+                              backgroundColor: 'rgba(44, 44, 44, 0.04)',
                             }}
                             title="Question difficulty"
                           >
@@ -321,24 +321,24 @@ export default function ArchivePage() {
                         {q.has_answered ? (
                           <Link
                             href={ctaHref}
-                            className="border px-3 py-1.5 text-[11px] uppercase tracking-widest transition-colors"
+                            className="rounded-lg border px-3 py-1.5 text-[11px] uppercase tracking-widest transition-colors"
                             style={{
                               fontFamily: 'var(--font-mono)',
                               color: 'var(--fg)',
                               borderColor: 'var(--border)',
-                              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                              backgroundColor: 'rgba(44, 44, 44, 0.03)',
                             }}
                           >
                             Review your reveal
                           </Link>
                         ) : practiceLocked ? (
                           <span
-                            className="border px-3 py-1.5 text-[11px] uppercase tracking-widest"
+                            className="rounded-lg border px-3 py-1.5 text-[11px] uppercase tracking-widest"
                             style={{
                               fontFamily: 'var(--font-mono)',
                               color: HQ_HELPER_TEXT_SUBTLE,
                               borderColor: 'var(--border)',
-                              backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                              backgroundColor: 'rgba(44, 44, 44, 0.02)',
                             }}
                           >
                             Practice used today
@@ -346,12 +346,12 @@ export default function ArchivePage() {
                         ) : (
                           <Link
                             href={ctaHref}
-                            className="border px-3 py-1.5 text-[11px] uppercase tracking-widest transition-colors"
+                            className="rounded-lg border px-3 py-1.5 text-[11px] uppercase tracking-widest transition-colors"
                             style={{
                               fontFamily: 'var(--font-mono)',
                               color: 'var(--fg)',
                               borderColor: 'var(--border-hover)',
-                              backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                              backgroundColor: 'rgba(44, 44, 44, 0.04)',
                             }}
                           >
                             Play in Practice Mode

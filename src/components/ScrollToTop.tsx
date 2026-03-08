@@ -31,7 +31,7 @@ export function ScrollToTop() {
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       aria-label="Scroll to top"
-      className="fixed bottom-6 right-6 z-40 flex h-9 w-9 items-center justify-center border border-[var(--border)] bg-[#0c0c0e]/90 backdrop-blur-sm text-white/50 hover:text-white hover:border-[var(--border-hover)] transition-all duration-200 shadow-lg shadow-black/30"
+      className="fixed bottom-6 right-6 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-white/80 backdrop-blur-sm text-[var(--fg)]/40 hover:text-[var(--fg)] hover:border-[var(--border-hover)] hover:shadow-md transition-all duration-200 shadow-sm"
       style={{
         animation: 'fade-in-up 0.25s ease-out both',
       }}

@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 
 export default function RuleBloomPage() {
   return (
-    <main className="min-h-dvh bg-[#08080a] text-[#ebebeb]">
+    <main className="min-h-dvh bg-[var(--bg)] text-[var(--fg)]">
       <RuleBloomClient />
 
       <div className="mx-auto w-full max-w-[1600px] px-3 pb-8 sm:px-4 lg:px-6">
-        <div className="border-t border-white/10 pt-6">
+        <div className="border-t border-[var(--border)] pt-6">
           <Comments slug="rule-bloom" />
         </div>
       </div>

@@ -211,21 +211,21 @@ export default function HardQuestionPage() {
     return (
       <div className="mx-auto max-w-4xl px-4 pt-8">
         <div className="pb-2">
-          <div className="h-3 w-3/4 max-w-lg animate-pulse bg-white/[0.06]" />
-          <div className="mt-2 h-3 w-1/2 max-w-sm animate-pulse bg-white/[0.05]" />
+          <div className="h-3 w-3/4 max-w-lg animate-pulse rounded-lg bg-[var(--fg)]/[0.06]" />
+          <div className="mt-2 h-3 w-1/2 max-w-sm animate-pulse rounded-lg bg-[var(--fg)]/[0.05]" />
         </div>
         <div className="mt-6 space-y-3">
-          <div className="h-2 w-16 animate-pulse bg-white/[0.07]" />
-          <div className="h-8 w-full max-w-xl animate-pulse bg-white/[0.06]" />
-          <div className="h-8 w-2/3 max-w-md animate-pulse bg-white/[0.05]" />
+          <div className="h-2 w-16 animate-pulse rounded-lg bg-[var(--fg)]/[0.07]" />
+          <div className="h-8 w-full max-w-xl animate-pulse rounded-lg bg-[var(--fg)]/[0.06]" />
+          <div className="h-8 w-2/3 max-w-md animate-pulse rounded-lg bg-[var(--fg)]/[0.05]" />
         </div>
         <div className="mt-8">
           <div
-            className="h-20 w-full animate-pulse bg-white/[0.04]"
+            className="h-20 w-full animate-pulse rounded-lg bg-[var(--fg)]/[0.04]"
             style={{ borderBottom: '1px solid var(--border)' }}
           />
           <div className="mt-4 flex justify-end">
-            <div className="h-10 w-24 animate-pulse bg-white/[0.06]" />
+            <div className="h-10 w-24 animate-pulse rounded-lg bg-[var(--fg)]/[0.06]" />
           </div>
         </div>
       </div>
@@ -326,7 +326,7 @@ export default function HardQuestionPage() {
               fontFamily: 'var(--font-mono)',
               color: HQ_HELPER_TEXT_SOFT,
               borderColor: 'var(--border)',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              backgroundColor: 'rgba(44, 44, 44, 0.03)',
             }}
           >
             {modeSummary}
@@ -359,8 +359,8 @@ export default function HardQuestionPage() {
       {needsPracticeMode && !hasAnswered && (
         <div className="px-4 pb-8">
           <div
-            className="max-w-3xl border px-4 py-4"
-            style={{ borderColor: 'var(--border)', backgroundColor: '#111216' }}
+            className="max-w-3xl rounded-lg border px-4 py-4"
+            style={{ borderColor: 'var(--border)', backgroundColor: 'white' }}
           >
             <p
               className="text-sm"
@@ -370,7 +370,7 @@ export default function HardQuestionPage() {
             </p>
             <Link
               href={`/e/hard-question?question=${question.id}&mode=practice`}
-              className="mt-3 inline-block border px-3 py-1.5 text-xs uppercase tracking-widest"
+              className="mt-3 inline-block rounded-lg border px-3 py-1.5 text-xs uppercase tracking-widest"
               style={{
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--fg)',
@@ -387,8 +387,8 @@ export default function HardQuestionPage() {
       {isPracticeMode && !practiceAvailable && !result && (
         <div className="px-4 pb-8">
           <div
-            className="max-w-3xl border px-4 py-4"
-            style={{ borderColor: 'var(--border)', backgroundColor: '#111216' }}
+            className="max-w-3xl rounded-lg border px-4 py-4"
+            style={{ borderColor: 'var(--border)', backgroundColor: 'white' }}
           >
             <p
               className="text-sm"

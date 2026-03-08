@@ -91,7 +91,6 @@ export function CommandPalette() {
     } else if (e.key === 'Enter') {
       e.preventDefault()
       if (selectedIndex === filtered.length) {
-        // "All experiments" option at the bottom
         goHome()
       } else if (filtered[selectedIndex]) {
         navigate(filtered[selectedIndex].slug)
@@ -104,7 +103,7 @@ export function CommandPalette() {
       {/* Trigger hint in the nav bar */}
       <button
         onClick={() => setOpen(true)}
-        className="hidden sm:inline-flex items-center gap-1 border border-white/10 px-2 py-0.5 text-[10px] font-[family-name:var(--font-mono)] text-white/20 cursor-pointer hover:text-white/40 hover:border-white/20 transition-colors"
+        className="hidden sm:inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-0.5 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/25 cursor-pointer hover:text-[var(--fg)]/50 hover:border-[var(--border-hover)] transition-colors"
         title="Search experiments"
         aria-label="Search experiments (Cmd+K)"
       >
@@ -116,13 +115,13 @@ export function CommandPalette() {
     <div
       ref={backdropRef}
       className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-4"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)' }}
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', backdropFilter: 'blur(4px)' }}
       onClick={(e) => {
         if (e.target === backdropRef.current) setOpen(false)
       }}
     >
       <div
-        className="w-full max-w-lg border border-[var(--border)] bg-[#0c0c0e]/95 backdrop-blur-lg shadow-2xl shadow-black/60"
+        className="w-full max-w-lg rounded-xl border border-[var(--border)] bg-white/95 backdrop-blur-lg shadow-2xl shadow-black/8"
         role="dialog"
         aria-label="Search experiments"
       >
@@ -133,7 +132,7 @@ export function CommandPalette() {
             height="16"
             viewBox="0 0 16 16"
             fill="none"
-            className="shrink-0 text-white/30"
+            className="shrink-0 text-[var(--fg)]/30"
           >
             <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.5" />
             <line
@@ -153,11 +152,11 @@ export function CommandPalette() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search experiments..."
-            className="flex-1 bg-transparent text-sm font-[family-name:var(--font-body)] text-white/90 placeholder:text-white/25 outline-none"
+            className="flex-1 bg-transparent text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/25 outline-none"
             autoComplete="off"
             spellCheck={false}
           />
-          <kbd className="shrink-0 border border-white/10 px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] text-white/20">
+          <kbd className="shrink-0 rounded border border-[var(--border)] px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/25">
             esc
           </kbd>
         </div>
@@ -165,7 +164,7 @@ export function CommandPalette() {
         {/* Results */}
         <div className="max-h-[40vh] overflow-y-auto py-1">
           {filtered.length === 0 && (
-            <div className="px-4 py-6 text-center text-sm font-[family-name:var(--font-body)] text-white/30">
+            <div className="px-4 py-6 text-center text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/30">
               No experiments match &ldquo;{query}&rdquo;
             </div>
           )}
@@ -175,8 +174,8 @@ export function CommandPalette() {
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
-                  ? 'bg-white/[0.06] text-white'
-                  : 'text-white/60 hover:bg-white/[0.03] hover:text-white/80'
+                  ? 'bg-[var(--fg)]/[0.05] text-[var(--fg)]'
+                  : 'text-[var(--fg)]/60 hover:bg-[var(--fg)]/[0.03] hover:text-[var(--fg)]/80'
               }`}
             >
               {exp.icon && (
@@ -188,7 +187,7 @@ export function CommandPalette() {
                 <div className="text-sm font-[family-name:var(--font-display)] truncate">
                   {exp.title}
                 </div>
-                <div className="mt-0.5 text-[11px] font-[family-name:var(--font-body)] text-white/30 truncate">
+                <div className="mt-0.5 text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/30 truncate">
                   {exp.description}
                 </div>
               </div>
@@ -196,7 +195,7 @@ export function CommandPalette() {
                 {exp.tags.slice(0, 2).map((tag) => (
                   <span
                     key={tag}
-                    className="text-[9px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-white/20"
+                    className="text-[9px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--fg)]/20"
                   >
                     {tag}
                   </span>
@@ -210,8 +209,8 @@ export function CommandPalette() {
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
-                ? 'bg-white/[0.06] text-white'
-                : 'text-white/40 hover:bg-white/[0.03] hover:text-white/60'
+                ? 'bg-[var(--fg)]/[0.05] text-[var(--fg)]'
+                : 'text-[var(--fg)]/40 hover:bg-[var(--fg)]/[0.03] hover:text-[var(--fg)]/60'
             }`}
           >
             <span className="text-base leading-none shrink-0" aria-hidden="true">
@@ -225,14 +224,14 @@ export function CommandPalette() {
 
         {/* Footer hints */}
         <div className="border-t border-[var(--border)] px-4 py-2 flex items-center gap-4">
-          <span className="flex items-center gap-1.5 text-[10px] font-[family-name:var(--font-mono)] text-white/20">
-            <kbd className="border border-white/10 px-1 py-px">↑↓</kbd> navigate
+          <span className="flex items-center gap-1.5 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/20">
+            <kbd className="rounded border border-[var(--border)] px-1 py-px">↑↓</kbd> navigate
           </span>
-          <span className="flex items-center gap-1.5 text-[10px] font-[family-name:var(--font-mono)] text-white/20">
-            <kbd className="border border-white/10 px-1 py-px">↵</kbd> open
+          <span className="flex items-center gap-1.5 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/20">
+            <kbd className="rounded border border-[var(--border)] px-1 py-px">↵</kbd> open
           </span>
-          <span className="flex items-center gap-1.5 text-[10px] font-[family-name:var(--font-mono)] text-white/20">
-            <kbd className="border border-white/10 px-1 py-px">esc</kbd> close
+          <span className="flex items-center gap-1.5 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/20">
+            <kbd className="rounded border border-[var(--border)] px-1 py-px">esc</kbd> close
           </span>
         </div>
       </div>

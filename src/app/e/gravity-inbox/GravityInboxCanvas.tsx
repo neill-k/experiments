@@ -419,7 +419,7 @@ export function GravityInboxCanvas({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      className="h-[58dvh] min-h-[360px] w-full touch-none border border-white/20 bg-[#020309]"
+      className="h-[58dvh] min-h-[360px] w-full touch-none rounded-lg border border-[var(--border)] bg-[var(--bg)]"
       aria-label="Gravity Inbox orbital canvas"
     />
   )

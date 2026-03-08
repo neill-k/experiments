@@ -25,10 +25,10 @@ export function ProcessingReveal({ premium, phase, practiceMode }: ProcessingRev
   return (
     <div className="px-4 pb-8" role="status" aria-live="polite">
       <div
-        className="processing-shell max-w-3xl border px-4 py-4"
+        className="processing-shell max-w-3xl rounded-lg border px-4 py-4"
         style={{
           borderColor: 'var(--border)',
-          backgroundColor: '#111216',
+          backgroundColor: 'white',
         }}
       >
         <p

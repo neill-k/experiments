@@ -80,9 +80,9 @@ export function AuthButtons() {
           onClick={() => setShowMenu(!showMenu)}
           aria-expanded={showMenu}
           aria-haspopup="true"
-          className="flex items-center gap-2 border border-[var(--border)] px-3 py-1.5 text-xs font-[family-name:var(--font-mono)] text-white/70 hover:border-[var(--border-hover)] hover:text-white/90 transition-colors"
+          className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/60 hover:border-[var(--border-hover)] hover:text-[var(--fg)]/80 transition-colors"
         >
-          <span className="flex h-5 w-5 items-center justify-center bg-white/10 text-[10px] text-white/80" aria-hidden="true">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--fg)]/8 text-[10px] text-[var(--fg)]/70" aria-hidden="true">
             {email.charAt(0).toUpperCase()}
           </span>
           <span className="hidden sm:inline max-w-[120px] truncate">{email}</span>
@@ -94,14 +94,14 @@ export function AuthButtons() {
               ref={menuRef}
               role="menu"
               aria-label="Account menu"
-              className="absolute right-0 top-full mt-1 z-50 min-w-[160px] border border-[var(--border)] bg-[#0c0c0e] p-1"
+              className="absolute right-0 top-full mt-1 z-50 min-w-[160px] rounded-lg border border-[var(--border)] bg-white shadow-lg shadow-black/5 p-1"
             >
               <Link
                 href="/account"
                 role="menuitem"
                 ref={(el) => { menuItemsRef.current[0] = el }}
                 onClick={closeMenu}
-                className="block px-3 py-2 text-xs font-[family-name:var(--font-body)] text-white/70 hover:bg-white/5 hover:text-white transition-colors"
+                className="block rounded-md px-3 py-2 text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/70 hover:bg-[var(--fg)]/5 hover:text-[var(--fg)] transition-colors"
               >
                 Account
               </Link>
@@ -112,7 +112,7 @@ export function AuthButtons() {
                   getSupabase().auth.signOut()
                   closeMenu()
                 }}
-                className="w-full text-left px-3 py-2 text-xs font-[family-name:var(--font-body)] text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                className="w-full text-left rounded-md px-3 py-2 text-xs font-[family-name:var(--font-body)] text-red-500/70 hover:bg-red-500/5 hover:text-red-600 transition-colors"
               >
                 Sign out
               </button>
@@ -125,7 +125,7 @@ export function AuthButtons() {
 
   return (
     <button
-      className="border border-[var(--border)] bg-white/[0.04] px-4 py-1.5 text-xs font-[family-name:var(--font-mono)] text-white/80 hover:border-[var(--border-hover)] hover:bg-white/[0.08] hover:text-white transition-colors disabled:opacity-40"
+      className="rounded-lg border border-[var(--border)] bg-white/60 px-4 py-1.5 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white hover:text-[var(--fg)] transition-colors disabled:opacity-40"
       onClick={signIn}
       disabled={loading}
     >

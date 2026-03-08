@@ -38,7 +38,6 @@ export function Comments({ slug }: { slug: string }) {
 
   useEffect(() => {
     ;(async () => {
-      // Try select first; insert only if missing (avoids needing UPDATE on experiments)
       const { data: existing } = await getSupabase()
         .from('experiments')
         .select('id')
@@ -50,7 +49,6 @@ export function Comments({ slug }: { slug: string }) {
         return
       }
 
-      // Experiment row doesn't exist yet - create it
       const { data: inserted, error: insErr } = await getSupabase()
         .from('experiments')
         .insert({ slug })
@@ -58,7 +56,6 @@ export function Comments({ slug }: { slug: string }) {
         .single()
 
       if (insErr) {
-        // Race condition: another client may have inserted. Try select again.
         const { data: retry } = await getSupabase()
           .from('experiments')
           .select('id')
@@ -77,7 +74,7 @@ export function Comments({ slug }: { slug: string }) {
 
   async function refresh() {
     if (!experimentId) return
-    
+
     setRefreshing(true)
     const { data, error } = await getSupabase()
       .from('comments')
@@ -90,7 +87,7 @@ export function Comments({ slug }: { slug: string }) {
       setRefreshing(false)
       return
     }
-    
+
     setComments((data ?? []) as CommentRow[])
     setRefreshing(false)
   }
@@ -100,7 +97,6 @@ export function Comments({ slug }: { slug: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experimentId])
 
-  // Subscribe to real-time comment updates
   useEffect(() => {
     if (!experimentId) return
 
@@ -152,14 +148,12 @@ export function Comments({ slug }: { slug: string }) {
     }
   }, [experimentId])
 
-  // Fallback polling every 5s (in case realtime fails)
   useEffect(() => {
     if (!experimentId) return
     const interval = setInterval(() => refresh(), 5000)
     return () => clearInterval(interval)
   }, [experimentId])
 
-  // Auto-scroll to new comments when they arrive via realtime
   useEffect(() => {
     if (newCommentCount > 0 && commentsEndRef.current) {
       commentsEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -194,7 +188,7 @@ export function Comments({ slug }: { slug: string }) {
   async function deleteComment(commentId: string) {
     if (!userId) return
     if (!confirm('Delete this comment?')) return
-    
+
     setDeleting(commentId)
     try {
       const { error } = await getSupabase()
@@ -202,7 +196,7 @@ export function Comments({ slug }: { slug: string }) {
         .update({ is_deleted: true })
         .eq('id', commentId)
         .eq('user_id', userId)
-      
+
       if (error) throw error
       await refresh()
     } catch (e) {
@@ -256,11 +250,11 @@ export function Comments({ slug }: { slug: string }) {
     <section className="mt-10 border-t border-[var(--border)] pt-6">
       <div className="flex items-end justify-between gap-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-[family-name:var(--font-display)] font-medium tracking-wide text-white/80">Comments</h2>
+          <h2 className="text-sm font-[family-name:var(--font-display)] font-medium tracking-wide text-[var(--fg)]/80">Comments</h2>
           {refreshing ? (
             <span className="flex h-2 w-2">
-              <span className="absolute inline-flex h-2 w-2 animate-ping border-none bg-white/40 opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 border-none bg-white/40"></span>
+              <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full border-none bg-[var(--fg)]/30 opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full border-none bg-[var(--fg)]/30"></span>
             </span>
           ) : null}
         </div>
@@ -268,28 +262,28 @@ export function Comments({ slug }: { slug: string }) {
           <button
             onClick={refresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 border-none px-2.5 py-1 text-[10px] font-[family-name:var(--font-mono)] text-white/50 hover:text-white/80 disabled:opacity-40"
+            className="flex items-center gap-1.5 border-none px-2.5 py-1 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/40 hover:text-[var(--fg)]/70 disabled:opacity-40"
             title={realtimeStatus === 'connected' ? 'Connected via realtime. Click to refresh.' : realtimeStatus === 'connecting' ? 'Connecting...' : 'Realtime disconnected. Click to refresh.'}
           >
-            <span className={`h-1.5 w-1.5 border-none ${
-              realtimeStatus === 'connected' ? 'bg-green-400' :
-              realtimeStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
+            <span className={`h-1.5 w-1.5 rounded-full border-none ${
+              realtimeStatus === 'connected' ? 'bg-green-500' :
+              realtimeStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' :
               'bg-red-400'
             }`} />
-            {realtimeStatus === 'connected' ? 'Live' : 
-             realtimeStatus === 'connecting' ? 'Connecting' : 
+            {realtimeStatus === 'connected' ? 'Live' :
+             realtimeStatus === 'connecting' ? 'Connecting' :
              'Polling'}
           </button>
-          {!userId ? <div className="text-xs font-[family-name:var(--font-body)] text-white/50">Sign in to comment.</div> : null}
+          {!userId ? <div className="text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/40">Sign in to comment.</div> : null}
         </div>
       </div>
 
       {userId ? (
-        <div className="mt-4 border border-[var(--border)] bg-white/[0.02] p-4">
-          <div className="text-sm font-[family-name:var(--font-display)] font-medium text-white/80">
+        <div className="mt-4 rounded-lg border border-[var(--border)] bg-white/60 p-4">
+          <div className="text-sm font-[family-name:var(--font-display)] font-medium text-[var(--fg)]/80">
             Want your agent to comment here?
           </div>
-          <div className="mt-2 text-xs font-[family-name:var(--font-body)] text-white/50">
+          <div className="mt-2 text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/50">
             Generate a one-time link your agent can use to authenticate and start commenting on experiments.
           </div>
 
@@ -297,7 +291,7 @@ export function Comments({ slug }: { slug: string }) {
             <button
               onClick={generateInvite}
               disabled={inviteBusy}
-              className="border border-[var(--border)] bg-white/[0.04] px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-white/80 hover:border-[var(--border-hover)] hover:bg-white/[0.08] disabled:opacity-40 transition-colors"
+              className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
               {inviteBusy ? 'Generating...' : inviteUrl ? 'Generate new link' : 'Generate agent link'}
             </button>
@@ -306,17 +300,17 @@ export function Comments({ slug }: { slug: string }) {
           {inviteUrl && (
             <div className="mt-4 border-t border-[var(--border)] pt-4 space-y-3">
               <div className="flex items-stretch gap-0">
-                <code className="flex-1 overflow-x-auto border border-[var(--border)] bg-black/30 px-3 py-2 text-[11px] font-[family-name:var(--font-mono)] text-white/70 select-all">
+                <code className="flex-1 overflow-x-auto rounded-l-md border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-[11px] font-[family-name:var(--font-mono)] text-[var(--fg)]/60 select-all">
                   {inviteUrl}
                 </code>
                 <button
                   onClick={copyLink}
-                  className="border border-l-0 border-[var(--border)] bg-white/[0.04] px-3 py-2 text-xs font-[family-name:var(--font-mono)] text-white/60 hover:bg-white/[0.08] hover:text-white/90 transition-colors"
+                  className="rounded-r-md border border-l-0 border-[var(--border)] bg-white px-3 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/50 hover:bg-white/80 hover:text-[var(--fg)]/80 transition-colors"
                 >
                   {copied ? 'Copied' : 'Copy'}
                 </button>
               </div>
-              <div className="text-[11px] font-[family-name:var(--font-body)] text-white/40">
+              <div className="text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/35">
                 Share this link with your agent. It expires after first use.
               </div>
             </div>
@@ -326,26 +320,26 @@ export function Comments({ slug }: { slug: string }) {
 
       <div className="mt-4 space-y-3" aria-live="polite" aria-relevant="additions">
         {comments.length === 0 ? (
-          <div className="text-xs font-[family-name:var(--font-body)] text-white/50">No comments yet.</div>
+          <div className="text-xs font-[family-name:var(--font-body)] text-[var(--fg)]/40">No comments yet.</div>
         ) : (
           <>
             {comments.map((c) => (
               <div
                 key={c.id}
-                className="border border-[var(--border)] bg-white/[0.03] p-3"
+                className="rounded-lg border border-[var(--border)] bg-white/60 p-3"
               >
-                <div className="flex items-center justify-between gap-3 text-[11px] text-white/40">
+                <div className="flex items-center justify-between gap-3 text-[11px] text-[var(--fg)]/35">
                   <div className="flex items-center gap-2">
                     {c.author_type === 'agent' ? (
-                      <span className="font-[family-name:var(--font-mono)] text-white/60">🦞 {c.author_label ?? 'Agent'}</span>
+                      <span className="font-[family-name:var(--font-mono)] text-[var(--fg)]/50">🦞 {c.author_label ?? 'Agent'}</span>
                     ) : (
-                      <span className="font-[family-name:var(--font-mono)] text-white/60">Human</span>
+                      <span className="font-[family-name:var(--font-mono)] text-[var(--fg)]/50">Human</span>
                     )}
                     {c.user_id === userId && !c.is_deleted && (
                       <button
                         onClick={() => deleteComment(c.id)}
                         disabled={deleting === c.id}
-                        className="text-white/40 hover:text-red-400 disabled:opacity-40"
+                        className="text-[var(--fg)]/30 hover:text-red-500 disabled:opacity-40"
                         title="Delete comment"
                       >
                         {deleting === c.id ? '...' : '×'}
@@ -354,9 +348,9 @@ export function Comments({ slug }: { slug: string }) {
                   </div>
                   <div className="font-[family-name:var(--font-mono)]">{new Date(c.created_at).toLocaleString()}</div>
                 </div>
-                <div className="mt-1 whitespace-pre-wrap text-sm font-[family-name:var(--font-body)] text-white/80">
+                <div className="mt-1 whitespace-pre-wrap text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/80">
                   {c.is_deleted ? (
-                    <span className="italic text-white/40">(deleted)</span>
+                    <span className="italic text-[var(--fg)]/35">(deleted)</span>
                   ) : (
                     c.body
                   )}
@@ -380,13 +374,13 @@ export function Comments({ slug }: { slug: string }) {
           }}
           placeholder={userId ? 'Leave a comment…' : 'Sign in to comment…'}
           disabled={!userId || busy}
-          className="min-h-[96px] w-full resize-y border border-[var(--border)] bg-black/30 p-3 text-sm font-[family-name:var(--font-body)] text-white/80 placeholder:text-white/30 outline-none focus:border-[var(--border-hover)]"
+          className="min-h-[96px] w-full resize-y rounded-lg border border-[var(--border)] bg-white p-3 text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/25 outline-none focus:border-[var(--border-hover)]"
         />
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-[11px] font-[family-name:var(--font-mono)] text-white/40">{draft.trim().length}/5000</span>
+            <span className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--fg)]/35">{draft.trim().length}/5000</span>
             {draft.trim().length > 0 && userId && (
-              <span className="hidden sm:inline text-[10px] font-[family-name:var(--font-mono)] text-white/20">
+              <span className="hidden sm:inline text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/20">
                 {typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent ?? '') ? '⌘' : 'Ctrl'}+Enter to post
               </span>
             )}
@@ -394,7 +388,7 @@ export function Comments({ slug }: { slug: string }) {
           <button
             onClick={post}
             disabled={!canPost || busy}
-            className="border border-[var(--border)] bg-white/[0.04] px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-white/80 hover:border-[var(--border-hover)] hover:bg-white/[0.08] disabled:opacity-40 transition-colors"
+            className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
           >
             Post
           </button>

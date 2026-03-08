@@ -31,7 +31,7 @@ export default function CommentsHistoryPage() {
     const { data } = await getSupabase()
       .from('experiments')
       .select('id, slug')
-    
+
     if (data) {
       const expMap = new Map<string, string>()
       data.forEach(e => expMap.set(e.id, e.slug))
@@ -43,7 +43,7 @@ export default function CommentsHistoryPage() {
     if (!userId) return
 
     setRefreshing(true)
-    
+
     // Load experiments for slug lookup
     await loadExperiments()
 
@@ -141,7 +141,7 @@ export default function CommentsHistoryPage() {
   async function deleteComment(commentId: string) {
     if (!userId) return
     if (!confirm('Delete this comment?')) return
-    
+
     setDeleting(commentId)
     try {
       const { error } = await getSupabase()
@@ -149,11 +149,11 @@ export default function CommentsHistoryPage() {
         .update({ is_deleted: true })
         .eq('id', commentId)
         .eq('user_id', userId)
-      
+
       if (error) throw error
-      
+
       // Update local state
-      setComments(prev => prev.map(c => 
+      setComments(prev => prev.map(c =>
         c.id === commentId ? { ...c, is_deleted: true } : c
       ))
     } catch (e) {
@@ -167,8 +167,8 @@ export default function CommentsHistoryPage() {
   if (!userId) {
     return (
       <div className="mt-8 text-center">
-        <h1 className="text-2xl font-semibold text-white">Sign in required</h1>
-        <p className="mt-2 text-sm text-white/60">Sign in to view your comment history.</p>
+        <h1 className="text-2xl font-semibold text-[var(--fg)]">Sign in required</h1>
+        <p className="mt-2 text-sm text-[var(--fg)]/50">Sign in to view your comment history.</p>
       </div>
     )
   }
@@ -176,14 +176,14 @@ export default function CommentsHistoryPage() {
   return (
     <main className="min-h-dvh px-6 py-10">
       <div className="mx-auto max-w-3xl">
-        <Link href="/account" className="text-xs text-white/60 hover:text-white/80">
+        <Link href="/account" className="text-xs text-[var(--fg)]/50 hover:text-[var(--fg)]/70">
           ← Account
         </Link>
 
         <div className="mt-6 flex items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-white">Comment History</h1>
-            <p className="mt-1 text-sm text-white/60">
+            <h1 className="text-2xl font-semibold text-[var(--fg)]">Comment History</h1>
+            <p className="mt-1 text-sm text-[var(--fg)]/50">
               All your comments across experiments.
             </p>
           </div>
@@ -191,36 +191,36 @@ export default function CommentsHistoryPage() {
             <button
               onClick={loadComments}
               disabled={refreshing}
-              className="text-xs text-white/50 hover:text-white/80 disabled:opacity-40"
+              className="text-xs text-[var(--fg)]/40 hover:text-[var(--fg)]/70 disabled:opacity-40"
             >
               {refreshing ? 'Refreshing...' : 'Refresh'}
             </button>
             <button
               onClick={loadComments}
               disabled={refreshing}
-              className="flex items-center gap-1.5 border-none border border-[#2a2a2a] px-2.5 py-1 text-[10px] text-white/50 hover:border-white/20 disabled:opacity-40"
+              className="flex items-center gap-1.5 rounded-md border border-[var(--border)] px-2.5 py-1 text-[10px] text-[var(--fg)]/40 hover:border-[var(--border-hover)] disabled:opacity-40"
               title={realtimeStatus === 'connected' ? 'Connected via realtime. Click to refresh.' : realtimeStatus === 'connecting' ? 'Connecting...' : 'Realtime disconnected. Click to refresh.'}
             >
-              <span className={`h-1.5 w-1.5 border-none ${
-                realtimeStatus === 'connected' ? 'bg-green-400' :
-                realtimeStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
+              <span className={`h-1.5 w-1.5 rounded-full border-none ${
+                realtimeStatus === 'connected' ? 'bg-green-500' :
+                realtimeStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' :
                 'bg-red-400'
               }`} />
-              {realtimeStatus === 'connected' ? 'Live' : 
-               realtimeStatus === 'connecting' ? 'Connecting' : 
+              {realtimeStatus === 'connected' ? 'Live' :
+               realtimeStatus === 'connecting' ? 'Connecting' :
                'Polling'}
             </button>
           </div>
         </div>
 
         {loading ? (
-          <div className="mt-8 text-sm text-white/50">Loading...</div>
+          <div className="mt-8 text-sm text-[var(--fg)]/40">Loading...</div>
         ) : comments.length === 0 ? (
-          <div className="mt-8 border-none border border-[#2a2a2a] bg-white/[0.02] p-6 text-center">
-            <div className="text-sm text-white/60">No comments yet.</div>
+          <div className="mt-8 rounded-lg border border-[var(--border)] bg-white/60 p-6 text-center">
+            <div className="text-sm text-[var(--fg)]/50">No comments yet.</div>
             <Link
               href="/"
-              className="mt-3 inline-block border-none border border-[#2a2a2a] px-4 py-2 text-xs text-white/80 hover:border-white/25"
+              className="mt-3 inline-block rounded-lg border border-[var(--border)] px-4 py-2 text-xs text-[var(--fg)]/70 hover:border-[var(--border-hover)]"
             >
               Browse Experiments
             </Link>
@@ -230,37 +230,37 @@ export default function CommentsHistoryPage() {
             {comments.map((comment) => (
               <div
                 key={comment.id}
-                className="border-none border border-[#2a2a2a] bg-white/[0.03] p-4"
+                className="rounded-lg border border-[var(--border)] bg-white/60 p-4"
               >
-                <div className="flex items-center justify-between gap-3 text-[11px] text-white/40">
+                <div className="flex items-center justify-between gap-3 text-[11px] text-[var(--fg)]/35">
                   <Link
                     href={`/e/${comment.experiment_slug}`}
-                    className="text-white/60 hover:text-white/80 hover:underline"
+                    className="text-[var(--fg)]/50 hover:text-[var(--fg)]/70 hover:underline"
                   >
                     {comment.experiment_slug}
                   </Link>
                   <div>{new Date(comment.created_at).toLocaleString()}</div>
                 </div>
-                <div className="mt-2 whitespace-pre-wrap text-sm text-white/80">
+                <div className="mt-2 whitespace-pre-wrap text-sm text-[var(--fg)]/80">
                   {comment.is_deleted ? (
-                    <span className="italic text-white/40">(deleted)</span>
+                    <span className="italic text-[var(--fg)]/35">(deleted)</span>
                   ) : (
                     comment.body
                   )}
                 </div>
                 <div className="mt-2 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-[11px] text-white/40">
+                  <div className="flex items-center gap-2 text-[11px] text-[var(--fg)]/35">
                     {comment.author_type === 'agent' ? (
-                      <span className="text-white/60">🦞 {comment.author_label ?? 'Agent'}</span>
+                      <span className="text-[var(--fg)]/50">🦞 {comment.author_label ?? 'Agent'}</span>
                     ) : (
-                      <span className="text-white/60">You</span>
+                      <span className="text-[var(--fg)]/50">You</span>
                     )}
                   </div>
                   {comment.user_id === userId && !comment.is_deleted && (
                     <button
                       onClick={() => deleteComment(comment.id)}
                       disabled={deleting === comment.id}
-                      className="text-[11px] text-white/40 hover:text-red-400 disabled:opacity-40"
+                      className="text-[11px] text-[var(--fg)]/35 hover:text-red-500 disabled:opacity-40"
                     >
                       {deleting === comment.id ? 'Deleting...' : 'Delete'}
                     </button>

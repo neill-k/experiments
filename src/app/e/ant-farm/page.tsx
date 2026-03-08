@@ -357,12 +357,12 @@ export default function AntFarmPage() {
 
           {/* help tooltip */}
           {showHelp && (
-            <div className="mt-3 border border-white/10 bg-white/[0.03] p-3 sm:p-4 text-[11px] font-[family-name:var(--font-mono)] text-white/40 space-y-1">
+            <div className="mt-3 rounded-lg border border-[var(--border)] bg-[var(--fg)]/[0.03] p-3 sm:p-4 text-[11px] font-[family-name:var(--font-mono)] text-[var(--fg)]/40 space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-white/60 text-xs uppercase tracking-widest">Controls</span>
+                <span className="text-[var(--fg)]/60 text-xs uppercase tracking-widest">Controls</span>
                 <button
                   onClick={() => setShowHelp(false)}
-                  className="text-white/30 hover:text-white/60 transition-colors text-xs"
+                  className="text-[var(--fg)]/30 hover:text-[var(--fg)]/60 transition-colors text-xs"
                 >
                   dismiss
                 </button>
@@ -381,7 +381,7 @@ export default function AntFarmPage() {
       </div>
 
       {/* bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#08080a]/90 backdrop-blur-sm">
+      <div className="fixed bottom-0 left-0 right-0 z-40 rounded-lg border-t border-[var(--border)] bg-white/60 backdrop-blur-sm">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-3 py-2 gap-2">
           {/* control buttons */}
           <div className="flex items-center gap-1.5">
@@ -392,10 +392,10 @@ export default function AntFarmPage() {
                 sim.paused = !sim.paused;
                 setIsPaused(sim.paused);
               }}
-              className={`font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border transition-colors ${
+              className={`rounded-lg font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border transition-colors ${
                 isPaused
                   ? 'border-amber-500/40 text-amber-400/80 bg-amber-500/10'
-                  : 'border-white/10 text-white/40 hover:text-white/70'
+                  : 'border-[var(--border)] text-[var(--fg)]/40 hover:text-[var(--fg)]/70'
               }`}
               title="Pause / Resume (Space)"
             >
@@ -410,10 +410,10 @@ export default function AntFarmPage() {
                   sim.speed = s;
                   setSpeed(s);
                 }}
-                className={`font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border transition-colors ${
+                className={`rounded-lg font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border transition-colors ${
                   speed === s
-                    ? 'border-white/30 text-white/70 bg-white/[0.06]'
-                    : 'border-white/10 text-white/30 hover:text-white/60'
+                    ? 'border-[var(--fg)]/30 text-[var(--fg)]/70 bg-[var(--fg)]/[0.06]'
+                    : 'border-[var(--border)] text-[var(--fg)]/30 hover:text-[var(--fg)]/60'
                 }`}
                 title={`Speed ${s}x`}
               >
@@ -425,7 +425,7 @@ export default function AntFarmPage() {
                 const sim = simRef.current;
                 if (sim) triggerRain(sim);
               }}
-              className="font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border border-white/10 text-white/30 hover:text-blue-400/80 hover:border-blue-500/30 transition-colors"
+              className="rounded-lg font-[family-name:var(--font-mono)] text-[11px] px-2 py-1 border border-[var(--border)] text-[var(--fg)]/30 hover:text-blue-400/80 hover:border-blue-500/30 transition-colors"
               title="Trigger Rain (R)"
             >
               🌧
@@ -433,15 +433,15 @@ export default function AntFarmPage() {
           </div>
           {/* right side */}
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline font-[family-name:var(--font-mono)] text-[11px] text-white/20">
+            <span className="hidden sm:inline font-[family-name:var(--font-mono)] text-[11px] text-[var(--fg)]/20">
               Ant Farm
             </span>
             <button
               onClick={() => setShowHelp((h) => !h)}
-              className={`font-[family-name:var(--font-mono)] text-[11px] px-1.5 py-0.5 border transition-colors ${
+              className={`rounded-lg font-[family-name:var(--font-mono)] text-[11px] px-1.5 py-0.5 border transition-colors ${
                 showHelp
-                  ? 'border-white/30 text-white/70 bg-white/[0.06]'
-                  : 'border-white/10 text-white/25 hover:text-white/50'
+                  ? 'border-[var(--fg)]/30 text-[var(--fg)]/70 bg-[var(--fg)]/[0.06]'
+                  : 'border-[var(--border)] text-[var(--fg)]/25 hover:text-[var(--fg)]/50'
               }`}
               title="Toggle controls help (?)"
             >
@@ -451,13 +451,13 @@ export default function AntFarmPage() {
               href="https://github.com/neill-k/experiments/tree/main/src/app/e/ant-farm"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-[family-name:var(--font-mono)] text-[11px] text-white/15 hover:text-white/40 transition-colors"
+              className="font-[family-name:var(--font-mono)] text-[11px] text-[var(--fg)]/15 hover:text-[var(--fg)]/40 transition-colors"
             >
               &lt;/&gt;
             </a>
             <button
               onClick={() => setShowComments((s) => !s)}
-              className="font-[family-name:var(--font-mono)] text-[11px] text-white/40 hover:text-white/70 transition-colors"
+              className="font-[family-name:var(--font-mono)] text-[11px] text-[var(--fg)]/40 hover:text-[var(--fg)]/70 transition-colors"
             >
               {showComments ? 'hide comments' : 'comments'}
             </button>
@@ -467,12 +467,12 @@ export default function AntFarmPage() {
 
       {/* comments slide-out */}
       {showComments && (
-        <div className="fixed inset-y-0 right-0 z-50 w-full max-w-sm border-l border-white/10 bg-[#08080a]/95 backdrop-blur-md overflow-y-auto pt-16 pb-16 px-4">
+        <div className="fixed inset-y-0 right-0 z-50 w-full max-w-sm rounded-lg border-l border-[var(--border)] bg-white/60 backdrop-blur-md overflow-y-auto pt-16 pb-16 px-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-[family-name:var(--font-display)] text-lg text-white/80">Comments</h2>
+            <h2 className="font-[family-name:var(--font-display)] text-lg text-[var(--fg)]/80">Comments</h2>
             <button
               onClick={() => setShowComments(false)}
-              className="text-white/30 hover:text-white/60 transition-colors text-sm"
+              className="text-[var(--fg)]/30 hover:text-[var(--fg)]/60 transition-colors text-sm"
             >
               ✕
             </button>

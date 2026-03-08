@@ -20,10 +20,10 @@ const MarkdownPreview = dynamic(
     ssr: false,
     loading: () => (
       <div className="animate-pulse space-y-2">
-        <div className="h-4 w-3/4 rounded bg-zinc-800" />
-        <div className="h-4 w-1/2 rounded bg-zinc-800" />
-        <div className="h-4 w-5/6 rounded bg-zinc-800" />
-        <div className="h-4 w-2/3 rounded bg-zinc-800" />
+        <div className="h-4 w-3/4 rounded bg-[var(--border)]" />
+        <div className="h-4 w-1/2 rounded bg-[var(--border)]" />
+        <div className="h-4 w-5/6 rounded bg-[var(--border)]" />
+        <div className="h-4 w-2/3 rounded bg-[var(--border)]" />
       </div>
     ),
   }
@@ -191,22 +191,22 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#08080a] text-[#ebebeb] overflow-x-hidden">
-      <header className="border-b border-[#2a2a2a] bg-[#08080a]">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] overflow-x-hidden">
+      <header className="border-b border-[var(--border)] bg-[var(--bg)]">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div>
             <h1 className="text-lg font-semibold tracking-tight">
               Agent Spec Builder
             </h1>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-[var(--fg)]/50">
               Turn an agent idea into an implementable Markdown spec (no backend  - 
               stays in your browser).
             </p>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-500">
-              <span className="border border-[#2a2a2a] px-2 py-0.5">1) Fill a few fields</span>
-              <span className="border border-[#2a2a2a] px-2 py-0.5">2) Get structured SPEC.md output</span>
-              <span className="border border-[#2a2a2a] px-2 py-0.5">3) Export pack + prompt tests</span>
-              <Link href="/e/agent-spec-builder/examples" className="underline underline-offset-2 hover:text-zinc-300">
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-[var(--fg)]/50">
+              <span className="rounded-lg border border-[var(--border)] px-2 py-0.5">1) Fill a few fields</span>
+              <span className="rounded-lg border border-[var(--border)] px-2 py-0.5">2) Get structured SPEC.md output</span>
+              <span className="rounded-lg border border-[var(--border)] px-2 py-0.5">3) Export pack + prompt tests</span>
+              <Link href="/e/agent-spec-builder/examples" className="underline underline-offset-2 hover:text-[var(--fg)]">
                 Quick examples →
               </Link>
             </div>
@@ -214,19 +214,19 @@ export default function Home() {
 
           <div className="flex items-center gap-3">
             {saveStatus !== "idle" && (
-              <span className="text-[11px] text-zinc-600 tabular-nums transition-opacity duration-300">
+              <span className="text-[11px] text-[var(--fg)]/40 tabular-nums transition-opacity duration-300">
                 {saveStatus === "saving" ? "Saving…" : "Saved"}
               </span>
             )}
             <a
               href="/e/agent-spec-builder/examples"
-              className="text-sm text-zinc-500 hover:text-[#ebebeb]"
+              className="text-sm text-[var(--fg)]/50 hover:text-[var(--fg)]"
             >
               Examples
             </a>
             <a
               href="https://github.com"
-              className="text-sm text-zinc-500 hover:text-[#ebebeb]"
+              className="text-sm text-[var(--fg)]/50 hover:text-[var(--fg)]"
               target="_blank"
               rel="noreferrer"
               title="Repo link is in README after you deploy"
@@ -238,11 +238,11 @@ export default function Home() {
       </header>
 
       <div className="mx-auto grid max-w-6xl gap-4 px-4 py-6 grid-cols-1 lg:grid-cols-2 overflow-hidden">
-        <section className="border border-[#2a2a2a] bg-[#08080a] p-4">
+        <section className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="text-base font-semibold">Inputs</h2>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-[var(--fg)]/50">
                 Keep it rough. The output is meant to be iterated with your team.
               </p>
             </div>
@@ -251,7 +251,7 @@ export default function Home() {
               {presets.map((p) => (
                 <button
                   key={p.id}
-                  className="border border-[#2a2a2a] bg-[#08080a] px-3 py-1 text-sm text-zinc-400 hover:bg-[#2a2a2a] hover:text-[#ebebeb]"
+                  className="rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-1 text-sm text-[var(--fg)]/70 hover:bg-[var(--fg)]/8 hover:text-[var(--fg)]"
                   onClick={() => {
                     setInput(p.data);
                     setStats(trackEvent("presetLoads"));
@@ -262,7 +262,7 @@ export default function Home() {
                 </button>
               ))}
               <button
-                className="border border-[#2a2a2a] bg-[#08080a] px-3 py-1 text-sm text-zinc-400 hover:bg-[#2a2a2a] hover:text-[#ebebeb]"
+                className="rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-1 text-sm text-[var(--fg)]/70 hover:bg-[var(--fg)]/8 hover:text-[var(--fg)]"
                 onClick={() => setInput(empty)}
                 type="button"
               >
@@ -272,21 +272,21 @@ export default function Home() {
           </div>
 
           {/* Spec Quality Meter */}
-          <div className="mt-4 border border-[#2a2a2a] bg-[#0a0a0c] p-3">
+          <div className="mt-4 border border-[var(--border)] bg-white p-3">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-medium text-zinc-300">
+              <div className="text-sm font-medium text-[var(--fg)]">
                 Spec completeness
               </div>
               <div className="flex items-center gap-2">
                 <span className={`text-sm font-semibold tabular-nums ${qualityTextColor(quality.score)}`}>
                   {quality.score}%
                 </span>
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-[var(--fg)]/50">
                   {qualityLabel(quality.score)}
                 </span>
               </div>
             </div>
-            <div className="mt-2 h-2 w-full overflow-hidden bg-[#1a1a1a] rounded-full">
+            <div className="mt-2 h-2 w-full overflow-hidden bg-[var(--border)] rounded-full">
               <div
                 className={`h-full transition-all duration-500 ease-out rounded-full ${qualityColor(quality.score)}`}
                 style={{ width: `${quality.score}%` }}
@@ -296,21 +296,21 @@ export default function Home() {
               {quality.categories.map((cat) => (
                 <span
                   key={cat.key}
-                  className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium tracking-wide border ${
+                  className={`inline-flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-[10px] font-medium tracking-wide border ${
                     cat.filled
                       ? "border-emerald-800/40 bg-emerald-950/20 text-emerald-500"
-                      : "border-[#2a2a2a] bg-[#08080a] text-zinc-600"
+                      : "border-[var(--border)] bg-[var(--bg)] text-[var(--fg)]/40"
                   }`}
                   title={cat.suggestion || `${cat.label}: complete`}
                 >
-                  <span className={`inline-block h-1.5 w-1.5 rounded-full ${cat.filled ? "bg-emerald-500" : "bg-zinc-700"}`} />
+                  <span className={`inline-block h-1.5 w-1.5 rounded-full ${cat.filled ? "bg-emerald-500" : "bg-[var(--fg)]/30"}`} />
                   {cat.label}
                 </span>
               ))}
             </div>
             {quality.categories.some((c) => c.suggestion) && (
-              <div className="mt-2 text-[11px] text-zinc-600 leading-snug">
-                <span className="text-zinc-500">Next up:</span>{" "}
+              <div className="mt-2 text-[11px] text-[var(--fg)]/40 leading-snug">
+                <span className="text-[var(--fg)]/50">Next up:</span>{" "}
                 {quality.categories.find((c) => c.suggestion && !c.filled)?.suggestion}
               </div>
             )}
@@ -360,14 +360,14 @@ export default function Home() {
               hint="Include permission level for each tool - e.g., read-only, requires human approval, fully autonomous."
             />
 
-            <div className="border border-[#2a2a2a] bg-[#0a0a0c] p-3">
+            <div className="rounded-lg border border-[var(--border)] bg-white p-3">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div className="text-sm font-medium text-zinc-300">
+                <div className="text-sm font-medium text-[var(--fg)]">
                   Tool Contracts (structured)
                 </div>
                 <button
                   type="button"
-                  className="bg-[#ebebeb] px-2 py-1 text-xs font-medium text-[#08080a] hover:bg-white"
+                  className="rounded-lg bg-[var(--fg)] px-2 py-1 text-xs font-medium text-[var(--bg)] hover:bg-[var(--fg)]/90"
                   onClick={() => {
                     const newContract: ToolContract = {
                       id: crypto.randomUUID(),
@@ -390,7 +390,7 @@ export default function Home() {
                   + Add tool
                 </button>
               </div>
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-[var(--fg)]/50">
                 Add structured contracts for each tool (auth, rate limits, error modes, PII, idempotency).
               </p>
 
@@ -399,7 +399,7 @@ export default function Home() {
                   {input.toolContracts.map((tc, idx) => (
                     <div
                       key={tc.id}
-                      className="border border-[#2a2a2a] bg-[#08080a] p-3"
+                      className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3"
                     >
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                         <input
@@ -410,7 +410,7 @@ export default function Home() {
                             setInput({ ...input, toolContracts: updated });
                           }}
                           placeholder="Tool name (e.g., Slack: post message)"
-                          className="flex-1 w-full min-w-0 border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-sm text-[#ebebeb]"
+                          className="flex-1 w-full min-w-0 rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-sm text-[var(--fg)]"
                         />
                         <button
                           type="button"
@@ -434,7 +434,7 @@ export default function Home() {
                             setInput({ ...input, toolContracts: updated });
                           }}
                           placeholder="Purpose (what does this tool do?)"
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                         <input
                           value={tc.auth}
@@ -444,7 +444,7 @@ export default function Home() {
                             setInput({ ...input, toolContracts: updated });
                           }}
                           placeholder="Auth (e.g., OAuth2, API key, user-approved)"
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                         <input
                           value={tc.rateLimit}
@@ -454,7 +454,7 @@ export default function Home() {
                             setInput({ ...input, toolContracts: updated });
                           }}
                           placeholder="Rate limit (e.g., 100 req/min)"
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                         <div className="flex items-center gap-2">
                           <input
@@ -467,7 +467,7 @@ export default function Home() {
                             }}
                             className="h-4 w-4"
                           />
-                          <span className="text-xs text-zinc-400">Idempotent</span>
+                          <span className="text-xs text-[var(--fg)]/70">Idempotent</span>
                         </div>
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -480,7 +480,7 @@ export default function Home() {
                           }}
                           placeholder="Inputs (what data does it need?)"
                           rows={2}
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                         <textarea
                           value={tc.outputs}
@@ -491,7 +491,7 @@ export default function Home() {
                           }}
                           placeholder="Outputs (what does it return?)"
                           rows={2}
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -504,7 +504,7 @@ export default function Home() {
                           }}
                           placeholder="Failure modes (what can go wrong?)"
                           rows={2}
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                         <textarea
                           value={tc.piiHandling}
@@ -515,7 +515,7 @@ export default function Home() {
                           }}
                           placeholder="PII handling (any personal data?)"
                           rows={2}
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                       </div>
                     </div>
@@ -545,8 +545,8 @@ export default function Home() {
               hint="Think: compliance, security, rate limits, cost caps, and human-in-the-loop requirements."
             />
 
-            <div className="mt-1 border border-[#2a2a2a] bg-[#0a0a0c] p-3">
-              <div className="text-sm font-medium text-zinc-300">
+            <div className="mt-1 border border-[var(--border)] bg-white p-3">
+              <div className="text-sm font-medium text-[var(--fg)]">
                 Cost / latency budget (optional)
               </div>
               <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -612,20 +612,20 @@ export default function Home() {
             />
 
             {/* Eval Rubric Builder */}
-            <div className="border border-[#2a2a2a] bg-[#0a0a0c] p-3">
+            <div className="rounded-lg border border-[var(--border)] bg-white p-3">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <div className="text-sm font-medium text-zinc-300">
+                  <div className="text-sm font-medium text-[var(--fg)]">
                     Eval Rubric
                   </div>
-                  <p className="mt-0.5 text-[11px] text-zinc-600 leading-snug">
+                  <p className="mt-0.5 text-[11px] text-[var(--fg)]/40 leading-snug">
                     Define test cases before building - what does "working correctly" look like?
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
-                    className="bg-[#ebebeb] px-2 py-1 text-xs font-medium text-[#08080a] hover:bg-white"
+                    className="rounded-lg bg-[var(--fg)] px-2 py-1 text-xs font-medium text-[var(--bg)] hover:bg-[var(--fg)]/90"
                     onClick={() => {
                       const newCase: EvalCase = {
                         id: crypto.randomUUID(),
@@ -646,7 +646,7 @@ export default function Home() {
                   {(input.evalCases?.length ?? 0) === 0 && (
                     <button
                       type="button"
-                      className="border border-emerald-700/50 bg-emerald-950/30 px-2 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-900/40 hover:text-emerald-300"
+                      className="rounded-lg border border-emerald-700/50 bg-emerald-950/30 px-2 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-900/40 hover:text-emerald-300"
                       onClick={() => {
                         const starters: EvalCase[] = [
                           {
@@ -704,11 +704,11 @@ export default function Home() {
                   {input.evalCases.map((ec, idx) => (
                     <div
                       key={ec.id}
-                      className="border border-[#2a2a2a] bg-[#08080a] p-3"
+                      className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3"
                     >
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <span className="shrink-0 font-mono text-[10px] text-zinc-600 tabular-nums">
+                          <span className="shrink-0 font-mono text-[10px] text-[var(--fg)]/40 tabular-nums">
                             #{idx + 1}
                           </span>
                           <select
@@ -718,7 +718,7 @@ export default function Home() {
                               updated[idx] = { ...ec, category: e.target.value as EvalCase["category"] };
                               setInput({ ...input, evalCases: updated });
                             }}
-                            className="border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                            className="rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                           >
                             {EVAL_CATEGORIES.map((cat) => (
                               <option key={cat.value} value={cat.value}>
@@ -726,7 +726,7 @@ export default function Home() {
                               </option>
                             ))}
                           </select>
-                          <span className="text-[10px] text-zinc-600 truncate hidden sm:inline">
+                          <span className="text-[10px] text-[var(--fg)]/40 truncate hidden sm:inline">
                             {EVAL_CATEGORIES.find(c => c.value === ec.category)?.description}
                           </span>
                         </div>
@@ -750,7 +750,7 @@ export default function Home() {
                             setInput({ ...input, evalCases: updated });
                           }}
                           placeholder="Scenario (what situation is being tested?)"
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                         <input
                           value={ec.input}
@@ -760,7 +760,7 @@ export default function Home() {
                             setInput({ ...input, evalCases: updated });
                           }}
                           placeholder="Input (what triggers this test?)"
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -772,7 +772,7 @@ export default function Home() {
                             setInput({ ...input, evalCases: updated });
                           }}
                           placeholder="Expected behavior (what should the agent do?)"
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                         <input
                           value={ec.passCriteria}
@@ -782,7 +782,7 @@ export default function Home() {
                             setInput({ ...input, evalCases: updated });
                           }}
                           placeholder="Pass criteria (how do you know it passed?)"
-                          className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-2 py-1 text-xs text-[#ebebeb]"
+                          className="w-full rounded-lg border border-[var(--border)] bg-white px-2 py-1 text-xs text-[var(--fg)]"
                         />
                       </div>
                     </div>
@@ -793,21 +793,21 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border border-[#2a2a2a] bg-[#08080a] p-4">
+        <section className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="text-base font-semibold">Generated Spec</h2>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-[var(--fg)]/50">
                 Copy/paste into a repo, doc, ticket, or PRD.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <div className="flex border border-[#2a2a2a] bg-[#0a0a0c] p-1">
+              <div className="flex rounded-lg border border-[var(--border)] bg-white p-1">
                 <button
-                  className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                     previewMode === "raw"
-                      ? "bg-[#2a2a2a] text-[#ebebeb]"
-                      : "text-zinc-500 hover:text-[#ebebeb]"
+                      ? "bg-[var(--fg)]/8 text-[var(--fg)]"
+                      : "text-[var(--fg)]/50 hover:text-[var(--fg)]"
                   }`}
                   onClick={() => setPreviewMode("raw")}
                   type="button"
@@ -815,10 +815,10 @@ export default function Home() {
                   Raw
                 </button>
                 <button
-                  className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                     previewMode === "preview"
-                      ? "bg-[#2a2a2a] text-[#ebebeb]"
-                      : "text-zinc-500 hover:text-[#ebebeb]"
+                      ? "bg-[var(--fg)]/8 text-[var(--fg)]"
+                      : "text-[var(--fg)]/50 hover:text-[var(--fg)]"
                   }`}
                   onClick={() => setPreviewMode("preview")}
                   type="button"
@@ -827,14 +827,14 @@ export default function Home() {
                 </button>
               </div>
               <button
-                className="bg-[#ebebeb] px-3 py-2 text-sm font-medium text-[#08080a] hover:bg-white"
+                className="rounded-lg bg-[var(--fg)] px-3 py-2 text-sm font-medium text-[var(--bg)] hover:bg-[var(--fg)]/90"
                 onClick={copy}
                 type="button"
               >
                 Copy
               </button>
               <button
-                className="border border-[#2a2a2a] bg-[#08080a] px-3 py-2 text-sm font-medium text-zinc-400 hover:bg-[#2a2a2a] hover:text-[#ebebeb]"
+                className="rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm font-medium text-[var(--fg)]/70 hover:bg-[var(--fg)]/8 hover:text-[var(--fg)]"
                 onClick={copyShareLink}
                 type="button"
                 title="Copy a shareable link that includes the current inputs"
@@ -842,7 +842,7 @@ export default function Home() {
                 Share link
               </button>
               <button
-                className="border border-[#2a2a2a] bg-[#08080a] px-3 py-2 text-sm font-medium text-zinc-400 hover:bg-[#2a2a2a] hover:text-[#ebebeb]"
+                className="rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm font-medium text-[var(--fg)]/70 hover:bg-[var(--fg)]/8 hover:text-[var(--fg)]"
                 onClick={() => {
                   downloadText(
                     `${(input.appName || "agent-spec")
@@ -858,7 +858,7 @@ export default function Home() {
                 Download .md
               </button>
               <button
-                className="border border-emerald-700/50 bg-emerald-950/30 px-3 py-2 text-sm font-medium text-emerald-400 hover:bg-emerald-900/40 hover:text-emerald-300"
+                className="rounded-lg border border-emerald-700/50 bg-emerald-950/30 px-3 py-2 text-sm font-medium text-emerald-400 hover:bg-emerald-900/40 hover:text-emerald-300"
                 onClick={async () => {
                   try {
                     await downloadExportPack(input);
@@ -875,7 +875,7 @@ export default function Home() {
                 Export Pack (.zip)
               </button>
               <button
-                className="border border-amber-700/50 bg-amber-950/30 px-3 py-2 text-sm font-medium text-amber-400 hover:bg-amber-900/40 hover:text-amber-300"
+                className="rounded-lg border border-amber-700/50 bg-amber-950/30 px-3 py-2 text-sm font-medium text-amber-400 hover:bg-amber-900/40 hover:text-amber-300"
                 onClick={() => {
                   try {
                     downloadPromptPack(input);
@@ -895,33 +895,33 @@ export default function Home() {
           </div>
 
           {toast ? (
-            <div className="mt-3 border border-[#2a2a2a] bg-[#0a0a0c] px-3 py-2 text-sm text-zinc-400">
+            <div className="mt-3 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm text-[var(--fg)]/70">
               {toast}
             </div>
           ) : null}
 
-          <div className="mt-4 border border-[#2a2a2a] bg-[#0a0a0c] p-3">
+          <div className="mt-4 border border-[var(--border)] bg-white p-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="text-sm font-medium text-zinc-300">Spec lint</div>
-              <div className="text-xs text-zinc-500">
+              <div className="text-sm font-medium text-[var(--fg)]">Spec lint</div>
+              <div className="text-xs text-[var(--fg)]/50">
                 {findings.length === 0
                   ? "No obvious gaps"
                   : `${findings.length} suggestion${findings.length === 1 ? "" : "s"}`}
               </div>
             </div>
             {findings.length ? (
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-zinc-400">
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-[var(--fg)]/70">
                 {findings.map((f) => (
                   <li key={f.id}>
-                    <span className="font-medium text-zinc-300">{f.title}</span>
+                    <span className="font-medium text-[var(--fg)]">{f.title}</span>
                     {f.detail ? (
-                      <span className="text-zinc-500"> - {f.detail}</span>
+                      <span className="text-[var(--fg)]/50"> - {f.detail}</span>
                     ) : null}
                   </li>
                 ))}
               </ul>
             ) : (
-              <div className="mt-2 text-xs text-zinc-500">
+              <div className="mt-2 text-xs text-[var(--fg)]/50">
                 Looks decent for an MVP. If you're handing this to an engineer,
                 add one or two concrete eval cases next.
               </div>
@@ -929,16 +929,16 @@ export default function Home() {
           </div>
 
           {previewMode === "raw" ? (
-            <pre className="mt-4 max-h-[60vh] overflow-auto border border-[#2a2a2a] bg-[#0a0a0c] p-4 text-xs leading-5 text-zinc-300 whitespace-pre-wrap break-words">
+            <pre className="mt-4 max-h-[60vh] overflow-auto rounded-lg border border-[var(--border)] bg-white p-4 text-xs leading-5 text-[var(--fg)] whitespace-pre-wrap break-words">
               <code>{md}</code>
             </pre>
           ) : (
-            <div className="mt-4 max-h-[60vh] overflow-auto border border-[#2a2a2a] bg-[#08080a] p-4 prose prose-sm prose-invert max-w-none break-words">
+            <div className="mt-4 max-h-[60vh] overflow-auto rounded-lg border border-[var(--border)] bg-[var(--bg)] p-4 prose prose-sm prose-neutral max-w-none break-words">
               <MarkdownPreview>{md}</MarkdownPreview>
             </div>
           )}
 
-          <div className="mt-4 text-xs text-zinc-600">
+          <div className="mt-4 text-xs text-[var(--fg)]/40">
             MVP note: this tool intentionally avoids calling an LLM. It encodes a
             good structure so humans (or your own model setup) can fill in the
             details.
@@ -946,8 +946,8 @@ export default function Home() {
         </section>
       </div>
 
-      <footer className="border-t border-[#2a2a2a] bg-[#08080a]">
-        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-xs text-zinc-600">
+      <footer className="border-t border-[var(--border)] bg-[var(--bg)]">
+        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-xs text-[var(--fg)]/40">
           <div>
             Built with Next.js + TypeScript + Tailwind. Client-only. No tracking.
           </div>
@@ -956,8 +956,8 @@ export default function Home() {
             projects from drifting.
           </div>
           {stats && formatStatsSummary(stats) && (
-            <div className="mt-1 flex items-center gap-1.5 text-zinc-700">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-zinc-700" />
+            <div className="mt-1 flex items-center gap-1.5 text-[var(--fg)]/30">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--fg)]/30" />
               <span>Your local usage: {formatStatsSummary(stats)}</span>
             </div>
           )}
@@ -986,15 +986,15 @@ function Field(props: {
 }) {
   return (
     <label className="grid gap-1">
-      <div className="text-sm font-medium text-zinc-400">{props.label}</div>
+      <div className="text-sm font-medium text-[var(--fg)]/70">{props.label}</div>
       {props.hint && (
-        <div className="text-[11px] text-zinc-600 leading-snug">{props.hint}</div>
+        <div className="text-[11px] text-[var(--fg)]/40 leading-snug">{props.hint}</div>
       )}
       <input
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
         placeholder={props.placeholder}
-        className="h-10 w-full border border-[#2a2a2a] bg-[#0a0a0c] px-3 text-sm text-[#ebebeb] outline-none ring-zinc-700 focus:ring-2"
+        className="h-10 w-full rounded-lg border border-[var(--border)] bg-white px-3 text-sm text-[var(--fg)] outline-none ring-[var(--fg)]/20 focus:ring-2"
       />
     </label>
   );
@@ -1010,16 +1010,16 @@ function TextArea(props: {
 }) {
   return (
     <label className="grid gap-1">
-      <div className="text-sm font-medium text-zinc-400">{props.label}</div>
+      <div className="text-sm font-medium text-[var(--fg)]/70">{props.label}</div>
       {props.hint && (
-        <div className="text-[11px] text-zinc-600 leading-snug">{props.hint}</div>
+        <div className="text-[11px] text-[var(--fg)]/40 leading-snug">{props.hint}</div>
       )}
       <textarea
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
         placeholder={props.placeholder}
         rows={props.rows ?? 4}
-        className="w-full border border-[#2a2a2a] bg-[#0a0a0c] px-3 py-2 text-sm text-[#ebebeb] outline-none ring-zinc-700 focus:ring-2"
+        className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm text-[var(--fg)] outline-none ring-[var(--fg)]/20 focus:ring-2"
       />
     </label>
   );

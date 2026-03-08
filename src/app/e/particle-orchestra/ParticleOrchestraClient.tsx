@@ -216,15 +216,15 @@ export function ParticleOrchestraClient() {
   return (
     <div className="mx-auto w-full max-w-[1600px] px-3 py-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.8fr)] lg:gap-6">
-        <section className="border border-white/20 bg-[#08080d]">
-          <header className="flex items-center justify-between border-b border-white/15 px-3 py-2 sm:px-4 sm:py-3">
+        <section className="rounded-lg border border-[var(--border)] bg-[var(--bg)]">
+          <header className="flex items-center justify-between border-b border-[var(--border)] px-3 py-2 sm:px-4 sm:py-3">
             <div>
               <h1 className="font-[family-name:var(--font-display)] text-lg tracking-[0.02em] sm:text-xl">Particle Orchestra</h1>
-              <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.16em] text-white/60 sm:text-[11px]">
+              <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.16em] text-[var(--fg)]/60 sm:text-[11px]">
                 tap + drag to conduct sound and light
               </p>
             </div>
-            <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-white/70 sm:text-[11px]">
+            <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-[var(--fg)]/70 sm:text-[11px]">
               {intensityLabel}
             </div>
           </header>
@@ -238,12 +238,12 @@ export function ParticleOrchestraClient() {
               }}
               onPointerUp={onPointer}
               onPointerLeave={onPointer}
-              className="h-[58dvh] min-h-[320px] w-full touch-none border border-white/15 bg-[#050509]"
+              className="h-[58dvh] min-h-[320px] w-full touch-none rounded-lg border border-[var(--border)] bg-white"
             />
           </div>
         </section>
 
-        <aside className="border border-white/20 bg-[#0a0a11] p-3 sm:p-4">
+        <aside className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3 sm:p-4">
           <div className="space-y-3">
             <button
               type="button"
@@ -251,20 +251,20 @@ export function ParticleOrchestraClient() {
                 if (playing) stop()
                 else void start()
               }}
-              className="w-full border border-white/25 bg-white/5 px-3 py-2 text-left font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.14em] hover:bg-white/10"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--fg)]/5 px-3 py-2 text-left font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.14em] hover:bg-[var(--fg)]/8"
             >
               {playing ? 'Pause Orchestra' : 'Start Orchestra'}
             </button>
             <button
               type="button"
               onClick={() => void burst()}
-              className="w-full border border-fuchsia-300/50 bg-fuchsia-400/10 px-3 py-2 text-left font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.14em] hover:bg-fuchsia-400/20"
+              className="w-full rounded-lg border border-fuchsia-300/50 bg-fuchsia-400/10 px-3 py-2 text-left font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.14em] hover:bg-fuchsia-400/20"
             >
               Drop a Burst
             </button>
 
-            <label className="block border border-white/15 p-3">
-              <div className="mb-2 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-white/65">energy</div>
+            <label className="block rounded-lg border border-[var(--border)] p-3">
+              <div className="mb-2 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-[var(--fg)]/65">energy</div>
               <input
                 type="range"
                 min={0}
@@ -280,12 +280,12 @@ export function ParticleOrchestraClient() {
               />
             </label>
 
-            <label className="block border border-white/15 p-3">
-              <div className="mb-2 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-white/65">palette</div>
+            <label className="block rounded-lg border border-[var(--border)] p-3">
+              <div className="mb-2 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-[var(--fg)]/65">palette</div>
               <select
                 value={palette}
                 onChange={(event) => setPalette(event.target.value as Palette)}
-                className="w-full border border-white/20 bg-black px-2 py-2 font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.12em]"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-2 py-2 font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.12em]"
               >
                 <option value="neon">Neon Choir</option>
                 <option value="heat">Solar Brass</option>
@@ -294,7 +294,7 @@ export function ParticleOrchestraClient() {
             </label>
           </div>
 
-          <p className="mt-4 border-t border-white/10 pt-4 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-white/55">
+          <p className="mt-4 border-t border-[var(--border)] pt-4 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-[var(--fg)]/55">
             mobile tip: hold + drag vertically for pitch/energy, horizontally for spread.
           </p>
         </aside>

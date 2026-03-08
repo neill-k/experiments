@@ -107,10 +107,10 @@ export function AnswerInput({
 
         {/* Pre-submit data-use disclosure */}
         <div
-          className="mt-4 border px-3 py-3"
+          className="mt-4 rounded-lg border px-3 py-3"
           style={{
             borderColor: 'var(--border)',
-            backgroundColor: 'rgba(255, 255, 255, 0.02)',
+            backgroundColor: 'rgba(44, 44, 44, 0.03)',
           }}
         >
           <p
@@ -146,10 +146,10 @@ export function AnswerInput({
           {showLearnMore && (
             <div
               id="hard-question-disclosure-details"
-              className="mt-3 border px-3 py-3"
+              className="mt-3 rounded-lg border px-3 py-3"
               style={{
                 borderColor: 'var(--border)',
-                backgroundColor: '#0f1013',
+                backgroundColor: 'white',
               }}
             >
               <ul
@@ -210,7 +210,7 @@ export function AnswerInput({
             <button
               onClick={handleSubmit}
               disabled={!text.trim() || submitting || disabled}
-              className="submit-btn px-6 py-3 text-sm font-medium tracking-wide transition-all"
+              className="submit-btn rounded-lg px-6 py-3 text-sm font-medium tracking-wide transition-all"
               style={{
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--fg)',

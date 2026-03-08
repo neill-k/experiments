@@ -38,16 +38,16 @@ export function TagFilter({
         onClick={() => setTag(null)}
         aria-label={`Show all experiments (${totalCount})`}
         aria-pressed={normalizedActiveTag === null}
-        className={`group flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
+        className={`group flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
           normalizedActiveTag === null
-            ? 'border-white/30 text-white/80 bg-white/[0.08]'
-            : 'border-[var(--border)] text-white/30 hover:text-white/50 hover:border-[var(--border-hover)]'
+            ? 'border-[var(--fg)]/20 text-[var(--fg)]/70 bg-[var(--fg)]/[0.06]'
+            : 'border-[var(--border)] text-[var(--fg)]/30 hover:text-[var(--fg)]/50 hover:border-[var(--border-hover)]'
         }`}
       >
         all
         <span
           className={`text-[9px] tabular-nums transition-colors ${
-            normalizedActiveTag === null ? 'text-white/40' : 'text-white/15 group-hover:text-white/25'
+            normalizedActiveTag === null ? 'text-[var(--fg)]/35' : 'text-[var(--fg)]/15 group-hover:text-[var(--fg)]/25'
           }`}
         >
           {totalCount}
@@ -63,16 +63,16 @@ export function TagFilter({
               : `Filter by ${tag} (${tagCounts[tag] ?? 0} experiments)`
           }
           aria-pressed={normalizedActiveTag === tag}
-          className={`group flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
+          className={`group flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider border transition-colors ${
             normalizedActiveTag === tag
-              ? 'border-white/30 text-white/80 bg-white/[0.08]'
-              : 'border-[var(--border)] text-white/30 hover:text-white/50 hover:border-[var(--border-hover)]'
+              ? 'border-[var(--fg)]/20 text-[var(--fg)]/70 bg-[var(--fg)]/[0.06]'
+              : 'border-[var(--border)] text-[var(--fg)]/30 hover:text-[var(--fg)]/50 hover:border-[var(--border-hover)]'
           }`}
         >
           {tag}
           <span
             className={`text-[9px] tabular-nums transition-colors ${
-              normalizedActiveTag === tag ? 'text-white/40' : 'text-white/15 group-hover:text-white/25'
+              normalizedActiveTag === tag ? 'text-[var(--fg)]/35' : 'text-[var(--fg)]/15 group-hover:text-[var(--fg)]/25'
             }`}
           >
             {tagCounts[tag] ?? 0}

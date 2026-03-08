@@ -55,7 +55,7 @@ export function NavDropdown() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="true"
-        className="flex items-center gap-1 text-white/50 hover:text-white/80 transition-colors"
+        className="flex items-center gap-1 text-[var(--fg)]/40 hover:text-[var(--fg)]/70 transition-colors"
         title="Jump to experiment"
       >
         <svg
@@ -77,11 +77,11 @@ export function NavDropdown() {
 
       {open && (
         <div
-          className="absolute left-0 top-full mt-2 w-72 border border-[var(--border)] bg-[#0c0c0e]/95 backdrop-blur-lg shadow-xl shadow-black/40 z-50"
+          className="absolute left-0 top-full mt-2 w-72 rounded-xl border border-[var(--border)] bg-white/95 backdrop-blur-lg shadow-xl shadow-black/5 z-50"
           role="menu"
         >
           <div className="px-3 py-2 border-b border-[var(--border)]">
-            <span className="text-[10px] font-[family-name:var(--font-mono)] text-white/30 uppercase tracking-widest">
+            <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/30 uppercase tracking-widest">
               Experiments
             </span>
           </div>
@@ -95,8 +95,8 @@ export function NavDropdown() {
                   role="menuitem"
                   className={`flex items-center gap-3 px-3 py-2.5 transition-colors ${
                     isActive
-                      ? 'bg-white/[0.06] text-white'
-                      : 'text-white/60 hover:bg-white/[0.04] hover:text-white/90'
+                      ? 'bg-[var(--fg)]/[0.05] text-[var(--fg)]'
+                      : 'text-[var(--fg)]/60 hover:bg-[var(--fg)]/[0.03] hover:text-[var(--fg)]/80'
                   }`}
                 >
                   {exp.icon && (
@@ -108,12 +108,12 @@ export function NavDropdown() {
                     <div className="text-sm font-[family-name:var(--font-display)] truncate">
                       {exp.title}
                     </div>
-                    <div className="text-[11px] font-[family-name:var(--font-mono)] text-white/30 mt-0.5">
+                    <div className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--fg)]/30 mt-0.5">
                       {exp.date}
                     </div>
                   </div>
                   {isActive && (
-                    <span className="shrink-0 h-1.5 w-1.5 bg-white/50" aria-label="Current" />
+                    <span className="shrink-0 h-1.5 w-1.5 rounded-full bg-[var(--fg)]/40" aria-label="Current" />
                   )}
                 </Link>
               )
@@ -123,7 +123,7 @@ export function NavDropdown() {
             <Link
               href="/e/auto-builds"
               role="menuitem"
-              className="text-[11px] font-[family-name:var(--font-mono)] text-white/40 hover:text-white/70 transition-colors"
+              className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--fg)]/40 hover:text-[var(--fg)]/70 transition-colors"
             >
               Auto-build archive →
             </Link>

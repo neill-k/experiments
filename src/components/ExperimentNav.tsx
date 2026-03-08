@@ -55,11 +55,11 @@ export function ExperimentNav() {
       {prev ? (
         <Link
           href={`/e/${prev.slug}`}
-          className="group flex flex-col items-start gap-0.5 text-white/40 hover:text-white/80 transition-colors"
+          className="group flex flex-col items-start gap-0.5 text-[var(--fg)]/40 hover:text-[var(--fg)]/70 transition-colors"
         >
-          <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-white/25 group-hover:text-white/40 transition-colors">
+          <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-[var(--fg)]/25 group-hover:text-[var(--fg)]/40 transition-colors">
             ← Previous
-            <kbd className="ml-1.5 hidden sm:inline-block border border-white/10 px-1 py-px text-[9px] text-white/20 group-hover:text-white/30 group-hover:border-white/20 transition-colors">
+            <kbd className="ml-1.5 hidden sm:inline-block rounded border border-[var(--border)] px-1 py-px text-[9px] text-[var(--fg)]/20 group-hover:text-[var(--fg)]/30 group-hover:border-[var(--border-hover)] transition-colors">
               ←
             </kbd>
           </span>
@@ -75,7 +75,7 @@ export function ExperimentNav() {
       <div className="flex flex-col items-center gap-1.5">
         <Link
           href="/e/auto-builds"
-          className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-white/20 hover:text-white/50 transition-colors"
+          className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-[var(--fg)]/20 hover:text-[var(--fg)]/50 transition-colors"
         >
           Auto-build archive
         </Link>
@@ -83,7 +83,7 @@ export function ExperimentNav() {
           href={sourceUrl(currentSlug)}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-[family-name:var(--font-mono)] text-[10px] text-white/15 hover:text-white/40 transition-colors"
+          className="font-[family-name:var(--font-mono)] text-[10px] text-[var(--fg)]/15 hover:text-[var(--fg)]/40 transition-colors"
         >
           view source ↗
         </a>
@@ -92,7 +92,7 @@ export function ExperimentNav() {
             {current.tech.map((t) => (
               <span
                 key={t}
-                className="border border-white/[0.06] bg-white/[0.02] px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] text-white/15"
+                className="rounded border border-[var(--border)] bg-white/60 px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] text-[var(--fg)]/20"
               >
                 {t}
               </span>
@@ -104,10 +104,10 @@ export function ExperimentNav() {
       {next ? (
         <Link
           href={`/e/${next.slug}`}
-          className="group flex flex-col items-end gap-0.5 text-white/40 hover:text-white/80 transition-colors"
+          className="group flex flex-col items-end gap-0.5 text-[var(--fg)]/40 hover:text-[var(--fg)]/70 transition-colors"
         >
-          <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-white/25 group-hover:text-white/40 transition-colors">
-            <kbd className="mr-1.5 hidden sm:inline-block border border-white/10 px-1 py-px text-[9px] text-white/20 group-hover:text-white/30 group-hover:border-white/20 transition-colors">
+          <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-[var(--fg)]/25 group-hover:text-[var(--fg)]/40 transition-colors">
+            <kbd className="mr-1.5 hidden sm:inline-block rounded border border-[var(--border)] px-1 py-px text-[9px] text-[var(--fg)]/20 group-hover:text-[var(--fg)]/30 group-hover:border-[var(--border-hover)] transition-colors">
               →
             </kbd>
             Next →
