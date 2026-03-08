@@ -173,3 +173,11 @@ CREATE TRIGGER trg_ono_vote_counts
   AFTER INSERT OR DELETE ON ono_votes
   FOR EACH ROW
   EXECUTE FUNCTION update_ono_vote_counts();
+
+-- ────────────────────────────────────────────────
+-- Trigger: keep updated_at current on ono_problems
+-- ────────────────────────────────────────────────
+DO $$ BEGIN
+  CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.ono_problems
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
