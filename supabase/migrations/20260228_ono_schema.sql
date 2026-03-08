@@ -148,7 +148,10 @@ CREATE POLICY "Users can delete own votes"
 -- Trigger: update vote counts on ono_solutions
 -- ────────────────────────────────────────────────
 CREATE OR REPLACE FUNCTION update_ono_vote_counts()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
     UPDATE ono_solutions SET
@@ -168,6 +171,8 @@ BEGIN
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+REVOKE ALL ON FUNCTION update_ono_vote_counts() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION update_ono_vote_counts() TO authenticated;
 
 CREATE TRIGGER trg_ono_vote_counts
   AFTER INSERT OR DELETE ON ono_votes
