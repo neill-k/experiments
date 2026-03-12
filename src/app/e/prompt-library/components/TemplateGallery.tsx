@@ -14,6 +14,8 @@ export function TemplateGallery({ onLoadPreset }: TemplateGalleryProps) {
     <div className="relative">
       <button
         onClick={() => setShowDropdown(!showDropdown)}
+        aria-expanded={showDropdown}
+        aria-haspopup="true"
         className="w-full px-3 py-2.5 text-xs transition-colors min-h-[44px] flex justify-between items-center"
         style={{
           fontFamily: 'var(--font-body)',
@@ -31,6 +33,7 @@ export function TemplateGallery({ onLoadPreset }: TemplateGalleryProps) {
       </button>
       {showDropdown && (
         <div
+          role="menu"
           className="absolute bottom-full left-0 right-0 mb-1 border shadow-2xl z-10 max-h-48 overflow-y-auto"
           style={{
             backgroundColor: 'var(--bg)',
@@ -40,6 +43,7 @@ export function TemplateGallery({ onLoadPreset }: TemplateGalleryProps) {
           {PRESETS.map((preset) => (
             <button
               key={preset.name}
+              role="menuitem"
               onClick={() => {
                 onLoadPreset(preset);
                 setShowDropdown(false);
