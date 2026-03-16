@@ -129,7 +129,7 @@ export function AuthButtons() {
       onClick={signIn}
       disabled={loading}
     >
-      Sign in with GitHub
+      {loading ? 'Signing in...' : 'Sign in with GitHub'}
     </button>
   )
 }

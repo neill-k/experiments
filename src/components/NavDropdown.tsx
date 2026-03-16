@@ -55,6 +55,7 @@ export function NavDropdown() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="true"
+        aria-label="Toggle experiment menu"
         className="flex items-center gap-1 text-[var(--fg)]/40 hover:text-[var(--fg)]/70 transition-colors"
         title="Jump to experiment"
       >
