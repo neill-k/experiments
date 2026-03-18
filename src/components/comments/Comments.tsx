@@ -388,9 +388,9 @@ export function Comments({ slug }: { slug: string }) {
           <button
             onClick={post}
             disabled={!canPost || busy}
-            className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
+            className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors disabled:cursor-not-allowed"
           >
-            Post
+            {busy ? 'Posting...' : 'Post'}
           </button>
         </div>
       </div>
