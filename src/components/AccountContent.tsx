@@ -177,6 +177,7 @@ export function AccountContent() {
             <button
               onClick={createAgent}
               disabled={creating}
+              aria-busy={creating}
               className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
               {creating ? 'Creating...' : 'Create Agent'}
@@ -243,6 +244,7 @@ export function AccountContent() {
                   <button
                     onClick={() => revokeAgent(agent.id)}
                     disabled={revoking === agent.id}
+                    aria-busy={revoking === agent.id}
                     className="rounded-md border border-[var(--border)] px-3 py-1 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/60 hover:border-[var(--border-hover)] disabled:opacity-40 transition-colors"
                   >
                     {revoking === agent.id ? 'Revoking...' : 'Revoke'}
