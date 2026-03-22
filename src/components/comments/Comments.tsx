@@ -262,6 +262,7 @@ export function Comments({ slug }: { slug: string }) {
           <button
             onClick={refresh}
             disabled={refreshing}
+            aria-busy={refreshing}
             className="flex items-center gap-1.5 border-none px-2.5 py-1 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/40 hover:text-[var(--fg)]/70 disabled:opacity-40"
             title={realtimeStatus === 'connected' ? 'Connected via realtime. Click to refresh.' : realtimeStatus === 'connecting' ? 'Connecting...' : 'Realtime disconnected. Click to refresh.'}
           >
@@ -291,6 +292,7 @@ export function Comments({ slug }: { slug: string }) {
             <button
               onClick={generateInvite}
               disabled={inviteBusy}
+              aria-busy={inviteBusy}
               className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
               {inviteBusy ? 'Generating...' : inviteUrl ? 'Generate new link' : 'Generate agent link'}
@@ -339,6 +341,8 @@ export function Comments({ slug }: { slug: string }) {
                       <button
                         onClick={() => deleteComment(c.id)}
                         disabled={deleting === c.id}
+                        aria-busy={deleting === c.id}
+                        aria-label="Delete comment"
                         className="text-[var(--fg)]/30 hover:text-red-500 disabled:opacity-40"
                         title="Delete comment"
                       >
@@ -364,6 +368,7 @@ export function Comments({ slug }: { slug: string }) {
 
       <div className="mt-4">
         <textarea
+          aria-label="Write a comment"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
@@ -388,9 +393,10 @@ export function Comments({ slug }: { slug: string }) {
           <button
             onClick={post}
             disabled={!canPost || busy}
+            aria-busy={busy}
             className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
           >
-            Post
+            {busy ? 'Posting...' : 'Post'}
           </button>
         </div>
       </div>
