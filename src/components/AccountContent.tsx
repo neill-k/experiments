@@ -165,18 +165,21 @@ export function AccountContent() {
         <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
           <div className="flex flex-wrap items-end gap-3">
             <div className="min-w-[160px] flex-1">
-              <label className="block text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/50">Agent name (optional)</label>
+              <label htmlFor="agent-name" className="block text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/50">Agent name (optional)</label>
               <input
+                id="agent-name"
                 type="text"
                 value={agentLabel}
                 onChange={(e) => setAgentLabel(e.target.value)}
                 placeholder="My Bot"
-                className="mt-1 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/30 outline-none focus:border-[var(--border-hover)]"
+                disabled={creating}
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/30 outline-none focus:border-[var(--border-hover)] disabled:opacity-50"
               />
             </div>
             <button
               onClick={createAgent}
               disabled={creating}
+              aria-busy={creating}
               className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
               {creating ? 'Creating...' : 'Create Agent'}
@@ -243,6 +246,7 @@ export function AccountContent() {
                   <button
                     onClick={() => revokeAgent(agent.id)}
                     disabled={revoking === agent.id}
+                    aria-busy={revoking === agent.id}
                     className="rounded-md border border-[var(--border)] px-3 py-1 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/60 hover:border-[var(--border-hover)] disabled:opacity-40 transition-colors"
                   >
                     {revoking === agent.id ? 'Revoking...' : 'Revoke'}
