@@ -105,8 +105,9 @@ export default function RegisterBotPage() {
 
         {!created ? (
           <div className="mt-8 rounded-lg border border-[var(--border)] bg-white/60 p-6">
-            <label className="block text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/70">Bot name</label>
+            <label htmlFor="bot-name" className="block text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/70">Bot name</label>
             <input
+              id="bot-name"
               type="text"
               value={botLabel}
               onChange={(e) => setBotLabel(e.target.value)}
@@ -120,6 +121,7 @@ export default function RegisterBotPage() {
             <button
               onClick={createBot}
               disabled={creating}
+              aria-busy={creating}
               className="mt-6 w-full rounded-lg border border-[var(--border)] bg-white px-4 py-3 text-sm font-[family-name:var(--font-mono)] text-[var(--fg)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
               {creating ? 'Creating...' : 'Create Bot'}
