@@ -14,6 +14,7 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
+  const itemsRef = useRef<(HTMLButtonElement | null)[]>([])
   const router = useRouter()
 
   const filtered = query.trim()
@@ -27,16 +28,9 @@ export function CommandPalette() {
       })
     : experiments
 
-  // Reset selection when query or open state changes
-  useEffect(() => {
-    setSelectedIndex(0)
-  }, [query])
-
   // Focus input when opened
   useEffect(() => {
     if (open) {
-      setQuery('')
-      setSelectedIndex(0)
       // Small delay to ensure the element is mounted
       requestAnimationFrame(() => {
         inputRef.current?.focus()
@@ -49,7 +43,13 @@ export function CommandPalette() {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
-        setOpen((prev) => !prev)
+        setOpen((prev) => {
+          if (!prev) {
+            setQuery('')
+            setSelectedIndex(0)
+          }
+          return !prev
+        })
       }
     }
     document.addEventListener('keydown', handleKeyDown)
@@ -65,6 +65,13 @@ export function CommandPalette() {
       }
     }
   }, [open])
+
+  // Scroll active item into view
+  useEffect(() => {
+    if (open && itemsRef.current[selectedIndex]) {
+      itemsRef.current[selectedIndex]?.scrollIntoView({ block: 'nearest' })
+    }
+  }, [selectedIndex, open])
 
   const navigate = useCallback(
     (slug: string) => {
@@ -102,7 +109,11 @@ export function CommandPalette() {
     <>
       {/* Trigger hint in the nav bar */}
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setQuery('')
+          setSelectedIndex(0)
+          setOpen(true)
+        }}
         className="hidden sm:inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-0.5 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/25 cursor-pointer hover:text-[var(--fg)]/50 hover:border-[var(--border-hover)] transition-colors"
         title="Search experiments"
         aria-label="Search experiments (Cmd+K)"
@@ -149,7 +160,10 @@ export function CommandPalette() {
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setSelectedIndex(0)
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Search experiments..."
             className="flex-1 bg-transparent text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/25 outline-none"
@@ -171,6 +185,9 @@ export function CommandPalette() {
           {filtered.map((exp, i) => (
             <button
               key={exp.slug}
+              ref={(el) => {
+                itemsRef.current[i] = el
+              }}
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
@@ -206,6 +223,9 @@ export function CommandPalette() {
 
           {/* "All experiments" option */}
           <button
+            ref={(el) => {
+              itemsRef.current[filtered.length] = el
+            }}
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
