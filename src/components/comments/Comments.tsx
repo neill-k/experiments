@@ -341,6 +341,7 @@ export function Comments({ slug }: { slug: string }) {
                         disabled={deleting === c.id}
                         className="text-[var(--fg)]/30 hover:text-red-500 disabled:opacity-40"
                         title="Delete comment"
+                        aria-label="Delete comment"
                       >
                         {deleting === c.id ? '...' : '×'}
                       </button>
