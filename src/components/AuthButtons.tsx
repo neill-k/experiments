@@ -128,8 +128,9 @@ export function AuthButtons() {
       className="rounded-lg border border-[var(--border)] bg-white/60 px-4 py-1.5 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white hover:text-[var(--fg)] transition-colors disabled:opacity-40"
       onClick={signIn}
       disabled={loading}
+      aria-busy={loading}
     >
-      Sign in with GitHub
+      {loading ? 'Signing in...' : 'Sign in with GitHub'}
     </button>
   )
 }
