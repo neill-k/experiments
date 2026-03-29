@@ -56,6 +56,14 @@ export function CommandPalette() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
+  // Keep selected item visible
+  useEffect(() => {
+    if (open) {
+      const el = document.getElementById(`cmd-item-${selectedIndex}`)
+      if (el) el.scrollIntoView({ block: 'nearest' })
+    }
+  }, [selectedIndex, open])
+
   // Lock body scroll when open
   useEffect(() => {
     if (open) {
@@ -171,6 +179,7 @@ export function CommandPalette() {
           {filtered.map((exp, i) => (
             <button
               key={exp.slug}
+              id={`cmd-item-${i}`}
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
@@ -206,6 +215,7 @@ export function CommandPalette() {
 
           {/* "All experiments" option */}
           <button
+            id={`cmd-item-${filtered.length}`}
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
