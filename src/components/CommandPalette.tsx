@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useId } from 'react'
 import { useRouter } from 'next/navigation'
 import { experiments } from '@/lib/experiments'
 
@@ -14,7 +14,10 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
+  const listboxRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const listboxId = useId()
+  const activeDescendantId = `${listboxId}-option-${selectedIndex}`
 
   const filtered = query.trim()
     ? experiments.filter((e) => {
@@ -31,6 +34,16 @@ export function CommandPalette() {
   useEffect(() => {
     setSelectedIndex(0)
   }, [query])
+
+  // Scroll active item into view
+  useEffect(() => {
+    if (open && listboxRef.current) {
+      const activeElement = listboxRef.current.querySelector('[aria-selected="true"]')
+      if (activeElement) {
+        activeElement.scrollIntoView({ block: 'nearest' })
+      }
+    }
+  }, [selectedIndex, open])
 
   // Focus input when opened
   useEffect(() => {
@@ -155,6 +168,10 @@ export function CommandPalette() {
             className="flex-1 bg-transparent text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/25 outline-none"
             autoComplete="off"
             spellCheck={false}
+            role="combobox"
+            aria-expanded={open}
+            aria-controls={listboxId}
+            aria-activedescendant={activeDescendantId}
           />
           <kbd className="shrink-0 rounded border border-[var(--border)] px-1.5 py-0.5 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/25">
             esc
@@ -162,7 +179,13 @@ export function CommandPalette() {
         </div>
 
         {/* Results */}
-        <div className="max-h-[40vh] overflow-y-auto py-1">
+        <div
+          ref={listboxRef}
+          id={listboxId}
+          role="listbox"
+          aria-label="Experiments"
+          className="max-h-[40vh] overflow-y-auto py-1"
+        >
           {filtered.length === 0 && (
             <div className="px-4 py-6 text-center text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/30">
               No experiments match &ldquo;{query}&rdquo;
@@ -171,6 +194,9 @@ export function CommandPalette() {
           {filtered.map((exp, i) => (
             <button
               key={exp.slug}
+              id={`${listboxId}-option-${i}`}
+              role="option"
+              aria-selected={i === selectedIndex}
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
@@ -206,6 +232,9 @@ export function CommandPalette() {
 
           {/* "All experiments" option */}
           <button
+            id={`${listboxId}-option-${filtered.length}`}
+            role="option"
+            aria-selected={selectedIndex === filtered.length}
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
