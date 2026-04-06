@@ -14,6 +14,7 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
+  const listboxRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
   const filtered = query.trim()
@@ -27,16 +28,18 @@ export function CommandPalette() {
       })
     : experiments
 
-  // Reset selection when query or open state changes
+  // Scroll active item into view
   useEffect(() => {
-    setSelectedIndex(0)
-  }, [query])
+    if (!open || !listboxRef.current) return
+    const activeItem = listboxRef.current.querySelector('[aria-selected="true"]')
+    if (activeItem) {
+      activeItem.scrollIntoView({ block: 'nearest' })
+    }
+  }, [selectedIndex, open])
 
   // Focus input when opened
   useEffect(() => {
     if (open) {
-      setQuery('')
-      setSelectedIndex(0)
       // Small delay to ensure the element is mounted
       requestAnimationFrame(() => {
         inputRef.current?.focus()
@@ -49,7 +52,13 @@ export function CommandPalette() {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
-        setOpen((prev) => !prev)
+        setOpen((prev) => {
+          if (!prev) {
+            setQuery('')
+            setSelectedIndex(0)
+          }
+          return !prev
+        })
       }
     }
     document.addEventListener('keydown', handleKeyDown)
@@ -102,7 +111,11 @@ export function CommandPalette() {
     <>
       {/* Trigger hint in the nav bar */}
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true)
+          setQuery('')
+          setSelectedIndex(0)
+        }}
         className="hidden sm:inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-0.5 text-[10px] font-[family-name:var(--font-mono)] text-[var(--fg)]/25 cursor-pointer hover:text-[var(--fg)]/50 hover:border-[var(--border-hover)] transition-colors"
         title="Search experiments"
         aria-label="Search experiments (Cmd+K)"
@@ -148,8 +161,21 @@ export function CommandPalette() {
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-expanded={open}
+            aria-controls="command-palette-results"
+            aria-activedescendant={
+              selectedIndex === filtered.length
+                ? 'cmd-item-all'
+                : filtered[selectedIndex]
+                ? `cmd-item-${filtered[selectedIndex].slug}`
+                : undefined
+            }
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setSelectedIndex(0)
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Search experiments..."
             className="flex-1 bg-transparent text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/25 outline-none"
@@ -162,7 +188,12 @@ export function CommandPalette() {
         </div>
 
         {/* Results */}
-        <div className="max-h-[40vh] overflow-y-auto py-1">
+        <div
+          ref={listboxRef}
+          id="command-palette-results"
+          role="listbox"
+          className="max-h-[40vh] overflow-y-auto py-1"
+        >
           {filtered.length === 0 && (
             <div className="px-4 py-6 text-center text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/30">
               No experiments match &ldquo;{query}&rdquo;
@@ -171,6 +202,9 @@ export function CommandPalette() {
           {filtered.map((exp, i) => (
             <button
               key={exp.slug}
+              id={`cmd-item-${exp.slug}`}
+              role="option"
+              aria-selected={i === selectedIndex}
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
@@ -206,6 +240,9 @@ export function CommandPalette() {
 
           {/* "All experiments" option */}
           <button
+            id="cmd-item-all"
+            role="option"
+            aria-selected={selectedIndex === filtered.length}
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
