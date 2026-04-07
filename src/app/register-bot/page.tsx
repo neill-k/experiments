@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import Link from 'next/link'
 import { getSupabase } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth'
 export default function RegisterBotPage() {
   const { userId } = useAuth()
   const [botLabel, setBotLabel] = useState('')
+  const botNameId = useId()
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [creating, setCreating] = useState(false)
@@ -105,8 +106,9 @@ export default function RegisterBotPage() {
 
         {!created ? (
           <div className="mt-8 rounded-lg border border-[var(--border)] bg-white/60 p-6">
-            <label className="block text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/70">Bot name</label>
+            <label htmlFor={botNameId} className="block text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/70">Bot name</label>
             <input
+              id={botNameId}
               type="text"
               value={botLabel}
               onChange={(e) => setBotLabel(e.target.value)}
