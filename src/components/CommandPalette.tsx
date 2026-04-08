@@ -152,6 +152,7 @@ export function CommandPalette() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search experiments..."
+            aria-label="Search experiments"
             className="flex-1 bg-transparent text-sm font-[family-name:var(--font-body)] text-[var(--fg)] placeholder:text-[var(--fg)]/25 outline-none"
             autoComplete="off"
             spellCheck={false}
