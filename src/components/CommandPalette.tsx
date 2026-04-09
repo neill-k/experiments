@@ -148,6 +148,14 @@ export function CommandPalette() {
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-expanded={open}
+            aria-controls="command-palette-listbox"
+            aria-activedescendant={
+              selectedIndex === filtered.length
+                ? 'command-palette-option-home'
+                : `command-palette-option-${selectedIndex}`
+            }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -162,7 +170,11 @@ export function CommandPalette() {
         </div>
 
         {/* Results */}
-        <div className="max-h-[40vh] overflow-y-auto py-1">
+        <div
+          id="command-palette-listbox"
+          role="listbox"
+          className="max-h-[40vh] overflow-y-auto py-1"
+        >
           {filtered.length === 0 && (
             <div className="px-4 py-6 text-center text-sm font-[family-name:var(--font-body)] text-[var(--fg)]/30">
               No experiments match &ldquo;{query}&rdquo;
@@ -171,6 +183,9 @@ export function CommandPalette() {
           {filtered.map((exp, i) => (
             <button
               key={exp.slug}
+              id={`command-palette-option-${i}`}
+              role="option"
+              aria-selected={i === selectedIndex}
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
@@ -206,6 +221,9 @@ export function CommandPalette() {
 
           {/* "All experiments" option */}
           <button
+            id="command-palette-option-home"
+            role="option"
+            aria-selected={selectedIndex === filtered.length}
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
