@@ -1,0 +1,3 @@
+## 2024-04-09 - Accessible Command Palette Combobox Pattern
+**Learning:** Custom interactive components like CommandPalette (Cmd+K modal) require manual implementation of the ARIA Combobox pattern. Without attributes like `role="combobox"`, `aria-expanded`, `aria-controls`, and `aria-activedescendant` on the input, and `role="listbox"` / `role="option"` with `aria-selected` on the results, screen reader users cannot perceive the relationship between the search input and the filtered results or understand which item is currently focused via keyboard navigation.
+**Action:** When implementing custom search modals or dropdowns with keyboard navigation, strictly apply the WAI-ARIA combobox pattern to ensure the connection between input and listbox is explicitly defined.
