@@ -47,6 +47,7 @@ export function ShareResult({ matches, dayNumber }: ShareResultProps) {
   return (
     <button
       onClick={handleShare}
+      aria-label={copied ? "Result copied to clipboard" : "Share your result"}
       className="share-result-btn inline-flex items-center gap-2 px-4 py-2 text-xs tracking-wide transition-all"
       style={{
         fontFamily: 'var(--font-mono)',
