@@ -38,6 +38,7 @@ export function FavoriteButton({ questionId, initialFavorited = false }: Favorit
     <button
       onClick={toggle}
       disabled={loading}
+      aria-busy={loading}
       className="favorite-btn p-3 transition-colors"
       aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
       style={{ color: favorited ? 'var(--fg)' : 'var(--muted)', minWidth: '44px', minHeight: '44px' }}
