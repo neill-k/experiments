@@ -210,7 +210,8 @@ export function AnswerInput({
             <button
               onClick={handleSubmit}
               disabled={!text.trim() || submitting || disabled}
-              className="submit-btn rounded-lg px-6 py-3 text-sm font-medium tracking-wide transition-all"
+              aria-busy={submitting}
+              className="submit-btn flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium tracking-wide transition-all"
               style={{
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--fg)',
@@ -218,7 +219,14 @@ export function AnswerInput({
                 border: '1px solid var(--border-hover)',
               }}
             >
-              {submitting ? 'Processing…' : submitLabel}
+              {submitting ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--fg)]/20 border-t-[var(--fg)]/70" aria-hidden="true" />
+                  Processing…
+                </>
+              ) : (
+                submitLabel
+              )}
             </button>
           </div>
         </div>

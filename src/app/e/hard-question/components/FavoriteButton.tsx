@@ -38,11 +38,16 @@ export function FavoriteButton({ questionId, initialFavorited = false }: Favorit
     <button
       onClick={toggle}
       disabled={loading}
-      className="favorite-btn p-3 transition-colors"
+      aria-busy={loading}
+      className="favorite-btn p-3 transition-colors flex items-center justify-center relative"
       aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
       style={{ color: favorited ? 'var(--fg)' : 'var(--muted)', minWidth: '44px', minHeight: '44px' }}
     >
+      <span className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${loading ? 'opacity-100' : 'opacity-0'}`} aria-hidden="true">
+        <span className="h-5 w-5 animate-spin rounded-full border-2 border-current/20 border-t-current" />
+      </span>
       <svg
+        className={`transition-opacity duration-200 ${loading ? 'opacity-0' : 'opacity-100'}`}
         width="20"
         height="20"
         viewBox="0 0 24 24"
