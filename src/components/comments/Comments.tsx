@@ -291,9 +291,19 @@ export function Comments({ slug }: { slug: string }) {
             <button
               onClick={generateInvite}
               disabled={inviteBusy}
-              className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
+              aria-busy={inviteBusy}
+              className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
-              {inviteBusy ? 'Generating...' : inviteUrl ? 'Generate new link' : 'Generate agent link'}
+              {inviteBusy ? (
+                <>
+                  <span className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--fg)]/20 border-t-[var(--fg)]/70" aria-hidden="true" />
+                  Generating...
+                </>
+              ) : inviteUrl ? (
+                'Generate new link'
+              ) : (
+                'Generate agent link'
+              )}
             </button>
           </div>
 
@@ -388,9 +398,17 @@ export function Comments({ slug }: { slug: string }) {
           <button
             onClick={post}
             disabled={!canPost || busy}
-            className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
+            aria-busy={busy}
+            className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
           >
-            Post
+            {busy ? (
+              <>
+                <span className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--fg)]/20 border-t-[var(--fg)]/70" aria-hidden="true" />
+                Posting...
+              </>
+            ) : (
+              'Post'
+            )}
           </button>
         </div>
       </div>
