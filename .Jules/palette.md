@@ -1,0 +1,3 @@
+## 2025-04-17 - Responsive Visibility and Accessible Names
+**Learning:** When using responsive utility classes (like `hidden sm:inline`) to hide descriptive text on smaller viewports, any interactive element (like a `<button>`) that contains an `aria-hidden="true"` icon will end up with an empty accessible name for mobile screen reader users.
+**Action:** Always provide an explicitly defined `aria-label` on interactive elements where the main descriptive text is conditionally hidden by responsive utility classes, ensuring accessibility is maintained across all viewport sizes.
