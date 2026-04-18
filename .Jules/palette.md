@@ -1,0 +1,3 @@
+## 2024-05-18 - Communicating state & explicit labeling for responsive text
+**Learning:** Responsive utility classes (like `hidden sm:inline`) hide text visibly on small screens, which can lead to poorly labeled interactive elements if screen readers rely solely on the text content. Further, asynchronous buttons frequently lack proper loading communication natively.
+**Action:** Always provide an explicit `aria-label` for elements where the main text is conditionally hidden by responsive classes. Always use `aria-busy` and conditional text (e.g. "Signing in...") to communicate state explicitly when action buttons perform async operations.
