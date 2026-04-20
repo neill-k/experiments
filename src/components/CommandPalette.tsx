@@ -14,6 +14,7 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([])
   const router = useRouter()
 
   const filtered = query.trim()
@@ -31,6 +32,13 @@ export function CommandPalette() {
   useEffect(() => {
     setSelectedIndex(0)
   }, [query])
+
+  // Scroll active item into view
+  useEffect(() => {
+    if (open && itemRefs.current[selectedIndex]) {
+      itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest' })
+    }
+  }, [selectedIndex, open])
 
   // Focus input when opened
   useEffect(() => {
@@ -171,6 +179,11 @@ export function CommandPalette() {
           {filtered.map((exp, i) => (
             <button
               key={exp.slug}
+              ref={(el) => {
+                if (itemRefs.current) {
+                  itemRefs.current[i] = el
+                }
+              }}
               onClick={() => navigate(exp.slug)}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
                 i === selectedIndex
@@ -206,6 +219,11 @@ export function CommandPalette() {
 
           {/* "All experiments" option */}
           <button
+            ref={(el) => {
+              if (itemRefs.current) {
+                itemRefs.current[filtered.length] = el
+              }
+            }}
             onClick={goHome}
             className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-t border-[var(--border)] ${
               selectedIndex === filtered.length
