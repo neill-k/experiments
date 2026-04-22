@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import Link from 'next/link'
 import { getSupabase } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
@@ -25,6 +25,8 @@ export function AccountContent() {
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [creating, setCreating] = useState(false)
+
+  const agentNameId = useId()
 
   useEffect(() => {
     if (authLoading) return
@@ -165,8 +167,9 @@ export function AccountContent() {
         <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
           <div className="flex flex-wrap items-end gap-3">
             <div className="min-w-[160px] flex-1">
-              <label className="block text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/50">Agent name (optional)</label>
+              <label htmlFor={agentNameId} className="block text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/50">Agent name (optional)</label>
               <input
+                id={agentNameId}
                 type="text"
                 value={agentLabel}
                 onChange={(e) => setAgentLabel(e.target.value)}
