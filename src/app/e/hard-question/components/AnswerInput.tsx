@@ -210,6 +210,7 @@ export function AnswerInput({
             <button
               onClick={handleSubmit}
               disabled={!text.trim() || submitting || disabled}
+              aria-busy={submitting}
               className="submit-btn rounded-lg px-6 py-3 text-sm font-medium tracking-wide transition-all"
               style={{
                 fontFamily: 'var(--font-mono)',
