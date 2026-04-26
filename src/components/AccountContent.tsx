@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useId } from 'react'
 import Link from 'next/link'
 import { getSupabase } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
@@ -15,6 +15,7 @@ type Agent = {
 
 export function AccountContent() {
   const { userId, email, loading: authLoading } = useAuth()
+  const agentInputId = useId()
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -165,8 +166,9 @@ export function AccountContent() {
         <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
           <div className="flex flex-wrap items-end gap-3">
             <div className="min-w-[160px] flex-1">
-              <label className="block text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/50">Agent name (optional)</label>
+              <label htmlFor={agentInputId} className="block text-[11px] font-[family-name:var(--font-body)] text-[var(--fg)]/50">Agent name (optional)</label>
               <input
+                id={agentInputId}
                 type="text"
                 value={agentLabel}
                 onChange={(e) => setAgentLabel(e.target.value)}
@@ -177,6 +179,7 @@ export function AccountContent() {
             <button
               onClick={createAgent}
               disabled={creating}
+              aria-busy={creating}
               className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
               {creating ? 'Creating...' : 'Create Agent'}
