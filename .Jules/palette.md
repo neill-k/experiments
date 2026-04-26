@@ -1,0 +1,3 @@
+## 2026-04-26 - Explicit Form Associations & Async States
+**Learning:** Implicit or text-only label-input connections and missing async busy states for buttons can cause screen reader issues. Relying on structural wrapping isn't always enough for robust a11y, especially in complex components. Generating unique IDs dynamically prevents collision bugs in React when a component is reused.
+**Action:** Always use React's `useId()` to explicitly map `<label htmlFor={id}>` to `<input id={id}>`. Also, consistently add `aria-busy={state}` to submit/action buttons representing an async loading action to ensure screen readers communicate the state correctly.
