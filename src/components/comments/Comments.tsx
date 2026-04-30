@@ -291,6 +291,7 @@ export function Comments({ slug }: { slug: string }) {
             <button
               onClick={generateInvite}
               disabled={inviteBusy}
+              aria-busy={inviteBusy}
               className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
             >
               {inviteBusy ? 'Generating...' : inviteUrl ? 'Generate new link' : 'Generate agent link'}
@@ -388,6 +389,7 @@ export function Comments({ slug }: { slug: string }) {
           <button
             onClick={post}
             disabled={!canPost || busy}
+            aria-busy={busy}
             className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-xs font-[family-name:var(--font-mono)] text-[var(--fg)]/70 hover:border-[var(--border-hover)] hover:bg-white/80 disabled:opacity-40 transition-colors"
           >
             Post

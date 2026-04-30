@@ -1,0 +1,3 @@
+## 2024-04-30 - Accessible Form Inputs and Loading States
+**Learning:** Using hardcoded string IDs (like `id="email"`) for form inputs is dangerous in React components because it can lead to duplicate IDs if the component is rendered multiple times, confusing screen readers. Also, setting `disabled` on a button during an async operation isn't always enough to explicitly communicate the loading state to screen readers.
+**Action:** Use `React.useId()` to generate a unique ID and explicitly associate `<label>` with `<input>` using the `htmlFor` and `id` properties. Explicitly apply `aria-busy={state}` to submit or action buttons to communicate asynchronous loading states to assistive technology.
