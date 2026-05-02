@@ -71,6 +71,7 @@ export function AnswerInput({
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
+          aria-label={isPracticeMode ? 'Practice response' : 'Your answer'}
           placeholder={isPracticeMode ? 'Try a practice response...' : 'What do you think?'}
           disabled={disabled || submitting}
           rows={3}
@@ -210,6 +211,7 @@ export function AnswerInput({
             <button
               onClick={handleSubmit}
               disabled={!text.trim() || submitting || disabled}
+              aria-busy={submitting}
               className="submit-btn rounded-lg px-6 py-3 text-sm font-medium tracking-wide transition-all"
               style={{
                 fontFamily: 'var(--font-mono)',
