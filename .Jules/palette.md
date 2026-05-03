@@ -1,0 +1,3 @@
+## 2024-05-18 - Hidden Text Accessibility
+**Learning:** Responsive utility classes like `hidden sm:inline` on button text can inadvertently create icon-only buttons for users on small screens. While visually acceptable, this causes the button to lose its accessible name for mobile screen reader users if the text is hidden from the accessibility tree, or causes confusion if the screen reader announces text that visually isn't there.
+**Action:** Always provide an explicit `aria-label` on buttons where the main descriptive text is conditionally hidden by responsive utility classes to ensure consistent accessibility across all viewports.
