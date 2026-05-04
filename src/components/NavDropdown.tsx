@@ -55,6 +55,7 @@ export function NavDropdown() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="true"
+        aria-label="Jump to experiment"
         className="flex items-center gap-1 text-[var(--fg)]/40 hover:text-[var(--fg)]/70 transition-colors"
         title="Jump to experiment"
       >
@@ -63,6 +64,7 @@ export function NavDropdown() {
           height="12"
           viewBox="0 0 12 12"
           fill="none"
+          aria-hidden="true"
           className={`transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
         >
           <path

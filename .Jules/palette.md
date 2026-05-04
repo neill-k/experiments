@@ -1,0 +1,4 @@
+## 2024-05-04 - Accessible Action Buttons and Dropdowns
+
+**Learning:** Buttons relying on conditionally hidden text classes (like `hidden sm:inline`) or title attributes without explicit ARIA labels can fail to be properly announced by screen readers on smaller viewports. Additionally, async state buttons lack accessibility when their loading state isn't communicated to assistive tech.
+**Action:** Always provide an explicit `aria-label` to buttons where primary descriptive text is conditionally hidden. Ensure decorative inner SVGs use `aria-hidden="true"`. Apply `aria-busy={loadingState}` to interactive elements undergoing async operations to actively inform screen reader users of the loading state.
